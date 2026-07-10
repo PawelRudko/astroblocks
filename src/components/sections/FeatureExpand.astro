@@ -1,0 +1,102 @@
+---
+// FeatureExpand — horizontal accordion of image panels; the hovered/focused panel expands and reveals
+// its copy, the others shrink. Pure CSS (flex-grow). Shorter panels + minimal gap. Responsive (stacks on
+// mobile, all open). Edit by chat (AGENTS.md).
+interface Btn { label: string; href?: string }
+interface Panel {
+  eyebrow?: string;
+  title: string;
+  subtitle?: string;
+  link?: Btn;
+  image?: string;
+}
+interface Props {
+  eyebrow?: string;
+  title?: string;
+  subtitle?: string;
+  panels: Panel[];
+  bg?: 'white' | 'gray';
+}
+const { eyebrow, title, subtitle, panels, bg = 'white' } = Astro.props;
+const ph = '/placeholder-landscape.svg';
+---
+
+<section class:list={['fexp', `fexp--${bg}`]}>
+  <div class="fexp__wrap">
+    {(eyebrow || title || subtitle) && (
+      <header class="fexp__head">
+        {eyebrow && <span class="eyebrow">{eyebrow}</span>}
+        {title && <h2 class="fexp__title">{title}</h2>}
+        {subtitle && <p class="fexp__subtitle">{subtitle}</p>}
+      </header>
+    )}
+
+    <div class="fexp__row">
+      {panels.map((p, i) => (
+        <article class:list={['fexp__panel', { 'is-open': i === 0 }]} tabindex="0">
+          <img class="fexp__img" src={p.image || ph} alt="" loading="lazy" />
+          <div class="fexp__body">
+            {p.eyebrow && <span class="fexp__eyebrow">{p.eyebrow}</span>}
+            <h3 class="fexp__panel-title">{p.title}</h3>
+            <div class="fexp__more">
+              {p.subtitle && <p class="fexp__panel-text">{p.subtitle}</p>}
+              {p.link && <a class="fexp__link" href={p.link.href || '#'}>{p.link.label} <span aria-hidden="true">→</span></a>}
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .fexp { padding: clamp(3rem, 7vw, 6rem) 0; }
+  .fexp--white { background: #ffffff; }
+  .fexp--gray { background: #f5f4f2; }
+  .fexp__wrap { max-width: 1280px; margin-inline: auto; padding-inline: clamp(1.25rem, 4vw, 2.5rem); }
+
+  .fexp__head { text-align: center; max-width: 44rem; margin-inline: auto; margin-bottom: clamp(2rem, 4vw, 3rem); }
+  .fexp__title { margin-top: 0.8rem; }
+  .fexp__subtitle { margin-top: 0.9rem; color: rgba(33, 32, 28, 0.66); font-size: 15px; line-height: 1.6; }
+
+  /* Accordion row — minimal gap, ~half-height panels */
+  .fexp__row { display: flex; gap: 6px; }
+  .fexp__panel {
+    position: relative; flex-grow: 1; flex-basis: 0; min-width: 0;
+    height: clamp(220px, 38vh, 320px); border-radius: var(--radius-card); overflow: hidden;
+    cursor: pointer; isolation: isolate;
+    transition: flex-grow 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  /* default: first open; while hovering the row, only the hovered/focused panel expands */
+  .fexp__row:not(:hover) .fexp__panel.is-open { flex-grow: 3.2; }
+  .fexp__row:hover .fexp__panel:hover,
+  .fexp__panel:focus-visible { flex-grow: 3.2; }
+
+  .fexp__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .fexp__panel::after { content: ''; position: absolute; inset: 0; z-index: 1; background: linear-gradient(to top, rgba(12, 12, 15, 0.78) 0%, rgba(12, 12, 15, 0.15) 45%, transparent 70%); }
+
+  .fexp__body { position: absolute; z-index: 2; left: 0; right: 0; bottom: 0; padding: clamp(1.1rem, 2vw, 1.6rem); color: #fff; }
+  .fexp__eyebrow { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255, 255, 255, 0.75); }
+  .fexp__panel-title { margin-top: 0.5rem; font-size: clamp(1.05rem, 1.6vw, 1.3rem); color: #fff; white-space: nowrap; }
+
+  /* extra copy — visible only on the expanded panel */
+  .fexp__more { max-width: 34ch; opacity: 0; transform: translateY(6px); transition: opacity 0.35s ease, transform 0.35s ease; transition-delay: 0.08s; }
+  .fexp__row:not(:hover) .fexp__panel.is-open .fexp__more,
+  .fexp__row:hover .fexp__panel:hover .fexp__more,
+  .fexp__panel:focus-visible .fexp__more { opacity: 1; transform: none; }
+  .fexp__panel-text { margin-top: 0.6rem; font-size: 0.9rem; line-height: 1.55; color: rgba(255, 255, 255, 0.82); }
+  .fexp__link { display: inline-flex; align-items: center; gap: 0.4rem; margin-top: 0.9rem; font-weight: 600; font-size: 0.9rem; color: #fff; }
+  .fexp__link:hover { gap: 0.6rem; }
+
+  @media (max-width: 768px) {
+    .fexp__row { flex-direction: column; gap: 8px; }
+    .fexp__panel { flex: none; height: 220px; }
+    .fexp__row:not(:hover) .fexp__panel.is-open,
+    .fexp__row:hover .fexp__panel:hover { flex-grow: 0; }
+    .fexp__panel-title { white-space: normal; }
+    .fexp__more { opacity: 1; transform: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .fexp__panel, .fexp__more { transition: none; }
+  }
+</style>

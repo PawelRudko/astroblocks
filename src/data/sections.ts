@@ -298,6 +298,59 @@ export const registry: SectionEntry[] = [
       bg: 'white',
     },
   },
+  {
+    id: 'feature-stack-cards',
+    name: 'Feature Stack Cards',
+    category: 'Features',
+    file: 'FeatureStackCards.astro',
+    demo: {
+      eyebrow: 'Features',
+      title: 'Medium length section heading goes here',
+      subtitle:
+        'Keep the pitch on the left while the proof stacks up on the right – each card sticks and piles on the previous as you scroll.',
+      primary: { label: 'Button', href: '#' },
+      secondary: { label: 'Button', href: '#' },
+      cards: [
+        { title: 'Subheading one', text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros.' },
+        { title: 'Subheading two', text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros.' },
+        { title: 'Subheading three', text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros.' },
+        { title: 'Subheading four', text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros.' },
+      ],
+      bg: 'white',
+    },
+  },
+  {
+    id: 'feature-stack-sections',
+    name: 'Feature Stack Sections',
+    category: 'Features',
+    file: 'FeatureStackSections.astro',
+    demo: {
+      features: [
+        { navLabel: 'Feature one', eyebrow: 'Tagline', title: 'Medium length section heading goes here', subtitle: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique.', primary: { label: 'Button', href: '#' }, secondary: { label: 'Button', href: '#' }, image: placeholder },
+        { navLabel: 'Feature two', eyebrow: 'Tagline', title: 'A second story stacks over the first', subtitle: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique.', primary: { label: 'Button', href: '#' }, secondary: { label: 'Button', href: '#' }, image: placeholder },
+        { navLabel: 'Feature three', eyebrow: 'Tagline', title: 'Then a third slides into view', subtitle: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique.', primary: { label: 'Button', href: '#' }, secondary: { label: 'Button', href: '#' }, image: placeholder },
+        { navLabel: 'Feature four', eyebrow: 'Tagline', title: 'The nav tracks where you are', subtitle: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique.', primary: { label: 'Button', href: '#' }, secondary: { label: 'Button', href: '#' }, image: placeholder },
+      ],
+      bg: 'white',
+    },
+  },
+  {
+    id: 'feature-expand',
+    name: 'Feature Expand',
+    category: 'Features',
+    file: 'FeatureExpand.astro',
+    demo: {
+      eyebrow: 'Tagline',
+      title: 'Heading goes here',
+      subtitle: 'Hover a panel and it opens; the rest step aside. Great for a few punchy highlights.',
+      panels: [
+        { eyebrow: 'Tagline', title: 'Medium length section heading goes here', subtitle: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique.', link: { label: 'Button', href: '#' }, image: placeholder },
+        { eyebrow: 'Tagline', title: 'Medium length section heading goes here', subtitle: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique.', link: { label: 'Button', href: '#' }, image: placeholder },
+        { eyebrow: 'Tagline', title: 'Medium length section heading goes here', subtitle: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse varius enim in eros elementum tristique.', link: { label: 'Button', href: '#' }, image: placeholder },
+      ],
+      bg: 'white',
+    },
+  },
 ];
 
 // cards with a per-category label (HERO 01, HERO 02, BLOG 01...) — shared by / and /blocks

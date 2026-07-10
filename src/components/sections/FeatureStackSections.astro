@@ -1,0 +1,86 @@
+---
+// FeatureStackSections — full-height feature panels that stack on top of each other on scroll.
+// Each panel is position: sticky; the numbered nav inside highlights its own index, so the visible
+// nav always matches the current panel (CSS only). Responsive: static stacked on mobile. Edit by chat (AGENTS.md).
+interface Btn { label: string; href?: string }
+interface Feature {
+  navLabel: string;
+  eyebrow?: string;
+  title: string;
+  subtitle?: string;
+  primary?: Btn;
+  secondary?: Btn;
+  image?: string;
+}
+interface Props { features: Feature[]; bg?: 'white' | 'gray' }
+const { features, bg = 'white' } = Astro.props;
+const ph = '/placeholder-landscape.svg';
+const n = (i: number) => String(i + 1).padStart(2, '0');
+---
+
+<section class:list={['fss', `fss--${bg}`]}>
+  {features.map((f, i) => (
+    <div class="fss__panel">
+      <div class="fss__inner">
+        <ol class="fss__nav">
+          {features.map((g, j) => (
+            <li class:list={['fss__navitem', { 'is-active': j === i }]}>
+              <span class="fss__num">{n(j)}</span>
+              <span class="fss__navlabel">{g.navLabel}</span>
+            </li>
+          ))}
+        </ol>
+
+        <div class="fss__grid">
+          <div class="fss__text">
+            {f.eyebrow && <span class="eyebrow">{f.eyebrow}</span>}
+            <h2 class="fss__title">{f.title}</h2>
+            {f.subtitle && <p class="fss__lead">{f.subtitle}</p>}
+            {(f.primary || f.secondary) && (
+              <div class="fss__cta">
+                {f.primary && <a class="btn btn--secondary" href={f.primary.href || '#'}>{f.primary.label}</a>}
+                {f.secondary && <a class="btn btn--link" href={f.secondary.href || '#'}>{f.secondary.label} <span aria-hidden="true">→</span></a>}
+              </div>
+            )}
+          </div>
+          <div class="fss__media"><img src={f.image || ph} alt="" loading="lazy" /></div>
+        </div>
+      </div>
+    </div>
+  ))}
+</section>
+
+<style>
+  .fss--white { background: #ffffff; }
+  .fss--gray { background: #f5f4f2; }
+
+  .fss__panel { position: sticky; top: 0; min-height: 100vh; display: flex; align-items: center; background: inherit; }
+  .fss--white .fss__panel { background: #ffffff; }
+  .fss--gray .fss__panel { background: #f5f4f2; }
+  .fss__inner { width: 100%; max-width: 1200px; margin-inline: auto; padding: clamp(3rem, 8vw, 6rem) clamp(1.25rem, 4vw, 2.5rem); }
+
+  /* Numbered nav */
+  .fss__nav { list-style: none; border-top: 1px solid var(--line); margin-bottom: clamp(2rem, 5vw, 3.5rem); }
+  .fss__navitem { display: flex; align-items: center; gap: 1rem; padding: 0.8rem 0; border-bottom: 1px solid var(--line); font-weight: 600; color: var(--faint); transition: color 0.25s ease; }
+  .fss__navitem.is-active { color: var(--text); }
+  .fss__num { font-family: var(--font-mono); font-size: 0.85rem; }
+  .fss__navlabel { text-decoration: underline; text-underline-offset: 3px; text-decoration-color: transparent; transition: text-decoration-color 0.25s ease; }
+  .fss__navitem.is-active .fss__navlabel { text-decoration-color: currentColor; }
+
+  /* Content */
+  .fss__grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2rem, 5vw, 4rem); align-items: center; }
+  .fss__title { margin-top: 0.8rem; }
+  .fss__lead { margin-top: 1rem; max-width: 44ch; color: rgba(33, 32, 28, 0.66); font-size: 15px; line-height: 1.6; }
+  .fss__cta { display: flex; flex-wrap: wrap; align-items: center; gap: 0.7rem; margin-top: 1.8rem; }
+  .fss__media img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; border-radius: var(--radius-card); border: 1px solid var(--line); background: #ececea; }
+
+  @media (max-width: 900px) {
+    .fss__panel { position: static; min-height: auto; border-bottom: 1px solid var(--line); }
+    .fss__grid { grid-template-columns: 1fr; gap: clamp(1.5rem, 4vw, 2rem); }
+    .fss__media { order: -1; }
+    .fss__media img { aspect-ratio: 16 / 10; }
+    /* on mobile show only the current feature's own nav row (keep it simple) */
+    .fss__navitem:not(.is-active) { display: none; }
+    .fss__nav { border-bottom: none; }
+  }
+</style>
