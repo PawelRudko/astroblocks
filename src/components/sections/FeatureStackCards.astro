@@ -55,8 +55,8 @@ const { eyebrow, title, subtitle, primary, secondary, cards, bg = 'white' } = As
   .fsc__lead { margin-top: 1rem; max-width: 44ch; color: rgba(33, 32, 28, 0.66); font-size: 15px; line-height: 1.6; }
   .fsc__cta { display: flex; flex-wrap: wrap; align-items: center; gap: 0.7rem; margin-top: 1.8rem; }
 
-  /* big vertical spacing = scroll travel; the previous card stays pinned while you scroll to the next */
-  .fsc__cards { display: flex; flex-direction: column; gap: clamp(3rem, 34vh, 18rem); padding-bottom: 40vh; }
+  /* moderate spacing = enough scroll travel to pile, but cards stay close for a tidy initial view */
+  .fsc__cards { display: flex; flex-direction: column; gap: clamp(1.5rem, 11vh, 5rem); padding-bottom: 22vh; }
   .fsc__card {
     position: sticky; top: calc(clamp(2rem, 14vh, 6rem) + var(--i) * 14px);
     background: #fff; border: 1px solid var(--line); border-radius: var(--radius-card);
