@@ -55,11 +55,12 @@ const { eyebrow, title, subtitle, primary, secondary, cards, bg = 'white' } = As
   .fsc__lead { margin-top: 1rem; max-width: 44ch; color: rgba(33, 32, 28, 0.66); font-size: 15px; line-height: 1.6; }
   .fsc__cta { display: flex; flex-wrap: wrap; align-items: center; gap: 0.7rem; margin-top: 1.8rem; }
 
-  .fsc__cards { display: flex; flex-direction: column; gap: clamp(1rem, 2vw, 1.5rem); }
+  /* big vertical spacing = scroll travel; the previous card stays pinned while you scroll to the next */
+  .fsc__cards { display: flex; flex-direction: column; gap: clamp(3rem, 34vh, 18rem); padding-bottom: 40vh; }
   .fsc__card {
-    position: sticky; top: calc(clamp(2rem, 14vh, 6rem) + var(--i) * 16px);
+    position: sticky; top: calc(clamp(2rem, 14vh, 6rem) + var(--i) * 14px);
     background: #fff; border: 1px solid var(--line); border-radius: var(--radius-card);
-    padding: clamp(1.5rem, 3vw, 2.25rem); box-shadow: 0 10px 30px -20px rgba(20, 20, 30, 0.35);
+    padding: clamp(1.5rem, 3vw, 2.25rem); box-shadow: 0 14px 40px -22px rgba(20, 20, 30, 0.4);
   }
   .fsc__ico { width: 34px; height: 34px; color: var(--text); }
   .fsc__card-title { margin-top: 1.1rem; font-size: 1.25rem; }
