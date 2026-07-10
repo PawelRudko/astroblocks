@@ -1,0 +1,96 @@
+---
+// HeroMarquee — centered hero content, then a horizontal animated gallery below.
+// Two rows scroll sideways in opposite directions (seamless marquee), soft left/right fade.
+// Self-contained CSS animation, guarded by prefers-reduced-motion. Images through props. Edit by chat (AGENTS.md).
+interface Btn { label: string; href?: string }
+interface Props {
+  eyebrow?: string;
+  title: string;
+  subtitle?: string;
+  primary?: Btn;
+  secondary?: Btn;
+  images?: string[];
+  bg?: 'white' | 'gray';
+}
+const { eyebrow, title, subtitle, primary, secondary, images = [], bg = 'white' } = Astro.props;
+
+const ph = '/placeholder-landscape.svg';
+const pics = images.length ? images : Array.from({ length: 8 }, () => ph);
+// split into two rows; duplicate each so the horizontal loop is seamless
+const rowA = pics.filter((_, i) => i % 2 === 0);
+const rowB = pics.filter((_, i) => i % 2 === 1);
+const loop = (arr: string[]) => (arr.length ? [...arr, ...arr] : [ph, ph, ph, ph]);
+---
+
+<section class:list={['herom', `herom--${bg}`]}>
+  <div class="herom__content">
+    {eyebrow && <span class="eyebrow">{eyebrow}</span>}
+    <h1 class="herom__title">{title}</h1>
+    {subtitle && <p class="herom__lead">{subtitle}</p>}
+    {(primary || secondary) && (
+      <div class="herom__cta">
+        {primary && <a class="btn btn--primary" href={primary.href || '#'}>{primary.label}</a>}
+        {secondary && <a class="btn btn--secondary" href={secondary.href || '#'}>{secondary.label}</a>}
+      </div>
+    )}
+  </div>
+
+  <div class="herom__rows" aria-hidden="true">
+    <div class="herom__row">
+      <div class="herom__track">
+        {loop(rowA).map((src) => <img class="herom__img" src={src} alt="" loading="lazy" />)}
+      </div>
+    </div>
+    <div class="herom__row herom__row--rev">
+      <div class="herom__track">
+        {loop(rowB).map((src) => <img class="herom__img" src={src} alt="" loading="lazy" />)}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .herom { overflow: hidden; padding-bottom: clamp(2.5rem, 5vw, 4rem); }
+  .herom--white { background: #ffffff; }
+  .herom--gray { background: #f5f4f2; }
+
+  .herom__content {
+    max-width: 48rem; margin-inline: auto; text-align: center;
+    padding: clamp(3rem, 7vw, 6rem) clamp(1.25rem, 4vw, 2.5rem) clamp(2rem, 4vw, 3rem);
+  }
+  .herom__title { margin-top: 0.9rem; }
+  .herom__lead { margin: 1.1rem auto 0; max-width: 60ch; color: rgba(33, 32, 28, 0.66); font-size: 15px; line-height: 1.6; }
+  .herom__cta { display: flex; flex-wrap: wrap; gap: 0.7rem; justify-content: center; margin-top: 1.8rem; }
+
+  /* Gallery — full-bleed rows with a soft left/right fade */
+  .herom__rows {
+    display: flex; flex-direction: column; gap: 1rem;
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+    mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+  }
+  .herom__row { overflow: hidden; }
+  .herom__track { display: flex; width: max-content; will-change: transform; animation: heromScroll 42s linear infinite; }
+  .herom__row--rev .herom__track { animation-direction: reverse; animation-duration: 48s; }
+  @keyframes heromScroll { to { transform: translateX(-50%); } }
+
+  .herom__img {
+    flex: none; width: clamp(260px, 26vw, 360px); aspect-ratio: 4 / 3; margin-right: 1rem;
+    object-fit: cover; border-radius: 14px; border: 1px solid var(--line); background: #ececea;
+  }
+
+  /* content entrance — subtle staggered fade-up */
+  @keyframes heromRise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+  .herom__content > * { animation: heromRise 0.7s cubic-bezier(0.22, 1, 0.36, 1) backwards; }
+  .herom__content > :nth-child(2) { animation-delay: 0.06s; }
+  .herom__content > :nth-child(3) { animation-delay: 0.12s; }
+  .herom__content > :nth-child(4) { animation-delay: 0.18s; }
+
+  @media (max-width: 600px) {
+    .herom__img { width: clamp(200px, 62vw, 260px); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .herom__track { animation: none; }
+    .herom__content > * { animation: none; }
+  }
+</style>

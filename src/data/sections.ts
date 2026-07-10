@@ -76,6 +76,21 @@ export const registry: SectionEntry[] = [
     },
   },
   {
+    id: 'hero-marquee',
+    name: 'Hero Marquee',
+    category: 'Hero',
+    file: 'HeroMarquee.astro',
+    demo: {
+      title: 'Medium length hero heading goes here',
+      subtitle:
+        'Center your message, then let a horizontal wall of images drift past. Two rows glide in opposite directions – lively, never busy.',
+      primary: { label: 'Get started', href: '#' },
+      secondary: { label: 'Learn more', href: '#' },
+      images: [placeholder, placeholder, placeholder, placeholder, placeholder, placeholder, placeholder, placeholder],
+      bg: 'white',
+    },
+  },
+  {
     id: 'team-grid',
     name: 'Team Grid',
     category: 'Team',
