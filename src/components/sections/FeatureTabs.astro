@@ -1,0 +1,112 @@
+---
+// FeatureTabs — left-aligned tab strip; clicking a tab swaps a 2-column panel (image + content).
+// Active tab underlined in indigo. No dependencies, on-system. Content through props. Edit by chat (AGENTS.md).
+interface Btn { label: string; href?: string }
+interface Tab {
+  label: string;
+  tagline?: string;
+  title: string;
+  subtitle?: string;
+  image?: string;
+  secondary?: Btn;
+  link?: Btn;
+}
+interface Props {
+  tabs: Tab[];
+  bg?: 'white' | 'gray';
+}
+const { tabs, bg = 'white' } = Astro.props;
+const ph = '/placeholder-landscape.svg';
+---
+
+<section class:list={['ftabs', `ftabs--${bg}`]}>
+  <div class="ftabs__wrap">
+    <div class="ftabs__nav" role="tablist" aria-label="Feature tabs">
+      {tabs.map((t, i) => (
+        <button
+          class="ftabs__tab"
+          role="tab"
+          id={`ftab-${i}`}
+          aria-controls={`fpanel-${i}`}
+          aria-selected={i === 0 ? 'true' : 'false'}
+        >
+          {t.label}
+        </button>
+      ))}
+    </div>
+
+    <div class="ftabs__panels">
+      {tabs.map((t, i) => (
+        <div class="ftabs__panel" id={`fpanel-${i}`} role="tabpanel" aria-labelledby={`ftab-${i}`} hidden={i !== 0}>
+          <div class="ftabs__media">
+            <img src={t.image || ph} alt="" loading="lazy" />
+          </div>
+          <div class="ftabs__content">
+            {t.tagline && <span class="eyebrow">{t.tagline}</span>}
+            <h2 class="ftabs__title">{t.title}</h2>
+            {t.subtitle && <p class="ftabs__lead">{t.subtitle}</p>}
+            {(t.secondary || t.link) && (
+              <div class="ftabs__cta">
+                {t.secondary && <a class="btn btn--secondary" href={t.secondary.href || '#'}>{t.secondary.label}</a>}
+                {t.link && <a class="btn btn--link" href={t.link.href || '#'}>{t.link.label} <span aria-hidden="true">→</span></a>}
+              </div>
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>('.ftabs').forEach((root) => {
+    const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>('.ftabs__tab'));
+    const panels = Array.from(root.querySelectorAll<HTMLElement>('.ftabs__panel'));
+    tabs.forEach((tab, i) => {
+      tab.addEventListener('click', () => {
+        tabs.forEach((t, j) => t.setAttribute('aria-selected', j === i ? 'true' : 'false'));
+        panels.forEach((p, j) => { p.hidden = j !== i; });
+      });
+    });
+  });
+</script>
+
+<style>
+  .ftabs { padding: clamp(3rem, 7vw, 6rem) 0; }
+  .ftabs--white { background: #ffffff; }
+  .ftabs--gray { background: #f5f4f2; }
+  .ftabs__wrap { max-width: 1200px; margin-inline: auto; padding-inline: clamp(1.25rem, 4vw, 2.5rem); }
+
+  /* Left-aligned tab strip */
+  .ftabs__nav { display: flex; gap: clamp(1.25rem, 3vw, 2.2rem); border-bottom: 1px solid var(--line); margin-bottom: clamp(2rem, 4vw, 3.25rem); }
+  .ftabs__tab {
+    padding: 0 0 0.85rem; margin-bottom: -1px;
+    background: none; border: none; border-bottom: 2px solid transparent; cursor: pointer;
+    font-family: var(--font-body); font-size: 0.95rem; font-weight: 500; color: var(--faint);
+    transition: color 0.18s ease, border-color 0.18s ease;
+  }
+  .ftabs__tab:hover { color: var(--text); }
+  .ftabs__tab[aria-selected='true'] { color: var(--text); border-bottom-color: #5b5bd6; }
+
+  /* Panel — image left, content right */
+  .ftabs__panel { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2rem, 5vw, 4rem); align-items: center; }
+  .ftabs__panel[hidden] { display: none; }
+  .ftabs__media img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; border-radius: var(--radius-card); border: 1px solid var(--line); background: #ececea; }
+
+  .ftabs__content { max-width: 34rem; }
+  .ftabs__title { margin-top: 0.7rem; }
+  .ftabs__lead { margin-top: 1rem; color: rgba(33, 32, 28, 0.66); font-size: 15px; line-height: 1.6; }
+  .ftabs__cta { display: flex; flex-wrap: wrap; align-items: center; gap: 0.7rem; margin-top: 1.8rem; }
+
+  /* Fade the active panel in */
+  @keyframes ftabsFade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+  .ftabs__panel:not([hidden]) { animation: ftabsFade 0.4s cubic-bezier(0.22, 1, 0.36, 1); }
+
+  @media (max-width: 900px) {
+    .ftabs__panel { grid-template-columns: 1fr; gap: clamp(1.5rem, 4vw, 2rem); }
+    .ftabs__content { max-width: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ftabs__panel:not([hidden]) { animation: none; }
+  }
+</style>

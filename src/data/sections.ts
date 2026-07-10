@@ -174,6 +174,47 @@ export const registry: SectionEntry[] = [
       bg: 'white',
     },
   },
+  {
+    id: 'feature-tabs',
+    name: 'Feature Tabs',
+    category: 'Tabs',
+    file: 'FeatureTabs.astro',
+    demo: {
+      tabs: [
+        {
+          label: 'Tab one',
+          tagline: 'Overview',
+          title: 'Medium length section heading goes here',
+          subtitle:
+            'Show one idea at a time. Each tab swaps the image and copy, so a dense feature set reads as a calm, guided story.',
+          image: placeholder,
+          secondary: { label: 'Learn more', href: '#' },
+          link: { label: 'Get started', href: '#' },
+        },
+        {
+          label: 'Tab two',
+          tagline: 'Flexible',
+          title: 'Built to adapt as your product grows',
+          subtitle:
+            'Add, reorder or rename tabs by chatting – the layout, active underline and panel swap all keep working.',
+          image: placeholder,
+          secondary: { label: 'Learn more', href: '#' },
+          link: { label: 'Get started', href: '#' },
+        },
+        {
+          label: 'Tab three',
+          tagline: 'Consistent',
+          title: 'Ship consistent screens, faster',
+          subtitle:
+            'Shared tokens and the H1–H6 system keep every tab on-brand, so nothing drifts as you fill in real content.',
+          image: placeholder,
+          secondary: { label: 'Learn more', href: '#' },
+          link: { label: 'Get started', href: '#' },
+        },
+      ],
+      bg: 'white',
+    },
+  },
 ];
 
 // cards with a per-category label (HERO 01, HERO 02, BLOG 01...) — shared by / and /blocks
