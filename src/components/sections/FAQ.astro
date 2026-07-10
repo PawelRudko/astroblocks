@@ -1,0 +1,121 @@
+---
+// FAQ — accordion pytań i odpowiedzi. Nagłówek w systemie (H2), pytania mniejsze niż
+// generyczne szablony, płynne rozwijanie (grid-rows), pojedyncze otwarcie naraz.
+// Ikona „+" obraca się w „×". Bez zależności, działa też w miniaturce. Edytuj rozmową (AGENTS.md).
+interface Item { q: string; a: string }
+interface Props {
+  eyebrow?: string;
+  title: string;
+  subtitle?: string;
+  items: Item[];
+  bg?: 'white' | 'gray';
+}
+const { eyebrow, title, subtitle, items, bg = 'white' } = Astro.props;
+---
+
+<section class:list={['faq', `faq--${bg}`]}>
+  <div class="faq__wrap">
+    <header class="faq__head">
+      {eyebrow && <span class="eyebrow">{eyebrow}</span>}
+      <h2 class="faq__title">{title}</h2>
+      {subtitle && <p class="faq__subtitle">{subtitle}</p>}
+    </header>
+
+    <div class="faq__list">
+      {items.map((it, i) => (
+        <div class:list={['faq__item', { 'is-open': i === 0 }]}>
+          <button
+            class="faq__q"
+            id={`faq-q-${i}`}
+            aria-expanded={i === 0 ? 'true' : 'false'}
+            aria-controls={`faq-a-${i}`}
+          >
+            <span class="faq__q-text">{it.q}</span>
+            <span class="faq__ico" aria-hidden="true">
+              <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+              </svg>
+            </span>
+          </button>
+          <div class="faq__a" id={`faq-a-${i}`} role="region" aria-labelledby={`faq-q-${i}`}>
+            <div class="faq__a-inner">
+              <p>{it.a}</p>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  // Pojedyncze otwarcie: klik zamyka pozostałe. Bez zależności.
+  document.querySelectorAll<HTMLElement>('.faq').forEach((faq) => {
+    const items = Array.from(faq.querySelectorAll<HTMLElement>('.faq__item'));
+    items.forEach((item) => {
+      const btn = item.querySelector<HTMLButtonElement>('.faq__q');
+      btn?.addEventListener('click', () => {
+        const open = item.classList.contains('is-open');
+        items.forEach((it) => {
+          it.classList.remove('is-open');
+          it.querySelector('.faq__q')?.setAttribute('aria-expanded', 'false');
+        });
+        if (!open) {
+          item.classList.add('is-open');
+          btn.setAttribute('aria-expanded', 'true');
+        }
+      });
+    });
+  });
+</script>
+
+<style>
+  .faq { padding: clamp(3rem, 7vw, 6rem) 0; }
+  .faq--white { background: #ffffff; }
+  .faq--gray { background: #f5f4f2; }
+  .faq__wrap { max-width: 1080px; margin-inline: auto; padding-inline: clamp(1.25rem, 4vw, 2.5rem); }
+
+  .faq__head { max-width: 52ch; margin-bottom: clamp(1.75rem, 4vw, 2.75rem); }
+  .faq__title { margin-top: 0.7rem; }
+  .faq__subtitle { margin-top: 0.7rem; color: rgba(33, 32, 28, 0.62); font-size: 0.95rem; line-height: 1.55; }
+
+  .faq__item { border-bottom: 1px solid var(--line); }
+  .faq__item:first-child { border-top: 1px solid var(--line); }
+
+  /* Pytanie — przycisk na całą szerokość */
+  .faq__q {
+    width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 1.25rem;
+    padding: 1.15rem 0; background: none; border: none; cursor: pointer; text-align: left;
+    font-family: var(--font-display); color: var(--text);
+  }
+  .faq__q-text { font-size: 1.0625rem; font-weight: 600; line-height: 1.35; letter-spacing: -0.01em; transition: color 0.18s ease; }
+  .faq__q:hover .faq__q-text { color: #5b5bd6; }
+
+  /* Ikona +/× w kwadraciku */
+  .faq__ico {
+    flex: none; width: 32px; height: 32px; display: grid; place-items: center;
+    border: 1px solid var(--line-strong); border-radius: 8px; color: var(--text);
+    transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.18s ease, color 0.18s ease;
+  }
+  .faq__ico svg { width: 14px; height: 14px; }
+  .faq__q:hover .faq__ico { border-color: #5b5bd6; color: #5b5bd6; }
+  .faq__item.is-open .faq__ico { transform: rotate(45deg); border-color: #5b5bd6; color: #5b5bd6; }
+
+  /* Odpowiedź — płynne rozwijanie przez grid-rows 0fr→1fr */
+  .faq__a { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.32s cubic-bezier(0.22, 1, 0.36, 1); }
+  .faq__item.is-open .faq__a { grid-template-rows: 1fr; }
+  .faq__a-inner { overflow: hidden; }
+  .faq__a-inner p {
+    max-width: 68ch; padding-bottom: 1.3rem;
+    color: rgba(33, 32, 28, 0.68); font-size: 0.95rem; line-height: 1.65;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .faq__a, .faq__ico { transition: none; }
+  }
+
+  @media (max-width: 600px) {
+    .faq__q { gap: 1rem; }
+    .faq__q-text { font-size: 1rem; }
+  }
+</style>

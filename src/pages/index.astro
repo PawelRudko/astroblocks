@@ -1,0 +1,111 @@
+---
+// STARTER — pusta kanwa. To jest strona, którą klient buduje rozmawiając z Claude.
+// Bloki dokłada się TUTAJ (w <main>). Galeria do przeglądania/kopiowania: /blocks.
+// Marketingowy landing NIE jest częścią kitu (to prywatna strona sprzedażowa) — folder ../astroblocks-landing.
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Brand from '../components/Brand.astro';
+
+const starterPrompt =
+  'Read AGENTS.md. Add the HeroSplit block to this page (src/pages/index.astro), then change the headline to "Our offer" and make the second button secondary.';
+---
+
+<Layout
+  title="astroblocks starter — your blank canvas"
+  description="A blank Astro starter with the astroblocks design system built in. Add sections by chatting with Claude Code."
+>
+  <Nav variant="solid" />
+
+  <main id="main" class="canvas">
+    <!--
+      👋 This is your canvas. Add sections here by talking to Claude Code.
+      Try: open this folder in Claude and say
+        "Read AGENTS.md and add the HeroSplit block to this page."
+      Browse every block at /blocks and hit "Copy", or just ask for one by name.
+      Delete this empty state once you add your first section.
+    -->
+    <section class="empty">
+      <span class="eyebrow">Your canvas</span>
+      <h1 class="empty__title">A blank page.<br /><em>Start building by talking.</em></h1>
+      <p class="empty__lead">
+        Open this folder in Claude Code and describe the section you want – or browse the library
+        and copy a block straight in. Your sections land right here.
+      </p>
+
+      <div class="empty__cta">
+        <a class="btn btn--primary" href="/blocks">Browse blocks →</a>
+        <button class="btn btn--secondary" id="copyPrompt" type="button">
+          <svg class="btn__ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+          <span id="copyPromptLabel">Copy starter prompt</span>
+        </button>
+      </div>
+
+      <div class="empty__zone" aria-hidden="true">
+        <span class="empty__zone-label">Your sections appear here</span>
+      </div>
+
+      <p class="empty__hint">Paste this in Claude Code to add your first block:</p>
+      <pre class="empty__prompt"><code id="starterPrompt">{starterPrompt}</code></pre>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap footer__bottom">
+      <Brand href="/" />
+      <span class="footer__by">
+        <a class="footer__link" href="/blocks">Block library</a> · edit by chat with Claude Code
+      </span>
+    </div>
+  </footer>
+</Layout>
+
+<style>
+  .canvas { min-height: calc(100vh - 66px); display: flex; align-items: center; }
+  .empty {
+    max-width: 640px; margin-inline: auto; padding: clamp(3rem, 8vw, 6rem) clamp(1.25rem, 4vw, 2.5rem);
+    text-align: center;
+  }
+  .empty__title { margin-top: 0.9rem; font-size: clamp(1.8rem, 4.5vw, 2.6rem); line-height: 1.05; font-weight: 600; }
+  .empty__title em { color: #7c6cd0; font-style: normal; }
+  .empty__lead { max-width: 46ch; margin: 1.1rem auto 1.8rem; color: rgba(33, 32, 28, 0.66); font-size: 15px; line-height: 1.55; }
+
+  .empty__cta { display: flex; flex-wrap: wrap; gap: 0.7rem; justify-content: center; }
+
+  /* Webflow-style „drop zone" */
+  .empty__zone {
+    margin-top: 2.5rem; display: grid; place-items: center;
+    min-height: 150px; border: 1.5px dashed var(--line-strong); border-radius: var(--radius-card);
+    background:
+      repeating-linear-gradient(45deg, transparent, transparent 11px, rgba(24,24,27,0.02) 11px, rgba(24,24,27,0.02) 12px);
+  }
+  .empty__zone-label { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--faint); }
+
+  .empty__hint { margin-top: 1.9rem; font-size: 0.85rem; color: var(--faint); }
+  .empty__prompt {
+    margin-top: 0.6rem; text-align: left; overflow-x: auto;
+    background: var(--surface-2); border: 1px solid var(--line); border-radius: 10px;
+    padding: 0.9rem 1rem;
+  }
+  .empty__prompt code { font-family: var(--font-mono); font-size: 0.8rem; line-height: 1.6; color: var(--text); white-space: pre-wrap; }
+
+  /* FOOTER (slim) */
+  .footer { border-top: 1px solid var(--line); padding: 1.6rem 0; }
+  .footer__bottom { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+  .footer__by { font-family: var(--font-mono); font-size: 0.76rem; color: var(--faint); }
+  .footer__link { color: var(--text); text-decoration: underline; text-underline-offset: 2px; }
+  .footer__link:hover { color: #5b5bd6; }
+</style>
+
+<script>
+  // Kopiowanie startowego promptu
+  const btn = document.getElementById('copyPrompt');
+  const label = document.getElementById('copyPromptLabel');
+  const prompt = document.getElementById('starterPrompt');
+  btn?.addEventListener('click', async () => {
+    if (!prompt?.textContent) return;
+    try {
+      await navigator.clipboard.writeText(prompt.textContent);
+      if (label) { const prev = label.textContent; label.textContent = 'Copied ✓'; btn.setAttribute('data-copied', ''); setTimeout(() => { label.textContent = prev; btn.removeAttribute('data-copied'); }, 1600); }
+    } catch { /* schowek niedostępny – trudno */ }
+  });
+</script>

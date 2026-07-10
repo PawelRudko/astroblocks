@@ -1,0 +1,84 @@
+---
+// CardList — poziome karty w ramce: po lewej subheader + tytuł, po prawej miniatura zdjęcia.
+// Układ 2 w rzędzie (na mobile 1). Lekki hover (ramka + zoom obrazu). Edytuj rozmową (AGENTS.md).
+interface Item { subheader?: string; title: string; image?: string; href?: string }
+interface Props {
+  eyebrow?: string;
+  title: string;
+  subtitle?: string;
+  items: Item[];
+  bg?: 'white' | 'gray';
+}
+const { eyebrow, title, subtitle, items, bg = 'white' } = Astro.props;
+---
+
+<section class:list={['clist', `clist--${bg}`]}>
+  <div class="clist__wrap">
+    <header class="clist__head">
+      {eyebrow && <span class="eyebrow">{eyebrow}</span>}
+      <h2 class="clist__title">{title}</h2>
+      {subtitle && <p class="clist__subtitle">{subtitle}</p>}
+    </header>
+
+    <div class="clist__grid">
+      {items.map((it, i) => (
+        <a class="clist__card" href={it.href || '#'} style={`--d:${i * 70}ms`}>
+          <div class="clist__body">
+            {it.subheader && <span class="clist__sub">{it.subheader}</span>}
+            <h3 class="clist__card-title">{it.title}</h3>
+          </div>
+          <div class="clist__media">
+            <img src={it.image || '/placeholder-landscape.svg'} alt="" loading="lazy" />
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .clist { padding: clamp(3rem, 7vw, 6rem) 0; }
+  .clist--white { background: #ffffff; }
+  .clist--gray { background: #f5f4f2; }
+  .clist__wrap { max-width: 1200px; margin-inline: auto; padding-inline: clamp(1.25rem, 4vw, 2.5rem); }
+
+  .clist__head { max-width: 44ch; margin-bottom: clamp(1.75rem, 4vw, 2.75rem); }
+  .clist__title { margin-top: 0.7rem; }
+  .clist__subtitle { margin-top: 0.7rem; color: rgba(33, 32, 28, 0.62); font-size: 0.95rem; line-height: 1.55; }
+
+  .clist__grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: clamp(1rem, 2vw, 1.5rem); }
+
+  /* Karta pozioma */
+  .clist__card {
+    display: flex; align-items: stretch; justify-content: space-between; gap: 1rem;
+    min-height: 92px; color: inherit; background: #fff;
+    border: 1px solid var(--line); border-radius: var(--radius-card); overflow: hidden;
+    transition: border-color 0.18s ease, box-shadow 0.25s ease, transform 0.25s ease;
+  }
+  .clist__card:hover {
+    border-color: var(--line-strong);
+    box-shadow: 0 14px 30px -16px rgba(20, 20, 30, 0.28);
+    transform: translateY(-2px);
+  }
+
+  .clist__body { display: flex; flex-direction: column; justify-content: center; gap: 0.3rem; padding: 1.1rem 1.25rem; }
+  .clist__sub { font-size: 0.8rem; font-weight: 500; color: rgba(33, 32, 28, 0.5); }
+  .clist__card-title { font-size: 1.0625rem; font-weight: 600; line-height: 1.3; letter-spacing: -0.01em; transition: color 0.18s ease; }
+  .clist__card:hover .clist__card-title { color: #5b5bd6; }
+
+  .clist__media { flex: none; width: clamp(120px, 14vw, 150px); background: #ececea; overflow: hidden; }
+  .clist__media img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1); }
+  .clist__card:hover .clist__media img { transform: scale(1.06); }
+
+  /* Wejście */
+  @keyframes clistRise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+  .clist__card { opacity: 0; animation: clistRise 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards; animation-delay: var(--d, 0ms); }
+  .clist__card:hover { animation: none; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .clist__card { opacity: 1 !important; transform: none !important; animation: none !important; }
+    .clist__media img { transition: none; }
+  }
+
+  @media (max-width: 720px) { .clist__grid { grid-template-columns: 1fr; } }
+</style>

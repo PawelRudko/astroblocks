@@ -1,0 +1,49 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Brand from '../components/Brand.astro';
+import Gallery from '../components/Gallery.astro';
+import { cards } from '../data/sections';
+---
+
+<Layout
+  title="Free Astro blocks — section library | Astroblocks"
+  description="Browse free blocks for Astro – hero, team, blog and more. Copy any and edit it by chatting in Claude Code, Codex or Cursor. No lock-in, the code is yours."
+>
+  <Nav variant="solid" />
+
+  <main class="blocks">
+    <div class="wrap">
+      <header class="blocks__head">
+        <span class="eyebrow">Block library</span>
+        <h1 class="blocks__title">Free Astro blocks.</h1>
+        <p class="blocks__sub">
+          Copy any block and edit it by chatting – in Claude Code, Codex or Cursor.
+          Every card is a live render, the exact code you get.
+        </p>
+      </header>
+
+      <Gallery cards={cards} showFilters={true} />
+    </div>
+  </main>
+
+  <footer class="blocks__footer">
+    <div class="wrap blocks__footer-inner">
+      <Brand href="/" />
+      <span class="blocks__by">made by <a class="blocks__link" href="https://grafitekt.pl" target="_blank" rel="noopener">grafitekt.pl</a> · editable with Claude Code, Codex, Cursor</span>
+    </div>
+  </footer>
+</Layout>
+
+<style>
+  .blocks { padding: clamp(2rem, 5vw, 3.5rem) 0 clamp(3rem, 6vw, 5rem); }
+  .blocks__head { max-width: 54ch; margin-bottom: clamp(1.75rem, 4vw, 2.75rem); }
+  .blocks__title { margin-top: 0.6rem; }
+  .blocks__sub { margin-top: 0.85rem; color: rgba(33, 32, 28, 0.7); font-size: 1.08rem; line-height: 1.45; }
+
+  .blocks__footer { border-top: 1px solid var(--line); padding: 2rem 0; }
+  .blocks__footer-inner { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+  .blocks__by { font-family: var(--font-mono); font-size: 0.76rem; color: var(--text); }
+  .blocks__link { color: var(--text); text-decoration: underline; text-underline-offset: 2px; }
+  .blocks__link:hover { color: #5b5bd6; }
+</style>

@@ -1,0 +1,83 @@
+---
+// HeroCentered — wyśrodkowany hero z obrazem pod treścią. Styl premium (Relume/Awwwards),
+// lekka animacja wejścia (staggered), 3 rodzaje przycisków. Edytuj rozmową (patrz AGENTS.md).
+interface Cta { label: string; href: string }
+interface Props {
+  eyebrow?: string;
+  title: string;
+  subtitle?: string;
+  primary?: Cta;
+  secondary?: Cta;
+  link?: Cta;
+  image?: string;
+  imageAlt?: string;
+  bg?: 'white' | 'gray';
+}
+const {
+  eyebrow,
+  title,
+  subtitle,
+  primary,
+  secondary,
+  link,
+  image = '/placeholder-landscape.svg',
+  imageAlt = '',
+  bg = 'white',
+} = Astro.props;
+---
+
+<section class:list={['hc', `hc--${bg}`]}>
+  <div class="hc__inner">
+    {eyebrow && <span class="eyebrow hc__anim" style="--d:0ms">{eyebrow}</span>}
+    <h1 class="hc__title hc__anim" style="--d:80ms">{title}</h1>
+    {subtitle && <p class="hc__subtitle hc__anim" style="--d:160ms">{subtitle}</p>}
+    {(primary || secondary || link) && (
+      <div class="hc__actions hc__anim" style="--d:240ms">
+        {primary && <a class="btn btn--primary" href={primary.href}>{primary.label}</a>}
+        {secondary && <a class="btn btn--secondary" href={secondary.href}>{secondary.label}</a>}
+        {link && (
+          <a class="btn btn--link" href={link.href}>
+            {link.label}
+            <span class="hc__arrow" aria-hidden="true">→</span>
+          </a>
+        )}
+      </div>
+    )}
+  </div>
+
+  <figure class="hc__media hc__anim" style="--d:340ms">
+    <img src={image} alt={imageAlt} loading="lazy" />
+  </figure>
+</section>
+
+<style>
+  .hc { padding: clamp(3.5rem, 8vw, 7rem) clamp(1.25rem, 4vw, 2.5rem) clamp(2.5rem, 6vw, 5rem); }
+  .hc--white { background: #ffffff; }
+  .hc--gray { background: #f5f4f2; }
+
+  .hc__inner { max-width: 760px; margin-inline: auto; text-align: center; display: flex; flex-direction: column; align-items: center; }
+  .hc__title { margin: 0.9rem 0 0; }
+  .hc__subtitle { margin: 1.1rem 0 0; max-width: 56ch; font-size: 1.15rem; line-height: 1.5; color: rgba(33, 32, 28, 0.7); }
+  .hc__actions { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 0.7rem; margin-top: 1.9rem; }
+  .hc__arrow { transition: transform 0.18s ease; }
+  .btn--link:hover .hc__arrow { transform: translateX(3px); }
+
+  .hc__media { max-width: 1080px; margin: clamp(2.5rem, 6vw, 4rem) auto 0; }
+  .hc__media img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 16px; border: 1px solid var(--line); box-shadow: 0 40px 80px -40px rgba(20, 20, 30, 0.28); }
+
+  /* lekka animacja wejścia — staggered */
+  @keyframes hcRise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+  @keyframes hcMedia { from { opacity: 0; transform: translateY(26px) scale(0.985); } to { opacity: 1; transform: none; } }
+  .hc__anim { opacity: 0; animation: hcRise 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards; animation-delay: var(--d, 0ms); }
+  .hc__media.hc__anim { animation-name: hcMedia; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hc__anim { opacity: 1 !important; transform: none !important; animation: none !important; }
+  }
+
+  @media (max-width: 600px) {
+    .hc__actions { width: 100%; }
+    .hc__actions .btn { flex: 1 1 auto; }
+    .hc__actions .btn--link { flex-basis: 100%; }
+  }
+</style>

@@ -1,0 +1,12 @@
+---
+// Brand — logo (ikona „bloki" + wordmark). Wspólne dla nav i footera. Styl `.brand` = global (Layout).
+interface Props { href?: string }
+const { href = '/' } = Astro.props;
+---
+<a class="brand" href={href}>
+  <svg class="brand__icon" viewBox="0 0 24 24" width="22" height="22" fill="none" aria-hidden="true">
+    <rect x="3.5" y="4.5" width="17" height="6.4" rx="2.2" fill="#5b5bd6"></rect>
+    <rect x="3.5" y="13.1" width="11" height="6.4" rx="2.2" fill="#c7c1f4"></rect>
+  </svg>
+  <span class="brand__word">astroblocks</span>
+</a>

@@ -1,0 +1,246 @@
+---
+// NavBar — responsywny navbar z paskiem ogłoszeń, mega-menu i dropdownem. Nasz system + globalne .btn.
+// Menu jest w markupie (edytujesz rozmową). Kluczowe teksty przez props. Patrz AGENTS.md.
+interface Props {
+  brand?: string;
+  ctaLabel?: string;
+  ctaHref?: string;
+  signInLabel?: string;
+  announcement?: { badge?: string; text: string; linkLabel?: string; href?: string } | null;
+}
+const {
+  brand = 'Northwind',
+  ctaLabel = 'Start free',
+  ctaHref = '#',
+  signInLabel = 'Sign in',
+  announcement = { badge: 'NEW', text: 'Northwind 3.0 just launched — 40% faster pipelines.', linkLabel: 'Read more', href: '#' },
+} = Astro.props;
+
+// proste line-ikony (stroke) do mega-menu
+const ic = {
+  chart: 'M3 3v18h18 M7 15l3-4 3 2 4-6',
+  bolt: 'M13 2 4 14h7l-1 8 9-12h-7l1-8z',
+  lock: 'M6 10V7a6 6 0 0 1 12 0v3 M4 10h16v11H4z',
+  code: 'm8 6-6 6 6 6 M16 6l6 6-6 6',
+  grid: 'M3 3h8v8H3z M13 3h8v8h-8z M13 13h8v8h-8z M3 13h8v8H3z',
+  webhook: 'M9 7a5 5 0 0 1 8 4 M15 17a5 5 0 0 1-8-4 M12 12l4 6 M12 12 8 18',
+  book: 'M4 4h13a2 2 0 0 1 2 2v14H6a2 2 0 0 1-2-2z M4 18h15',
+  play: 'M4 5h16v11H4z M10 8l5 3-5 3z',
+  list: 'M8 6h13 M8 12h13 M8 18h13 M3 6h.01 M3 12h.01 M3 18h.01',
+};
+---
+
+<div class="nb">
+  {announcement && (
+    <div class="nb__ann" id="nbAnn">
+      <div class="nb__ann-inner">
+        <p class="nb__ann-text">
+          {announcement.badge && <span class="nb__ann-badge">{announcement.badge}</span>}
+          {announcement.text}
+          {announcement.linkLabel && <a class="nb__ann-link" href={announcement.href}>{announcement.linkLabel} →</a>}
+        </p>
+        <button class="nb__ann-x" type="button" aria-label="Dismiss" data-nb-dismiss>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+        </button>
+      </div>
+    </div>
+  )}
+
+  <header class="nb__bar">
+    <div class="nb__inner">
+      <a class="nb__brand" href="#">
+        <svg viewBox="0 0 24 24" width="26" height="26" fill="none" aria-hidden="true"><path d="M12 3 3 8l9 5 9-5-9-5z" fill="#5b5bd6"/><path d="M3 13l9 5 9-5 M3 16.5l9 5 9-5" stroke="#c7c1f4" stroke-width="1.6" stroke-linejoin="round"/></svg>
+        <span>{brand}</span>
+      </a>
+
+      <nav class="nb__nav" aria-label="Primary">
+        <div class="nb__item nb__item--mega">
+          <button class="nb__trigger" type="button" data-nb-menu="product" aria-expanded="false">
+            Product <svg class="nb__chev" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+          </button>
+          <div class="nb__panel nb__mega" data-nb-panel="product">
+            <div class="nb__mega-cols">
+              <div class="nb__col">
+                <span class="nb__col-h">Platform</span>
+                <a class="nb__mi" href="#"><span class="nb__mi-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d={ic.chart}/></svg></span><span><strong>Analytics</strong><em>Real-time dashboards</em></span></a>
+                <a class="nb__mi" href="#"><span class="nb__mi-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d={ic.bolt}/></svg></span><span><strong>Automation</strong><em>Workflows that run themselves</em></span></a>
+                <a class="nb__mi" href="#"><span class="nb__mi-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d={ic.lock}/></svg></span><span><strong>Security</strong><em>SOC 2 and SSO ready</em></span></a>
+              </div>
+              <div class="nb__col">
+                <span class="nb__col-h">Build</span>
+                <a class="nb__mi" href="#"><span class="nb__mi-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d={ic.code}/></svg></span><span><strong>API</strong><em>REST and GraphQL endpoints</em></span></a>
+                <a class="nb__mi" href="#"><span class="nb__mi-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d={ic.grid}/></svg></span><span><strong>Integrations</strong><em>200+ native connectors</em></span></a>
+                <a class="nb__mi" href="#"><span class="nb__mi-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d={ic.webhook}/></svg></span><span><strong>Webhooks</strong><em>Event-driven triggers</em></span></a>
+              </div>
+              <div class="nb__col">
+                <span class="nb__col-h">Resources</span>
+                <a class="nb__mi" href="#"><span class="nb__mi-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d={ic.book}/></svg></span><span><strong>Documentation</strong><em>Guides and references</em></span></a>
+                <a class="nb__mi" href="#"><span class="nb__mi-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d={ic.play}/></svg></span><span><strong>Tutorials</strong><em>Step-by-step video courses</em></span></a>
+                <a class="nb__mi" href="#"><span class="nb__mi-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d={ic.list}/></svg></span><span><strong>Changelog</strong><em>What shipped this week</em></span></a>
+              </div>
+            </div>
+            <aside class="nb__feat">
+              <span class="nb__feat-badge">● NEW</span>
+              <strong class="nb__feat-title">Astroblocks AI is here</strong>
+              <p class="nb__feat-text">Turn a prompt into a live section, right in your editor.</p>
+              <a class="nb__feat-cta" href="#">Explore the launch ↗</a>
+            </aside>
+          </div>
+        </div>
+
+        <div class="nb__item">
+          <button class="nb__trigger" type="button" data-nb-menu="solutions" aria-expanded="false">
+            Solutions <svg class="nb__chev" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+          </button>
+          <div class="nb__panel nb__drop" data-nb-panel="solutions">
+            <a class="nb__di" href="#"><strong>By team</strong><em>Engineering, ops, and revenue</em></a>
+            <a class="nb__di" href="#"><strong>By industry</strong><em>Fintech, SaaS, and logistics</em></a>
+            <a class="nb__di" href="#"><strong>By company size</strong><em>From startup to enterprise</em></a>
+          </div>
+        </div>
+
+        <a class="nb__link" href="#">Pricing</a>
+        <a class="nb__link" href="#">Customers</a>
+      </nav>
+
+      <div class="nb__actions">
+        <a class="nb__signin" href="#">{signInLabel}</a>
+        <a class="btn btn--primary btn--sm" href={ctaHref}>{ctaLabel} <span aria-hidden="true">↗</span></a>
+      </div>
+
+      <button class="nb__burger" type="button" data-nb-burger aria-label="Open menu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+    </div>
+
+    <!-- mobile -->
+    <div class="nb__mobile" data-nb-mobile hidden>
+      <span class="nb__m-h">Product</span>
+      <a href="#">Analytics</a><a href="#">Automation</a><a href="#">Security</a>
+      <a href="#">API</a><a href="#">Integrations</a><a href="#">Webhooks</a>
+      <span class="nb__m-h">Solutions</span>
+      <a href="#">By team</a><a href="#">By industry</a><a href="#">By company size</a>
+      <span class="nb__m-h">More</span>
+      <a href="#">Pricing</a><a href="#">Customers</a>
+      <div class="nb__m-actions">
+        <a class="nb__signin" href="#">{signInLabel}</a>
+        <a class="btn btn--primary btn--sm" href={ctaHref}>{ctaLabel} ↗</a>
+      </div>
+    </div>
+  </header>
+</div>
+
+<style>
+  .nb { font-family: var(--font-body); color: var(--text); position: relative; z-index: 10; }
+  .nb a { color: inherit; text-decoration: none; }
+
+  /* pasek ogłoszeń — light gray */
+  .nb__ann { background: #f2f1ee; border-bottom: 1px solid var(--line); }
+  .nb__ann-inner { max-width: 1200px; margin-inline: auto; padding: 0.55rem clamp(1rem, 3vw, 2rem); display: flex; align-items: center; justify-content: center; gap: 0.75rem; position: relative; }
+  .nb__ann-text { font-size: 0.85rem; color: #4a4842; }
+  .nb__ann-badge { display: inline-block; background: #18181b; color: #fff; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.08em; padding: 0.15rem 0.45rem; border-radius: 999px; margin-right: 0.5rem; vertical-align: middle; }
+  .nb__ann-link { font-weight: 600; margin-left: 0.4rem; white-space: nowrap; }
+  .nb__ann-link:hover { color: #5b5bd6; }
+  .nb__ann-x { position: absolute; right: clamp(1rem, 3vw, 2rem); top: 50%; transform: translateY(-50%); background: none; border: 0; color: #7a786f; cursor: pointer; display: inline-flex; padding: 4px; border-radius: 6px; }
+  .nb__ann-x:hover { color: var(--text); background: rgba(0,0,0,0.05); }
+
+  /* belka */
+  .nb__bar { background: #fff; border-bottom: 1px solid var(--line); }
+  .nb__inner { max-width: 1200px; margin-inline: auto; padding: 0 clamp(1rem, 3vw, 2rem); height: 62px; display: flex; align-items: center; gap: 1.5rem; }
+  .nb__brand { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--font-display); font-weight: 600; font-size: 1.15rem; letter-spacing: -0.02em; }
+
+  .nb__nav { display: flex; align-items: center; gap: 0.35rem; margin-left: 0.5rem; }
+  .nb__item { position: relative; }
+  .nb__trigger, .nb__link { display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.92rem; font-weight: 500; color: var(--text); background: none; border: 0; cursor: pointer; padding: 0.5rem 0.7rem; border-radius: 8px; font-family: var(--font-body); }
+  .nb__trigger:hover, .nb__link:hover { background: #f5f4f2; }
+  .nb__chev { transition: transform 0.2s ease; }
+  .nb__item.is-open .nb__trigger { background: #f5f4f2; }
+  .nb__item.is-open .nb__chev { transform: rotate(180deg); }
+
+  .nb__actions { margin-left: auto; display: flex; align-items: center; gap: 1rem; }
+  .nb__signin { font-size: 0.92rem; font-weight: 500; }
+  .nb__signin:hover { color: #5b5bd6; }
+
+  /* panele */
+  .nb__panel { position: absolute; top: calc(100% + 10px); opacity: 0; visibility: hidden; transform: translateY(6px); transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s; background: #fff; border: 1px solid var(--line-strong); border-radius: 16px; box-shadow: 0 30px 60px -30px rgba(20,20,30,0.35); z-index: 20; }
+  .nb__item.is-open .nb__panel { opacity: 1; visibility: visible; transform: translateY(0); }
+
+  .nb__drop { left: 0; padding: 0.6rem; min-width: 260px; }
+  .nb__di { display: block; padding: 0.6rem 0.75rem; border-radius: 10px; }
+  .nb__di:hover { background: #f5f4f2; }
+  .nb__di strong { display: block; font-size: 0.92rem; font-weight: 600; }
+  .nb__di em { font-style: normal; font-size: 0.82rem; color: var(--muted); }
+
+  .nb__item--mega { position: static; }
+  .nb__mega { left: 50%; transform: translateX(-50%) translateY(6px); width: min(1200px, calc(100vw - 2rem)); display: grid; grid-template-columns: 1fr 300px; overflow: hidden; }
+  .nb__item.is-open .nb__mega { transform: translateX(-50%) translateY(0); }
+  .nb__mega-cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem 1.5rem; padding: 1.5rem; }
+  .nb__col-h { display: block; font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--faint); margin-bottom: 0.6rem; }
+  .nb__mi { display: flex; gap: 0.7rem; padding: 0.5rem; border-radius: 10px; align-items: flex-start; }
+  .nb__mi:hover { background: #f5f4f2; }
+  .nb__mi-ic { flex: none; width: 34px; height: 34px; border-radius: 9px; background: #f0eff5; color: #5b5bd6; display: flex; align-items: center; justify-content: center; }
+  .nb__mi-ic svg { width: 18px; height: 18px; }
+  .nb__mi strong { display: block; font-size: 0.9rem; font-weight: 600; }
+  .nb__mi em { font-style: normal; font-size: 0.8rem; color: var(--muted); line-height: 1.3; }
+
+  .nb__feat { background: #18181b; color: #fff; padding: 1.5rem; display: flex; flex-direction: column; }
+  .nb__feat-badge { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.1em; color: #cbf24a; }
+  .nb__feat-title { font-family: var(--font-display); font-size: 1.15rem; font-weight: 600; margin-top: 0.6rem; }
+  .nb__feat-text { font-size: 0.85rem; color: #b6b3ab; margin-top: 0.4rem; line-height: 1.4; }
+  .nb__feat-cta { margin-top: auto; padding-top: 1.2rem; font-size: 0.88rem; font-weight: 600; color: #cbf24a; }
+  .nb__feat-cta:hover { text-decoration: underline; }
+
+  .nb__burger { display: none; margin-left: auto; background: none; border: 0; color: var(--text); cursor: pointer; padding: 6px; }
+
+  /* mobile */
+  .nb__mobile { display: none; padding: 0.75rem clamp(1rem, 3vw, 2rem) 1.25rem; border-top: 1px solid var(--line); }
+  .nb__mobile a { display: block; padding: 0.5rem 0; font-size: 0.95rem; font-weight: 500; }
+  .nb__m-h { display: block; font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--faint); margin: 0.9rem 0 0.2rem; }
+  .nb__m-actions { display: flex; align-items: center; gap: 1rem; margin-top: 1.1rem; }
+
+  @media (max-width: 860px) {
+    .nb__nav, .nb__actions { display: none; }
+    .nb__burger { display: inline-flex; }
+    .nb.is-mobile-open .nb__mobile { display: block; }
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('.nb').forEach((nb) => {
+    const items = Array.from(nb.querySelectorAll<HTMLElement>('.nb__item'));
+
+    const closeAll = () => items.forEach((it) => {
+      it.classList.remove('is-open');
+      it.querySelector('.nb__trigger')?.setAttribute('aria-expanded', 'false');
+    });
+
+    items.forEach((it) => {
+      const trigger = it.querySelector<HTMLButtonElement>('.nb__trigger');
+      trigger?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const open = it.classList.contains('is-open');
+        closeAll();
+        if (!open) { it.classList.add('is-open'); trigger.setAttribute('aria-expanded', 'true'); }
+      });
+    });
+
+    // zamknij po kliknięciu poza / Escape
+    document.addEventListener('click', (e) => { if (!nb.contains(e.target as Node)) closeAll(); });
+    nb.addEventListener('click', (e) => { if ((e.target as HTMLElement).closest('.nb__panel a')) closeAll(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeAll(); });
+
+    // hamburger
+    const burger = nb.querySelector<HTMLButtonElement>('[data-nb-burger]');
+    const mobile = nb.querySelector<HTMLElement>('[data-nb-mobile]');
+    burger?.addEventListener('click', () => {
+      const open = nb.classList.toggle('is-mobile-open');
+      burger.setAttribute('aria-expanded', String(open));
+      if (mobile) mobile.hidden = !open;
+    });
+
+    // pasek ogłoszeń
+    nb.querySelector('[data-nb-dismiss]')?.addEventListener('click', () => {
+      nb.querySelector('#nbAnn')?.remove();
+    });
+  });
+</script>

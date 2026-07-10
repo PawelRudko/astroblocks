@@ -1,0 +1,147 @@
+---
+// TeamGrid — pozioma karuzela osób/kart. Nagłówek w systemie, kafle: zaślepka + nazwa + „See more".
+// Strzałki + kropki. Edytuj rozmową (patrz AGENTS.md).
+interface Member { name: string; role?: string; image?: string; href?: string }
+interface Props {
+  eyebrow?: string;
+  title: string;
+  subtitle?: string;
+  members: Member[];
+  moreLabel?: string;
+  bg?: 'white' | 'gray';
+}
+const {
+  eyebrow,
+  title,
+  subtitle,
+  members,
+  moreLabel = 'See more',
+  bg = 'white',
+} = Astro.props;
+---
+
+<section class:list={['tc', `tc--${bg}`]}>
+  <div class="tc__wrap">
+    <header class="tc__head">
+      {eyebrow && <span class="eyebrow">{eyebrow}</span>}
+      <h2 class="tc__title">{title}</h2>
+      {subtitle && <p class="tc__subtitle">{subtitle}</p>}
+    </header>
+
+    <ul class="tc__track">
+      {members.map((m, i) => (
+        <li class="tc__card" style={`--d:${i * 60}ms`}>
+          <div class="tc__media">
+            <img src={m.image || '/placeholder-landscape.svg'} alt="" loading="lazy" />
+          </div>
+          <h3 class="tc__name">{m.name}</h3>
+          {m.role && <span class="tc__role">{m.role}</span>}
+          <a class="tc__more" href={m.href || '#'}>{moreLabel} <span aria-hidden="true">→</span></a>
+        </li>
+      ))}
+    </ul>
+
+    <div class="tc__controls">
+      <div class="tc__arrows">
+        <button class="tc__arrow" type="button" data-dir="-1" aria-label="Previous">←</button>
+        <button class="tc__arrow" type="button" data-dir="1" aria-label="Next">→</button>
+      </div>
+      <div class="tc__dots" aria-hidden="true"></div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .tc { padding: clamp(3rem, 7vw, 6rem) 0; }
+  .tc--white { background: #ffffff; }
+  .tc--gray { background: #f5f4f2; }
+  .tc__wrap { max-width: 1200px; margin-inline: auto; padding-inline: clamp(1.25rem, 4vw, 2.5rem); }
+
+  .tc__head { max-width: 40ch; margin-bottom: clamp(1.75rem, 4vw, 2.75rem); }
+  .tc__title { margin-top: 0.7rem; }
+  .tc__subtitle { margin-top: 0.8rem; color: rgba(33, 32, 28, 0.7); font-size: 1.05rem; line-height: 1.45; }
+
+  /* karuzela */
+  .tc__track {
+    list-style: none; margin: 0; padding: 0;
+    display: flex; gap: 1.25rem;
+    overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth;
+    scrollbar-width: none; -ms-overflow-style: none;
+  }
+  .tc__track::-webkit-scrollbar { display: none; }
+  .tc__card { flex: 0 0 min(320px, 80vw); scroll-snap-align: start; }
+
+  .tc__media { border-radius: 16px; overflow: hidden; background: #ececea; border: 1px solid var(--line); }
+  .tc__media img { display: block; width: 100%; aspect-ratio: 4 / 5; object-fit: cover; }
+  .tc__name { margin-top: 1.1rem; font-size: 1.375rem; }
+  .tc__role { display: block; margin-top: 0.15rem; font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--faint); }
+  .tc__more { display: inline-flex; align-items: center; gap: 0.35rem; margin-top: 0.6rem; font-size: 0.9rem; font-weight: 500; color: rgba(33, 32, 28, 0.6); transition: color 0.18s ease, gap 0.18s ease; }
+  .tc__more:hover { color: #5b5bd6; gap: 0.55rem; }
+
+  /* kontrolki */
+  .tc__controls { display: flex; align-items: center; justify-content: space-between; margin-top: clamp(1.5rem, 3vw, 2.25rem); }
+  .tc__arrows { display: flex; gap: 0.4rem; }
+  .tc__arrow {
+    width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center;
+    background: #fff; border: 1px solid var(--line-strong); border-radius: 999px;
+    font-size: 1.05rem; color: var(--text); cursor: pointer;
+    transition: color 0.18s ease, border-color 0.18s ease, background 0.18s ease;
+  }
+  .tc__arrow:hover:not(:disabled) { border-color: var(--text); }
+  .tc__arrow:disabled { opacity: 0.35; cursor: default; }
+  .tc__dots { display: flex; align-items: center; gap: 0.45rem; }
+  .tc__dot { width: 8px; height: 8px; padding: 0; border: 0; border-radius: 999px; background: rgba(33, 32, 28, 0.2); cursor: pointer; transition: background 0.18s ease, width 0.18s ease; }
+  .tc__dot.is-active { background: var(--text); width: 22px; }
+
+  /* lekka animacja wejścia */
+  @keyframes tcRise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+  .tc__card { opacity: 0; animation: tcRise 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards; animation-delay: var(--d, 0ms); }
+  @media (prefers-reduced-motion: reduce) {
+    .tc__card { opacity: 1 !important; transform: none !important; animation: none !important; }
+    .tc__track { scroll-behavior: auto; }
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('.tc').forEach((section) => {
+    const track = section.querySelector<HTMLElement>('.tc__track');
+    const dotsWrap = section.querySelector<HTMLElement>('.tc__dots');
+    const arrows = section.querySelectorAll<HTMLButtonElement>('.tc__arrow');
+    if (!track || !dotsWrap) return;
+    const cards = Array.from(track.children) as HTMLElement[];
+    if (!cards.length) return;
+
+    const step = () => {
+      const gap = parseFloat(getComputedStyle(track).columnGap || '0') || 0;
+      return cards[0].offsetWidth + gap;
+    };
+
+    // kropki = liczba kart
+    const dots = cards.map((_, i) => {
+      const d = document.createElement('button');
+      d.type = 'button';
+      d.className = 'tc__dot';
+      d.setAttribute('aria-label', `Go to ${i + 1}`);
+      d.addEventListener('click', () => track.scrollTo({ left: i * step(), behavior: 'smooth' }));
+      dotsWrap.appendChild(d);
+      return d;
+    });
+
+    const update = () => {
+      const idx = Math.round(track.scrollLeft / step());
+      dots.forEach((d, i) => d.classList.toggle('is-active', i === idx));
+      const maxLeft = track.scrollWidth - track.clientWidth - 2;
+      arrows.forEach((a) => {
+        const dir = Number(a.dataset.dir);
+        a.disabled = (dir < 0 && track.scrollLeft <= 2) || (dir > 0 && track.scrollLeft >= maxLeft);
+      });
+    };
+
+    arrows.forEach((a) =>
+      a.addEventListener('click', () => track.scrollBy({ left: Number(a.dataset.dir) * step(), behavior: 'smooth' }))
+    );
+    track.addEventListener('scroll', () => window.requestAnimationFrame(update), { passive: true });
+    window.addEventListener('resize', update);
+    update();
+  });
+</script>

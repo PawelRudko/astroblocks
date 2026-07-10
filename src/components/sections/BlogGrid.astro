@@ -1,0 +1,74 @@
+---
+// BlogGrid — siatka kart blogowych: zdjęcie (zaślepka) z datą-pillem, kategoria, tytuł.
+// Nagłówki w systemie, lekki hover (zoom obrazu). Edytuj rozmową (patrz AGENTS.md).
+interface Post { date?: string; category?: string; title: string; image?: string; href?: string }
+interface Props {
+  eyebrow?: string;
+  title: string;
+  subtitle?: string;
+  posts: Post[];
+  bg?: 'white' | 'gray';
+}
+const { eyebrow, title, subtitle, posts, bg = 'white' } = Astro.props;
+---
+
+<section class:list={['blog', `blog--${bg}`]}>
+  <div class="blog__wrap">
+    <header class="blog__head">
+      {eyebrow && <span class="eyebrow">{eyebrow}</span>}
+      <h2 class="blog__title">{title}</h2>
+      {subtitle && <p class="blog__subtitle">{subtitle}</p>}
+    </header>
+
+    <div class="blog__grid">
+      {posts.map((p, i) => (
+        <a class="blog__card" href={p.href || '#'} style={`--d:${i * 70}ms`}>
+          <div class="blog__media">
+            <img src={p.image || '/placeholder-landscape.svg'} alt="" loading="lazy" />
+            {p.date && <span class="blog__date">{p.date}</span>}
+          </div>
+          {p.category && <span class="blog__cat">{p.category}</span>}
+          <h3 class="blog__post-title">{p.title}</h3>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .blog { padding: clamp(3rem, 7vw, 6rem) 0; }
+  .blog--white { background: #ffffff; }
+  .blog--gray { background: #f5f4f2; }
+  .blog__wrap { max-width: 1200px; margin-inline: auto; padding-inline: clamp(1.25rem, 4vw, 2.5rem); }
+
+  .blog__head { max-width: 46ch; margin-bottom: clamp(1.75rem, 4vw, 2.75rem); }
+  .blog__title { margin-top: 0.7rem; }
+  .blog__subtitle { margin-top: 0.8rem; color: rgba(33, 32, 28, 0.7); font-size: 1.05rem; line-height: 1.45; }
+
+  .blog__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(1.5rem, 3vw, 2.25rem); }
+
+  .blog__card { display: block; color: inherit; }
+  .blog__media { position: relative; border-radius: 16px; overflow: hidden; border: 1px solid var(--line); background: #ececea; }
+  .blog__media img { display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover; transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1); }
+  .blog__card:hover .blog__media img { transform: scale(1.04); }
+  .blog__date {
+    position: absolute; top: 14px; left: 14px;
+    background: #fff; color: var(--text); font-size: 0.78rem; font-weight: 500;
+    padding: 0.32rem 0.75rem; border-radius: 999px;
+    box-shadow: 0 6px 18px -8px rgba(20, 20, 30, 0.35);
+  }
+  .blog__cat { display: block; margin-top: 1rem; font-size: 0.85rem; font-weight: 500; color: rgba(33, 32, 28, 0.55); }
+  .blog__post-title { margin-top: 0.35rem; font-size: 1.25rem; line-height: 1.3; transition: color 0.18s ease; }
+  .blog__card:hover .blog__post-title { color: #5b5bd6; }
+
+  /* lekka animacja wejścia */
+  @keyframes blogRise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+  .blog__card { opacity: 0; animation: blogRise 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards; animation-delay: var(--d, 0ms); }
+  @media (prefers-reduced-motion: reduce) {
+    .blog__card { opacity: 1 !important; transform: none !important; animation: none !important; }
+    .blog__media img { transition: none; }
+  }
+
+  @media (max-width: 900px) { .blog__grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 600px) { .blog__grid { grid-template-columns: 1fr; } }
+</style>

@@ -1,0 +1,124 @@
+---
+// Gallery — wspólna galeria kart (filtry + siatka + żywe miniaturki). Używana na / (teaser) i /blocks (pełna).
+interface Card { id: string; name: string; category: string; file: string; label: string }
+interface Props { cards: Card[]; showFilters?: boolean }
+const { cards, showFilters = true } = Astro.props;
+
+// źródła sekcji do przycisku „Copy" (zawsze 1:1)
+const rawSources = import.meta.glob('./sections/*.astro', { query: '?raw', import: 'default', eager: true }) as Record<string, string>;
+const sourceByFile: Record<string, string> = {};
+for (const [path, src] of Object.entries(rawSources)) sourceByFile[path.split('/').pop() as string] = src;
+
+const categories = ['All', ...Array.from(new Set(cards.map((c) => c.category)))];
+const countFor = (cat: string) => (cat === 'All' ? cards.length : cards.filter((c) => c.category === cat).length);
+---
+
+{showFilters && (
+  <div class="filters" role="tablist" aria-label="Categories">
+    {categories.map((c, i) => (
+      <button class:list={['chip', { 'chip--active': i === 0 }]} data-filter={c} role="tab" aria-selected={i === 0}>
+        {c} <span class="chip__count">{countFor(c)}</span>
+      </button>
+    ))}
+  </div>
+)}
+
+<div class="grid">
+  {cards.map((s, i) => (
+    <article class="tcard" data-category={s.category} style={`--d:${i * 50}ms`}>
+      <a class="tcard__thumb" href={`/preview/${s.id}`} target="_blank" rel="noopener" aria-label={`Preview: ${s.name}`}>
+        <iframe src={`/preview/${s.id}`} title={s.name} loading="lazy" tabindex="-1" scrolling="no"></iframe>
+      </a>
+      <div class="tcard__body">
+        <span class="tcard__label">{s.label}</span>
+        <div class="tcard__actions">
+          <button class="btn btn--primary btn--sm" data-copy={sourceByFile[s.file]}>
+            <svg class="btn__ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            <span class="btn__label">Copy</span>
+          </button>
+          <a class="btn btn--ghost btn--sm" href={`/preview/${s.id}`} target="_blank" rel="noopener">Preview →</a>
+        </div>
+      </div>
+    </article>
+  ))}
+</div>
+
+<style>
+  .filters { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2rem; }
+  .chip { display: inline-flex; align-items: center; gap: 0.45rem; padding: 0.5rem 0.95rem; border: 1px solid var(--line-strong); background: var(--surface); border-radius: var(--radius-btn); font-size: 0.9rem; font-weight: 500; cursor: pointer; color: var(--text); transition: background 0.15s ease, border-color 0.15s ease; font-family: var(--font-body); }
+  .chip:hover { border-color: var(--text); }
+  .chip--active { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .chip__count { font-family: var(--font-mono); font-size: 0.72rem; opacity: 0.6; }
+  .chip--active .chip__count { opacity: 0.8; }
+
+  .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.3rem; }
+  .tcard { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-card); overflow: hidden; display: flex; flex-direction: column; transition: box-shadow 0.2s ease, transform 0.2s ease; }
+  .tcard:hover { box-shadow: 0 18px 40px -22px rgba(20,20,30,0.28); transform: translateY(-3px); }
+  .tcard__thumb { position: relative; display: block; width: 100%; overflow: hidden; background: #fff; border-bottom: 1px solid var(--line); }
+  .tcard__thumb iframe { position: absolute; top: 0; left: 0; width: 1280px; height: 820px; border: 0; transform-origin: top left; pointer-events: none; }
+  .tcard__body { padding: 0.9rem 1.1rem 1.1rem; display: flex; flex-direction: column; gap: 0.8rem; }
+  .tcard__label { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+  .tcard__actions { display: flex; flex-direction: column; gap: 0.5rem; }
+  .tcard__actions .btn { width: 100%; }
+  .tcard.is-hidden { display: none; }
+
+  /* wejście kafli — staggered */
+  @keyframes tcardRise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+  .tcard { opacity: 0; animation: tcardRise 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards; animation-delay: var(--d, 0ms); }
+  @media (prefers-reduced-motion: reduce) { .tcard { opacity: 1 !important; transform: none !important; animation: none !important; } }
+
+  @media (max-width: 1080px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 900px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px) { .grid { grid-template-columns: 1fr; } }
+</style>
+
+<script>
+  // Żywy mini-podgląd: skaluj iframe (1280) do szerokości karty
+  const IFRAME_W = 1280, IFRAME_H = 820;
+  document.querySelectorAll<HTMLElement>('.tcard__thumb').forEach((thumb) => {
+    const iframe = thumb.querySelector('iframe');
+    if (!iframe) return;
+    const fit = () => {
+      const s = thumb.clientWidth / IFRAME_W;
+      iframe.style.transform = `scale(${s})`;
+      thumb.style.height = `${IFRAME_H * s}px`;
+    };
+    fit();
+    new ResizeObserver(fit).observe(thumb);
+  });
+
+  // Filtry kategorii
+  document.querySelectorAll<HTMLElement>('.filters').forEach((bar) => {
+    const chips = bar.querySelectorAll<HTMLButtonElement>('.chip');
+    const grid = bar.parentElement?.querySelector('.grid');
+    const cards = grid ? Array.from(grid.querySelectorAll<HTMLElement>('.tcard')) : [];
+    chips.forEach((chip) => {
+      chip.addEventListener('click', () => {
+        chips.forEach((c) => { c.classList.remove('chip--active'); c.setAttribute('aria-selected', 'false'); });
+        chip.classList.add('chip--active'); chip.setAttribute('aria-selected', 'true');
+        const f = chip.dataset.filter;
+        cards.forEach((card) => card.classList.toggle('is-hidden', !(f === 'All' || card.dataset.category === f)));
+      });
+    });
+  });
+
+  // Kopiowanie z fallbackiem
+  async function copyText(text: string): Promise<boolean> {
+    try { if (navigator.clipboard && window.isSecureContext) { await navigator.clipboard.writeText(text); return true; } } catch {}
+    try {
+      const ta = document.createElement('textarea');
+      ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.focus(); ta.select();
+      const ok = document.execCommand('copy'); document.body.removeChild(ta); return ok;
+    } catch { return false; }
+  }
+  document.querySelectorAll<HTMLButtonElement>('[data-copy]').forEach((btn) => {
+    const labelEl = btn.querySelector<HTMLElement>('.btn__label') || btn;
+    const original = labelEl.textContent || '';
+    btn.addEventListener('click', async () => {
+      await copyText(btn.dataset.copy || '');
+      btn.setAttribute('data-copied', ''); labelEl.textContent = 'Copied';
+      setTimeout(() => { btn.removeAttribute('data-copied'); labelEl.textContent = original; }, 1600);
+    });
+  });
+</script>

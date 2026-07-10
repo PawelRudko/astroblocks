@@ -1,0 +1,61 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import HeroSplit from '../../components/sections/HeroSplit.astro';
+import TeamGrid from '../../components/sections/TeamGrid.astro';
+import HeroCentered from '../../components/sections/HeroCentered.astro';
+import BlogGrid from '../../components/sections/BlogGrid.astro';
+import FAQ from '../../components/sections/FAQ.astro';
+import CardHover from '../../components/sections/CardHover.astro';
+import CardList from '../../components/sections/CardList.astro';
+import NavBar from '../../components/sections/NavBar.astro';
+import { registry } from '../../data/sections';
+
+export function getStaticPaths() {
+  return registry.map((s) => ({ params: { id: s.id }, props: { entry: s } }));
+}
+
+const { entry } = Astro.props;
+const components: Record<string, any> = {
+  'hero-split': HeroSplit,
+  'team-grid': TeamGrid,
+  'hero-centered': HeroCentered,
+  'blog-grid': BlogGrid,
+  'faq': FAQ,
+  'card-hover': CardHover,
+  'card-list': CardList,
+  'navbar': NavBar,
+};
+const Comp = components[entry.id];
+---
+
+<Layout title={`${entry.name} – preview`}>
+  <a class="pv-back" href="/#sekcje">
+    <span class="pv-back__arrow" aria-hidden="true">←</span> Back to blocks
+  </a>
+  <main style="width:100%">
+    <Comp {...entry.demo} />
+  </main>
+</Layout>
+
+<script is:inline>
+  // W miniaturce (iframe w galerii) chowamy przycisk „Back to blocks"
+  if (window.self !== window.top) {
+    document.documentElement.classList.add('is-embed');
+  }
+</script>
+
+<style>
+  .pv-back {
+    position: fixed; top: 16px; left: 16px; z-index: 100;
+    display: inline-flex; align-items: center; gap: 0.45rem;
+    padding: 0.5rem 0.95rem;
+    background: #fff; border: 1px solid var(--line-strong); border-radius: 999px;
+    font-family: var(--font-body); font-size: 0.85rem; font-weight: 500; color: var(--text);
+    box-shadow: 0 8px 24px -10px rgba(20, 20, 30, 0.28);
+    transition: color 0.18s ease, border-color 0.18s ease, gap 0.18s ease;
+  }
+  .pv-back:hover { color: #5b5bd6; border-color: #5b5bd6; gap: 0.65rem; }
+  .pv-back__arrow { transition: transform 0.18s ease; }
+  .pv-back:hover .pv-back__arrow { transform: translateX(-3px); }
+  :global(html.is-embed) .pv-back { display: none; }
+</style>
