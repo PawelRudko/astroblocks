@@ -72,8 +72,9 @@ const { eyebrow, title, subtitle, items, bg = 'white' } = Astro.props;
 
   /* Entrance */
   @keyframes clistRise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
-  .clist__card { opacity: 0; animation: clistRise 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards; animation-delay: var(--d, 0ms); }
-  .clist__card:hover { animation: none; }
+  /* `backwards` (not `forwards`): after the entrance the card falls back to its base state
+     (opacity:1, no transform), so the hover lift works and cards never vanish on hover. */
+  .clist__card { animation: clistRise 0.6s cubic-bezier(0.22, 1, 0.36, 1) backwards; animation-delay: var(--d, 0ms); }
 
   @media (prefers-reduced-motion: reduce) {
     .clist__card { opacity: 1 !important; transform: none !important; animation: none !important; }
