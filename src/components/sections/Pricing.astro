@@ -1,0 +1,134 @@
+---
+// Pricing — centered header + Monthly/Yearly toggle + plan cards (features list + CTA).
+// The toggle swaps each plan's price/period. One plan can be featured. On-system, no deps. Edit by chat (AGENTS.md).
+interface Btn { label: string; href?: string }
+interface Plan {
+  name: string;
+  priceMonthly: string;   // e.g. "$19"
+  priceYearly: string;    // e.g. "$180"
+  periodMonthly?: string; // "/mo"
+  periodYearly?: string;  // "/yr"
+  features: string[];
+  cta?: Btn;
+  featured?: boolean;
+  badge?: string;         // e.g. "Most popular"
+}
+interface Props {
+  eyebrow?: string;
+  title: string;
+  subtitle?: string;
+  plans: Plan[];
+  bg?: 'white' | 'gray';
+}
+const { eyebrow, title, subtitle, plans, bg = 'white' } = Astro.props;
+---
+
+<section class:list={['pr', `pr--${bg}`]}>
+  <div class="pr__wrap">
+    <header class="pr__head">
+      {eyebrow && <span class="eyebrow">{eyebrow}</span>}
+      <h2 class="pr__title">{title}</h2>
+      {subtitle && <p class="pr__subtitle">{subtitle}</p>}
+
+      <div class="pr__toggle" role="group" aria-label="Billing period">
+        <button class="pr__toggle-btn is-active" data-cycle="m" aria-pressed="true">Monthly</button>
+        <button class="pr__toggle-btn" data-cycle="y" aria-pressed="false">Yearly</button>
+      </div>
+    </header>
+
+    <div class="pr__grid">
+      {plans.map((p) => (
+        <div class:list={['pr__card', { 'pr__card--featured': p.featured }]}>
+          <div class="pr__card-head">
+            <h3 class="pr__plan">{p.name}</h3>
+            {p.badge && <span class="pr__pill">{p.badge}</span>}
+            <svg class="pr__mark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+              <path d="M3.27 6.96 12 12.01l8.73-5.05" />
+              <path d="M12 22.08V12" />
+            </svg>
+          </div>
+
+          <p class="pr__price">
+            <span class="pr__amount" data-m={p.priceMonthly} data-y={p.priceYearly}>{p.priceMonthly}</span>
+            <span class="pr__period" data-m={p.periodMonthly || '/mo'} data-y={p.periodYearly || '/yr'}>{p.periodMonthly || '/mo'}</span>
+          </p>
+
+          <hr class="pr__divider" />
+
+          <p class="pr__includes">Includes:</p>
+          <ul class="pr__features">
+            {p.features.map((f) => (
+              <li>
+                <svg class="pr__check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5" /></svg>
+                <span>{f}</span>
+              </li>
+            ))}
+          </ul>
+
+          {p.cta && <a class="btn btn--primary pr__cta" href={p.cta.href || '#'}>{p.cta.label}</a>}
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>('.pr').forEach((root) => {
+    const btns = Array.from(root.querySelectorAll<HTMLButtonElement>('.pr__toggle-btn'));
+    const swap = Array.from(root.querySelectorAll<HTMLElement>('.pr__amount, .pr__period'));
+    const apply = (cycle: string) => {
+      btns.forEach((b) => {
+        const on = b.dataset.cycle === cycle;
+        b.classList.toggle('is-active', on);
+        b.setAttribute('aria-pressed', on ? 'true' : 'false');
+      });
+      swap.forEach((el) => { el.textContent = (cycle === 'y' ? el.dataset.y : el.dataset.m) || el.textContent; });
+    };
+    btns.forEach((b) => b.addEventListener('click', () => apply(b.dataset.cycle || 'm')));
+  });
+</script>
+
+<style>
+  .pr { padding: clamp(3rem, 7vw, 6rem) 0; }
+  .pr--white { background: #ffffff; }
+  .pr--gray { background: #f5f4f2; }
+  .pr__wrap { max-width: 1100px; margin-inline: auto; padding-inline: clamp(1.25rem, 4vw, 2.5rem); }
+
+  .pr__head { text-align: center; max-width: 44rem; margin-inline: auto; }
+  .pr__title { margin-top: 0.8rem; }
+  .pr__subtitle { margin-top: 0.9rem; color: rgba(33, 32, 28, 0.66); font-size: 15px; line-height: 1.6; }
+
+  /* Monthly / Yearly toggle */
+  .pr__toggle { display: inline-flex; gap: 0.25rem; margin-top: 1.8rem; padding: 0.25rem; border: 1px solid var(--line-strong); border-radius: var(--radius-pill); background: #fff; }
+  .pr__toggle-btn { padding: 0.5rem 1.1rem; border: none; border-radius: var(--radius-pill); background: none; cursor: pointer; font-family: var(--font-body); font-size: 0.9rem; font-weight: 500; color: var(--muted); transition: background 0.18s ease, color 0.18s ease; }
+  .pr__toggle-btn.is-active { background: #5b5bd6; color: #fff; }
+
+  /* Grid */
+  .pr__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(1.25rem, 2.5vw, 1.75rem); max-width: 900px; margin: clamp(2.5rem, 5vw, 3.75rem) auto 0; }
+
+  .pr__card { display: flex; flex-direction: column; background: #fff; border: 1px solid var(--line); border-radius: var(--radius-card); padding: clamp(1.5rem, 3vw, 2.25rem); }
+  .pr__card--featured { border: 1.5px solid #5b5bd6; box-shadow: 0 24px 60px -30px rgba(91, 91, 214, 0.4); }
+
+  .pr__card-head { display: flex; align-items: center; gap: 0.7rem; }
+  .pr__plan { font-size: 1.25rem; }
+  .pr__pill { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.08em; text-transform: uppercase; color: #5b5bd6; background: rgba(91, 91, 214, 0.1); padding: 0.28rem 0.6rem; border-radius: var(--radius-pill); }
+  .pr__mark { width: 26px; height: 26px; margin-left: auto; color: var(--text); flex: none; }
+
+  .pr__price { display: flex; align-items: baseline; gap: 0.15rem; margin-top: 1.1rem; }
+  .pr__amount { font-family: var(--font-display); font-size: clamp(2.4rem, 5vw, 3rem); font-weight: 600; letter-spacing: -0.03em; line-height: 1; color: var(--text); }
+  .pr__period { font-size: 1rem; font-weight: 600; color: var(--muted); }
+
+  .pr__divider { border: none; border-top: 1px solid var(--line); margin: clamp(1.25rem, 3vw, 1.75rem) 0; }
+
+  .pr__includes { font-size: 0.9rem; color: var(--faint); }
+  .pr__features { list-style: none; display: flex; flex-direction: column; gap: 0.85rem; margin-top: 1rem; }
+  .pr__features li { display: flex; align-items: flex-start; gap: 0.7rem; font-size: 15px; color: var(--text); }
+  .pr__check { width: 18px; height: 18px; flex: none; margin-top: 0.15rem; color: #5b5bd6; }
+
+  .pr__cta { width: 100%; margin-top: clamp(1.75rem, 4vw, 2.5rem); }
+
+  @media (max-width: 768px) {
+    .pr__grid { grid-template-columns: 1fr; max-width: 26rem; }
+  }
+</style>

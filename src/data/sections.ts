@@ -215,6 +215,36 @@ export const registry: SectionEntry[] = [
       bg: 'white',
     },
   },
+  {
+    id: 'pricing',
+    name: 'Pricing',
+    category: 'Pricing',
+    file: 'Pricing.astro',
+    demo: {
+      eyebrow: 'Pricing',
+      title: 'Pricing plan',
+      subtitle: 'Simple, transparent pricing. Switch between monthly and yearly – no surprises, cancel anytime.',
+      plans: [
+        {
+          name: 'Basic plan',
+          priceMonthly: '$19',
+          priceYearly: '$180',
+          features: ['Feature text goes here', 'Feature text goes here', 'Feature text goes here'],
+          cta: { label: 'Get started', href: '#' },
+        },
+        {
+          name: 'Business plan',
+          priceMonthly: '$29',
+          priceYearly: '$290',
+          featured: true,
+          badge: 'Most popular',
+          features: ['Feature text goes here', 'Feature text goes here', 'Feature text goes here', 'Feature text goes here', 'Feature text goes here'],
+          cta: { label: 'Get started', href: '#' },
+        },
+      ],
+      bg: 'white',
+    },
+  },
 ];
 
 // cards with a per-category label (HERO 01, HERO 02, BLOG 01...) — shared by / and /blocks
