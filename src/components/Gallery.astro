@@ -68,17 +68,23 @@ const countFor = (cat: string) => (cat === 'All' ? cards.length : cards.filter((
   .tcard { animation: tcardRise 0.6s cubic-bezier(0.22, 1, 0.36, 1) backwards; animation-delay: var(--d, 0ms); }
   @media (prefers-reduced-motion: reduce) { .tcard { animation: none; } }
 
-  /* Numbered pagination */
-  .gpages { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 0.4rem; margin-top: 2.5rem; }
-  .gpage { min-width: 2.25rem; height: 2.25rem; padding: 0 0.5rem; display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--line-strong); background: #fff; border-radius: var(--radius-btn); font-family: var(--font-body); font-size: 0.9rem; font-weight: 500; color: var(--text); cursor: pointer; transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease; }
-  .gpage:hover:not(:disabled) { border-color: var(--text); }
-  .gpage.is-active { background: #5b5bd6; border-color: #5b5bd6; color: #fff; }
-  .gpage:disabled { opacity: 0.4; cursor: default; }
-  .gpage--dots { border: none; background: none; cursor: default; min-width: 1.5rem; color: var(--faint); }
-
   @media (max-width: 1080px) { .grid { grid-template-columns: repeat(3, 1fr); } }
   @media (max-width: 900px) { .grid { grid-template-columns: repeat(2, 1fr); } }
   @media (max-width: 560px) { .grid { grid-template-columns: 1fr; } }
+</style>
+
+<!-- Pagination buttons are created in JS (no scoped-CSS attribute), so style them globally. -->
+<style is:global>
+  .gpages { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 0.4rem; margin-top: 2.75rem; }
+  .gpage { min-width: 2.5rem; height: 2.5rem; padding: 0 0.55rem; display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--line); background: #fff; border-radius: 11px; font-family: var(--font-body); font-size: 0.92rem; font-weight: 500; color: var(--text); cursor: pointer; transition: border-color 0.16s ease, background 0.16s ease, color 0.16s ease, box-shadow 0.16s ease, transform 0.12s ease; }
+  .gpage:hover:not(:disabled):not(.is-active) { border-color: var(--line-strong); background: var(--surface-2); }
+  .gpage:active:not(:disabled) { transform: translateY(1px); }
+  .gpage.is-active { background: #5b5bd6; border-color: #5b5bd6; color: #fff; box-shadow: 0 8px 18px -7px rgba(91, 91, 214, 0.55); }
+  .gpage:disabled { opacity: 0.35; cursor: default; }
+  .gpage svg { width: 17px; height: 17px; }
+  .gpage--nav { color: var(--muted); }
+  .gpage--nav:hover:not(:disabled) { color: var(--text); }
+  .gpage--dots { border: none; background: none; cursor: default; min-width: 1.25rem; color: var(--faint); font-weight: 600; letter-spacing: 0.05em; }
 </style>
 
 <script>
@@ -144,21 +150,25 @@ const countFor = (cat: string) => (cat === 'All' ? cards.length : cards.filter((
       if (pageCount <= 1) { pagesEl.hidden = true; return; }
       pagesEl.hidden = false;
 
-      const mkBtn = (label: string, target: number, opts: { active?: boolean; disabled?: boolean } = {}) => {
+      const chev = (d: string) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${d}"/></svg>`;
+      const mkBtn = (content: string, target: number, opts: { active?: boolean; disabled?: boolean; nav?: boolean; label?: string } = {}) => {
         const b = document.createElement('button');
-        b.type = 'button'; b.className = 'gpage' + (opts.active ? ' is-active' : '');
-        b.textContent = label;
+        b.type = 'button';
+        b.className = 'gpage' + (opts.active ? ' is-active' : '') + (opts.nav ? ' gpage--nav' : '');
+        if (opts.nav) { b.innerHTML = content; b.setAttribute('aria-label', opts.label || ''); }
+        else b.textContent = content;
+        if (opts.active) b.setAttribute('aria-current', 'page');
         if (opts.disabled) b.disabled = true;
         else b.addEventListener('click', () => { page = target; apply(); root.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
         return b;
       };
 
-      pagesEl.appendChild(mkBtn('‹', page - 1, { disabled: page === 0 }));
+      pagesEl.appendChild(mkBtn(chev('M15 18l-6-6 6-6'), page - 1, { disabled: page === 0, nav: true, label: 'Previous page' }));
       for (const p of pageWindow(page, pageCount)) {
         if (p === '…') { const s = document.createElement('span'); s.className = 'gpage gpage--dots'; s.textContent = '…'; pagesEl.appendChild(s); }
         else pagesEl.appendChild(mkBtn(String(p + 1), p, { active: p === page }));
       }
-      pagesEl.appendChild(mkBtn('›', page + 1, { disabled: page === pageCount - 1 }));
+      pagesEl.appendChild(mkBtn(chev('M9 18l6-6-6-6'), page + 1, { disabled: page === pageCount - 1, nav: true, label: 'Next page' }));
     }
 
     function apply() {
