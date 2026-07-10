@@ -117,7 +117,7 @@ const countFor = (cat: string) => (cat === 'All' ? cards.length : cards.filter((
   // The thumb and "Preview →" are buttons (not <a>): an <iframe> inside an <a> lost the anchor's
   // closing tag, the parser reconstructed it into the body and the Copy button landed inside the link. No <a> = clean DOM.
   document.querySelectorAll<HTMLElement>('[data-preview]').forEach((el) => {
-    const open = () => window.open(el.dataset.preview || '', '_blank', 'noopener');
+    const open = () => { const u = el.dataset.preview; if (u) window.location.href = u; };
     el.addEventListener('click', open);
     el.addEventListener('keydown', (ev) => {
       if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); open(); }
