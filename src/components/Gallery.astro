@@ -4,10 +4,11 @@ interface Card { id: string; name: string; category: string; file: string; label
 interface Props { cards: Card[]; showFilters?: boolean }
 const { cards, showFilters = true } = Astro.props;
 
-// źródła sekcji do przycisku „Copy" (zawsze 1:1)
+// źródła sekcji do przycisku „Copy" (zawsze 1:1). Kodujemy base64, żeby surowy kod
+// (znaki <, >, ", </script>) NIE trafił do atrybutu HTML i nie rozwalił parsera DOM.
 const rawSources = import.meta.glob('./sections/*.astro', { query: '?raw', import: 'default', eager: true }) as Record<string, string>;
 const sourceByFile: Record<string, string> = {};
-for (const [path, src] of Object.entries(rawSources)) sourceByFile[path.split('/').pop() as string] = src;
+for (const [path, src] of Object.entries(rawSources)) sourceByFile[path.split('/').pop() as string] = Buffer.from(src, 'utf8').toString('base64');
 
 const categories = ['All', ...Array.from(new Set(cards.map((c) => c.category)))];
 const countFor = (cat: string) => (cat === 'All' ? cards.length : cards.filter((c) => c.category === cat).length);
@@ -26,9 +27,9 @@ const countFor = (cat: string) => (cat === 'All' ? cards.length : cards.filter((
 <div class="grid">
   {cards.map((s, i) => (
     <article class="tcard" data-category={s.category} style={`--d:${i * 50}ms`}>
-      <a class="tcard__thumb" href={`/preview/${s.id}`} target="_blank" rel="noopener" aria-label={`Preview: ${s.name}`}>
+      <div class="tcard__thumb" role="button" tabindex="0" data-preview={`/preview/${s.id}`} aria-label={`Preview: ${s.name}`}>
         <iframe src={`/preview/${s.id}`} title={s.name} loading="lazy" tabindex="-1" scrolling="no"></iframe>
-      </a>
+      </div>
       <div class="tcard__body">
         <span class="tcard__label">{s.label}</span>
         <div class="tcard__actions">
@@ -36,7 +37,7 @@ const countFor = (cat: string) => (cat === 'All' ? cards.length : cards.filter((
             <svg class="btn__ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
             <span class="btn__label">Copy</span>
           </button>
-          <a class="btn btn--ghost btn--sm" href={`/preview/${s.id}`} target="_blank" rel="noopener">Preview →</a>
+          <button class="btn btn--ghost btn--sm" type="button" data-preview={`/preview/${s.id}`}>Preview →</button>
         </div>
       </div>
     </article>
@@ -54,7 +55,8 @@ const countFor = (cat: string) => (cat === 'All' ? cards.length : cards.filter((
   .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.3rem; }
   .tcard { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-card); overflow: hidden; display: flex; flex-direction: column; transition: box-shadow 0.2s ease, transform 0.2s ease; }
   .tcard:hover { box-shadow: 0 18px 40px -22px rgba(20,20,30,0.28); transform: translateY(-3px); }
-  .tcard__thumb { position: relative; display: block; width: 100%; overflow: hidden; background: #fff; border-bottom: 1px solid var(--line); }
+  .tcard__thumb { position: relative; display: block; width: 100%; overflow: hidden; background: #fff; border-bottom: 1px solid var(--line); cursor: pointer; }
+  .tcard__thumb:focus-visible { outline: 2px solid var(--ink); outline-offset: -2px; }
   .tcard__thumb iframe { position: absolute; top: 0; left: 0; width: 1280px; height: 820px; border: 0; transform-origin: top left; pointer-events: none; }
   .tcard__body { padding: 0.9rem 1.1rem 1.1rem; display: flex; flex-direction: column; gap: 0.8rem; }
   .tcard__label { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
@@ -112,6 +114,21 @@ const countFor = (cat: string) => (cat === 'All' ? cards.length : cards.filter((
       const ok = document.execCommand('copy'); document.body.removeChild(ta); return ok;
     } catch { return false; }
   }
+  // Thumb i „Preview →" to przyciski (nie <a>): <iframe> wewnątrz <a> gubił domknięcie
+  // kotwicy, parser rekonstruował ją do body i przycisk Copy trafiał w link. Zero <a> = czysty DOM.
+  document.querySelectorAll<HTMLElement>('[data-preview]').forEach((el) => {
+    const open = () => window.open(el.dataset.preview || '', '_blank', 'noopener');
+    el.addEventListener('click', open);
+    el.addEventListener('keydown', (ev) => {
+      if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); open(); }
+    });
+  });
+
+  // dekodowanie base64 (UTF-8) → surowe źródło komponentu
+  function decodeSource(b64: string): string {
+    try { return new TextDecoder().decode(Uint8Array.from(atob(b64), (c) => c.charCodeAt(0))); }
+    catch { return ''; }
+  }
   document.querySelectorAll<HTMLButtonElement>('[data-copy]').forEach((btn) => {
     const labelEl = btn.querySelector<HTMLElement>('.btn__label') || btn;
     const original = labelEl.textContent || '';
@@ -119,7 +136,7 @@ const countFor = (cat: string) => (cat === 'All' ? cards.length : cards.filter((
       // Kafel bywa opakowany w <a> (parser nesting) — nie pozwól klikowi nawigować.
       e.preventDefault();
       e.stopPropagation();
-      const ok = await copyText(btn.dataset.copy || '');
+      const ok = await copyText(decodeSource(btn.dataset.copy || ''));
       btn.setAttribute('data-copied', ''); labelEl.textContent = ok ? 'Copied' : 'Press ⌘C';
       setTimeout(() => { btn.removeAttribute('data-copied'); labelEl.textContent = original; }, 1600);
     });
