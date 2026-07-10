@@ -68,18 +68,33 @@ Przyciski kopiujące mają **ikonkę copy** (`.btn__ico`) + `<span class="btn__l
 - Zdjęcia: przez props; placeholder demo = `/placeholder-landscape.svg`.
 - **Pauzy: używaj `–` (półpauza), NIE `—` (długa pauza).**
 
-## Dodanie nowej sekcji (żeby wpadła do galerii)
+## Budowanie strony użytkownika — DOMYŚLNY tryb (składanie z gotowych bloków)
+
+Gdy ktoś mówi „dodaj sekcję X", „wrzuć NavBar/Hero/FAQ na stronę", „dodaj kolejny blok", albo **wkleja kod bloku z przycisku „Copy"** — chodzi o **złożenie strony głównej `/` z GOTOWYCH bloków**, które już leżą w `src/components/sections/`. **NIE rejestruj nic w galerii, NIE twórz podstron `/preview`.** Rób tak:
+
+1. Otwórz **`src/pages/index.astro`** — to strona główna (kanwa użytkownika).
+2. Zaimportuj komponent na górze (frontmatter), np. `import NavBar from '../components/sections/NavBar.astro';`
+3. Wstaw go **w `<main>`**: `<NavBar {...propsy} />`. **Kolejne bloki dokładaj POD spodem** — sekcje układają się jedna pod drugą, w kolejności wstawienia (jak normalna strona www).
+4. Przy pierwszym bloku **usuń pustą kanwę** (`<section class="empty">…</section>`).
+5. Propsy weź z dema w `src/data/sections.ts` (pole `demo` danego bloku) i dostosuj teksty wg prośby.
+
+Efekt: użytkownik widzi swoje sekcje na `http://localhost:4322/` — **nie** na `/preview/...`. Podstrony `/preview` to tylko podglądy do galerii, NIE miejsce na stronę użytkownika.
+
+## Dodanie CAŁKIEM NOWEGO bloku do biblioteki (tylko gdy tworzysz nowy typ sekcji)
+
+Robisz to wyłącznie, gdy user chce **zupełnie nowy** komponent, którego NIE ma w `sections/`:
 
 1. Stwórz `src/components/sections/NazwaSekcji.astro` (propsy + scoped style).
 2. Dopisz wpis w `src/data/sections.ts`: `{ id, name, category, file, demo: {…propsy…} }`.
 3. Zarejestruj komponent w mapie w `src/pages/preview/[id].astro`.
-4. Gotowe — karta w galerii, filtr kategorii, etykieta `KATEGORIA 01` i przycisk „Kopiuj" robią się same.
+4. Gotowe — karta w galerii, filtr kategorii, etykieta `KATEGORIA 01` i przycisk „Copy" robią się same.
 
 ## Typowe prośby i jak je realizować
 
 - „zrób jaśniejszą / ciemniejszą wersję" → użyj propa `variant`, nie odwracaj kolorów ręcznie.
 - „zmień główny przycisk" → trzymaj `.btn--primary` (indygo), secondary = `.btn--ghost`.
-- „dodaj sekcję X jak nr N" → skopiuj wzorzec z `src/components/sections/`, dopisz do registry (patrz wyżej).
+- „dodaj sekcję X na stronę" / „wkleiłem kod bloku X" → blok już jest w `sections/`; NIE twórz duplikatu i NIE ruszaj galerii — zaimportuj i wstaw `<X {...} />` w `src/pages/index.astro` (patrz „Budowanie strony użytkownika").
+- „dodaj CAŁKIEM NOWY typ bloku do biblioteki" → skopiuj wzorzec z `src/components/sections/`, dopisz do registry (patrz „Dodanie CAŁKIEM NOWEGO bloku").
 - „dodaj animację wejścia" → `IntersectionObserver` + klasa `.reveal` + guard reduced-motion.
 - „zmień kolor na …" → jeśli pasuje token, użyj tokenu; hardcode tylko gdy user poda konkretny hex.
 
