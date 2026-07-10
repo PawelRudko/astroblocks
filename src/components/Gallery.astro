@@ -115,9 +115,12 @@ const countFor = (cat: string) => (cat === 'All' ? cards.length : cards.filter((
   document.querySelectorAll<HTMLButtonElement>('[data-copy]').forEach((btn) => {
     const labelEl = btn.querySelector<HTMLElement>('.btn__label') || btn;
     const original = labelEl.textContent || '';
-    btn.addEventListener('click', async () => {
-      await copyText(btn.dataset.copy || '');
-      btn.setAttribute('data-copied', ''); labelEl.textContent = 'Copied';
+    btn.addEventListener('click', async (e) => {
+      // Kafel bywa opakowany w <a> (parser nesting) — nie pozwól klikowi nawigować.
+      e.preventDefault();
+      e.stopPropagation();
+      const ok = await copyText(btn.dataset.copy || '');
+      btn.setAttribute('data-copied', ''); labelEl.textContent = ok ? 'Copied' : 'Press ⌘C';
       setTimeout(() => { btn.removeAttribute('data-copied'); labelEl.textContent = original; }, 1600);
     });
   });
