@@ -1,53 +1,19 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import HeroSplit from '../../components/sections/HeroSplit.astro';
-import TeamGrid from '../../components/sections/TeamGrid.astro';
-import HeroCentered from '../../components/sections/HeroCentered.astro';
-import HeroGallery from '../../components/sections/HeroGallery.astro';
-import HeroMarquee from '../../components/sections/HeroMarquee.astro';
-import FeatureTabs from '../../components/sections/FeatureTabs.astro';
-import Pricing from '../../components/sections/Pricing.astro';
-import Testimonial from '../../components/sections/Testimonial.astro';
-import Logos from '../../components/sections/Logos.astro';
-import EventHeader from '../../components/sections/EventHeader.astro';
-import Contact from '../../components/sections/Contact.astro';
-import FeatureStackCards from '../../components/sections/FeatureStackCards.astro';
-import FeatureStackSections from '../../components/sections/FeatureStackSections.astro';
-import FeatureExpand from '../../components/sections/FeatureExpand.astro';
-import BlogGrid from '../../components/sections/BlogGrid.astro';
-import FAQ from '../../components/sections/FAQ.astro';
-import CardHover from '../../components/sections/CardHover.astro';
-import CardList from '../../components/sections/CardList.astro';
-import NavBar from '../../components/sections/NavBar.astro';
 import { registry } from '../../data/sections';
+
+// Auto-map: every component in sections/ is resolved by its file name — no manual imports.
+// Adding a block = drop the .astro file + its registry entry; this file never changes.
+const modules = import.meta.glob('../../components/sections/*.astro', { eager: true }) as Record<string, any>;
+const byFile: Record<string, any> = {};
+for (const [path, mod] of Object.entries(modules)) byFile[path.split('/').pop() as string] = mod.default;
 
 export function getStaticPaths() {
   return registry.map((s) => ({ params: { id: s.id }, props: { entry: s } }));
 }
 
 const { entry } = Astro.props;
-const components: Record<string, any> = {
-  'hero-split': HeroSplit,
-  'team-grid': TeamGrid,
-  'hero-centered': HeroCentered,
-  'hero-gallery': HeroGallery,
-  'hero-marquee': HeroMarquee,
-  'feature-tabs': FeatureTabs,
-  'pricing': Pricing,
-  'testimonial': Testimonial,
-  'logos': Logos,
-  'event-header': EventHeader,
-  'contact': Contact,
-  'feature-stack-cards': FeatureStackCards,
-  'feature-stack-sections': FeatureStackSections,
-  'feature-expand': FeatureExpand,
-  'blog-grid': BlogGrid,
-  'faq': FAQ,
-  'card-hover': CardHover,
-  'card-list': CardList,
-  'navbar': NavBar,
-};
-const Comp = components[entry.id];
+const Comp = byFile[entry.file];
 ---
 
 <Layout title={`${entry.name} – preview`}>

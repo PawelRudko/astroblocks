@@ -1,47 +1,51 @@
 ---
-// Gallery — shared card gallery (filters + grid + live thumbnails). Used on / (teaser) and /blocks (full).
+// Gallery — filters + grid of blocks. Scales to hundreds:
+//  • preview iframes are lazy-mounted (only cards near the viewport load one)
+//  • the Copy button fetches the block source on demand from /raw/<id> (nothing inlined)
+//  • pagination ("Load more") reveals blocks in pages so the initial render stays light
+// Used on / (teaser) and /blocks (full). Live-editable — see AGENTS.md.
 interface Card { id: string; name: string; category: string; file: string; label: string }
-interface Props { cards: Card[]; showFilters?: boolean }
-const { cards, showFilters = true } = Astro.props;
-
-// section sources for the "Copy" button (always 1:1). We base64-encode so the raw code
-// (characters <, >, ", </script>) does NOT end up in an HTML attribute and break the DOM parser.
-const rawSources = import.meta.glob('./sections/*.astro', { query: '?raw', import: 'default', eager: true }) as Record<string, string>;
-const sourceByFile: Record<string, string> = {};
-for (const [path, src] of Object.entries(rawSources)) sourceByFile[path.split('/').pop() as string] = Buffer.from(src, 'utf8').toString('base64');
+interface Props { cards: Card[]; showFilters?: boolean; pageSize?: number }
+const { cards, showFilters = true, pageSize = 12 } = Astro.props;
 
 const categories = ['All', ...Array.from(new Set(cards.map((c) => c.category)))];
 const countFor = (cat: string) => (cat === 'All' ? cards.length : cards.filter((c) => c.category === cat).length);
 ---
 
-{showFilters && (
-  <div class="filters" role="tablist" aria-label="Categories">
-    {categories.map((c, i) => (
-      <button class:list={['chip', { 'chip--active': i === 0 }]} data-filter={c} role="tab" aria-selected={i === 0}>
-        {c} <span class="chip__count">{countFor(c)}</span>
-      </button>
+<div class="gallery-root">
+  {showFilters && (
+    <div class="filters" role="tablist" aria-label="Categories">
+      {categories.map((c, i) => (
+        <button class:list={['chip', { 'chip--active': i === 0 }]} data-filter={c} role="tab" aria-selected={i === 0}>
+          {c} <span class="chip__count">{countFor(c)}</span>
+        </button>
+      ))}
+    </div>
+  )}
+
+  <div class="grid" data-page-size={pageSize}>
+    {cards.map((s, i) => (
+      <article class="tcard" data-category={s.category} style={`--d:${(i % pageSize) * 45}ms`}>
+        <div class="tcard__thumb" role="button" tabindex="0" data-preview={`/preview/${s.id}`} aria-label={`Preview: ${s.name}`}></div>
+        <div class="tcard__body">
+          <span class="tcard__label">{s.label}</span>
+          <div class="tcard__actions">
+            <button class="btn btn--primary btn--sm" data-copy-src={`/raw/${s.id}`}>
+              <svg class="btn__ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              <span class="btn__label">Copy</span>
+            </button>
+            <button class="btn btn--ghost btn--sm" type="button" data-preview={`/preview/${s.id}`}>Preview →</button>
+          </div>
+        </div>
+      </article>
     ))}
   </div>
-)}
 
-<div class="grid">
-  {cards.map((s, i) => (
-    <article class="tcard" data-category={s.category} style={`--d:${i * 50}ms`}>
-      <div class="tcard__thumb" role="button" tabindex="0" data-preview={`/preview/${s.id}`} aria-label={`Preview: ${s.name}`}>
-        <iframe src={`/preview/${s.id}`} title={s.name} loading="lazy" tabindex="-1" scrolling="no"></iframe>
-      </div>
-      <div class="tcard__body">
-        <span class="tcard__label">{s.label}</span>
-        <div class="tcard__actions">
-          <button class="btn btn--primary btn--sm" data-copy={sourceByFile[s.file]}>
-            <svg class="btn__ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-            <span class="btn__label">Copy</span>
-          </button>
-          <button class="btn btn--ghost btn--sm" type="button" data-preview={`/preview/${s.id}`}>Preview →</button>
-        </div>
-      </div>
-    </article>
-  ))}
+  {showFilters && (
+    <div class="gmore" hidden>
+      <button class="btn btn--secondary" type="button" data-load-more>Load more</button>
+    </div>
+  )}
 </div>
 
 <style>
@@ -54,20 +58,22 @@ const countFor = (cat: string) => (cat === 'All' ? cards.length : cards.filter((
 
   .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.3rem; }
   .tcard { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius-card); overflow: hidden; display: flex; flex-direction: column; transition: box-shadow 0.2s ease, transform 0.2s ease; }
+  .tcard.is-hidden { display: none; }
   .tcard:hover { box-shadow: 0 18px 40px -22px rgba(20,20,30,0.28); transform: translateY(-3px); }
-  .tcard__thumb { position: relative; display: block; width: 100%; overflow: hidden; background: #fff; border-bottom: 1px solid var(--line); cursor: pointer; }
+  .tcard__thumb { position: relative; display: block; width: 100%; aspect-ratio: 1280 / 820; overflow: hidden; background: #fff; border-bottom: 1px solid var(--line); cursor: pointer; }
   .tcard__thumb:focus-visible { outline: 2px solid var(--ink); outline-offset: -2px; }
   .tcard__thumb iframe { position: absolute; top: 0; left: 0; width: 1280px; height: 820px; border: 0; transform-origin: top left; pointer-events: none; }
   .tcard__body { padding: 0.9rem 1.1rem 1.1rem; display: flex; flex-direction: column; gap: 0.8rem; }
   .tcard__label { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
   .tcard__actions { display: flex; gap: 0.5rem; }
   .tcard__actions .btn { flex: 1; min-width: 0; font-size: 14px; padding: 0.42rem 0.7rem; }
-  .tcard.is-hidden { display: none; }
 
-  /* tile entrance — staggered */
+  /* staggered entrance */
   @keyframes tcardRise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
-  .tcard { opacity: 0; animation: tcardRise 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards; animation-delay: var(--d, 0ms); }
-  @media (prefers-reduced-motion: reduce) { .tcard { opacity: 1 !important; transform: none !important; animation: none !important; } }
+  .tcard { animation: tcardRise 0.6s cubic-bezier(0.22, 1, 0.36, 1) backwards; animation-delay: var(--d, 0ms); }
+  @media (prefers-reduced-motion: reduce) { .tcard { animation: none; } }
+
+  .gmore { display: flex; justify-content: center; margin-top: 2.25rem; }
 
   @media (max-width: 1080px) { .grid { grid-template-columns: repeat(3, 1fr); } }
   @media (max-width: 900px) { .grid { grid-template-columns: repeat(2, 1fr); } }
@@ -75,68 +81,94 @@ const countFor = (cat: string) => (cat === 'All' ? cards.length : cards.filter((
 </style>
 
 <script>
-  // Live mini-preview: scale the iframe (1280) to the card width
   const IFRAME_W = 1280, IFRAME_H = 820;
-  document.querySelectorAll<HTMLElement>('.tcard__thumb').forEach((thumb) => {
+
+  // Lazy-mount a preview iframe only when the card scrolls near the viewport.
+  const io = new IntersectionObserver((entries) => {
+    for (const e of entries) {
+      if (!e.isIntersecting) continue;
+      const thumb = e.target as HTMLElement;
+      io.unobserve(thumb);
+      if (thumb.dataset.mounted) continue;
+      thumb.dataset.mounted = '1';
+      const iframe = document.createElement('iframe');
+      iframe.src = thumb.dataset.preview || '';
+      iframe.loading = 'lazy'; iframe.tabIndex = -1; iframe.title = '';
+      iframe.setAttribute('scrolling', 'no');
+      thumb.appendChild(iframe);
+      fit(thumb);
+    }
+  }, { rootMargin: '500px' });
+
+  function fit(thumb: HTMLElement) {
     const iframe = thumb.querySelector('iframe');
-    if (!iframe) return;
-    const fit = () => {
-      const s = thumb.clientWidth / IFRAME_W;
-      iframe.style.transform = `scale(${s})`;
-      thumb.style.height = `${IFRAME_H * s}px`;
-    };
-    fit();
-    new ResizeObserver(fit).observe(thumb);
-  });
+    if (iframe) iframe.style.transform = `scale(${thumb.clientWidth / IFRAME_W})`;
+  }
 
-  // Category filters
-  document.querySelectorAll<HTMLElement>('.filters').forEach((bar) => {
-    const chips = bar.querySelectorAll<HTMLButtonElement>('.chip');
-    const grid = bar.parentElement?.querySelector('.grid');
-    const cards = grid ? Array.from(grid.querySelectorAll<HTMLElement>('.tcard')) : [];
-    chips.forEach((chip) => {
-      chip.addEventListener('click', () => {
-        chips.forEach((c) => { c.classList.remove('chip--active'); c.setAttribute('aria-selected', 'false'); });
-        chip.classList.add('chip--active'); chip.setAttribute('aria-selected', 'true');
-        const f = chip.dataset.filter;
-        cards.forEach((card) => card.classList.toggle('is-hidden', !(f === 'All' || card.dataset.category === f)));
-      });
-    });
-  });
-
-  // Copy with a fallback
   async function copyText(text: string): Promise<boolean> {
     try { if (navigator.clipboard && window.isSecureContext) { await navigator.clipboard.writeText(text); return true; } } catch {}
     try {
       const ta = document.createElement('textarea');
       ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
       document.body.appendChild(ta); ta.focus(); ta.select();
-      const ok = document.execCommand('copy'); document.body.removeChild(ta); return ok;
+      const ok = document.execCommand('copy'); ta.remove(); return ok;
     } catch { return false; }
   }
-  // The thumb and "Preview →" are buttons (not <a>): an <iframe> inside an <a> lost the anchor's
-  // closing tag, the parser reconstructed it into the body and the Copy button landed inside the link. No <a> = clean DOM.
+
+  document.querySelectorAll<HTMLElement>('.gallery-root').forEach((root) => {
+    const grid = root.querySelector<HTMLElement>('.grid');
+    if (!grid) return;
+    const cards = Array.from(grid.querySelectorAll<HTMLElement>('.tcard'));
+    const pageSize = parseInt(grid.dataset.pageSize || '12', 10);
+    const chips = Array.from(root.querySelectorAll<HTMLElement>('.chip'));
+    const gmore = root.querySelector<HTMLElement>('.gmore');
+    const loadBtn = root.querySelector<HTMLButtonElement>('[data-load-more]');
+    let filter = 'All';
+    let shown = pageSize;
+
+    function apply() {
+      let matched = 0;
+      cards.forEach((card) => {
+        const isMatch = filter === 'All' || card.dataset.category === filter;
+        let visible = false;
+        if (isMatch) { visible = matched < shown; matched++; }
+        card.classList.toggle('is-hidden', !visible);
+        if (visible) {
+          const thumb = card.querySelector<HTMLElement>('.tcard__thumb');
+          if (thumb && !thumb.dataset.mounted) io.observe(thumb);
+        }
+      });
+      if (gmore) gmore.hidden = matched <= shown;
+    }
+
+    chips.forEach((chip) => chip.addEventListener('click', () => {
+      chips.forEach((c) => { c.classList.remove('chip--active'); c.setAttribute('aria-selected', 'false'); });
+      chip.classList.add('chip--active'); chip.setAttribute('aria-selected', 'true');
+      filter = chip.dataset.filter || 'All'; shown = pageSize; apply();
+    }));
+    loadBtn?.addEventListener('click', () => { shown += pageSize; apply(); });
+
+    new ResizeObserver(() => cards.forEach((c) => { const t = c.querySelector<HTMLElement>('.tcard__thumb'); if (t?.dataset.mounted) fit(t); })).observe(grid);
+
+    apply();
+  });
+
+  // Open preview in the same tab (thumbnail + Preview button)
   document.querySelectorAll<HTMLElement>('[data-preview]').forEach((el) => {
     const open = () => { const u = el.dataset.preview; if (u) window.location.href = u; };
     el.addEventListener('click', open);
-    el.addEventListener('keydown', (ev) => {
-      if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); open(); }
-    });
+    el.addEventListener('keydown', (ev) => { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); open(); } });
   });
 
-  // decode base64 (UTF-8) → raw component source
-  function decodeSource(b64: string): string {
-    try { return new TextDecoder().decode(Uint8Array.from(atob(b64), (c) => c.charCodeAt(0))); }
-    catch { return ''; }
-  }
-  document.querySelectorAll<HTMLButtonElement>('[data-copy]').forEach((btn) => {
+  // Copy the block source on demand (fetched from /raw/<id>)
+  document.querySelectorAll<HTMLButtonElement>('[data-copy-src]').forEach((btn) => {
     const labelEl = btn.querySelector<HTMLElement>('.btn__label') || btn;
     const original = labelEl.textContent || '';
     btn.addEventListener('click', async (e) => {
-      // The tile can get wrapped in an <a> (parser nesting) — don't let the click navigate.
-      e.preventDefault();
-      e.stopPropagation();
-      const ok = await copyText(decodeSource(btn.dataset.copy || ''));
+      e.preventDefault(); e.stopPropagation();
+      let src = '';
+      try { src = await (await fetch(btn.dataset.copySrc || '')).text(); } catch {}
+      const ok = src ? await copyText(src) : false;
       btn.setAttribute('data-copied', ''); labelEl.textContent = ok ? 'Copied' : 'Press ⌘C';
       setTimeout(() => { btn.removeAttribute('data-copied'); labelEl.textContent = original; }, 1600);
     });

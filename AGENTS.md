@@ -86,8 +86,7 @@ Do this only when the user wants a **completely new** component that is NOT in `
 
 1. Create `src/components/sections/SectionName.astro` (props + scoped style).
 2. Add an entry in `src/data/sections.ts`: `{ id, name, category, file, demo: {…props…} }`.
-3. Register the component in the map in `src/pages/preview/[id].astro`.
-4. Done — the gallery card, category filter, the `CATEGORY 01` label and the "Copy" button all happen by themselves.
+3. Done — everything else is automatic and scales to hundreds of blocks: the preview (`preview/[id].astro` auto-resolves the component by `file` via `import.meta.glob`), the copy source (`/raw/<id>` served on demand), the gallery card, category filter, `CATEGORY 01` label, lazy thumbnail and pagination. **Never** edit a component map or import list — just the file + the registry entry.
 
 ## Common requests and how to handle them
 
