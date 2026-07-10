@@ -1,11 +1,11 @@
 ---
-// Gallery — wspólna galeria kart (filtry + siatka + żywe miniaturki). Używana na / (teaser) i /blocks (pełna).
+// Gallery — shared card gallery (filters + grid + live thumbnails). Used on / (teaser) and /blocks (full).
 interface Card { id: string; name: string; category: string; file: string; label: string }
 interface Props { cards: Card[]; showFilters?: boolean }
 const { cards, showFilters = true } = Astro.props;
 
-// źródła sekcji do przycisku „Copy" (zawsze 1:1). Kodujemy base64, żeby surowy kod
-// (znaki <, >, ", </script>) NIE trafił do atrybutu HTML i nie rozwalił parsera DOM.
+// section sources for the "Copy" button (always 1:1). We base64-encode so the raw code
+// (characters <, >, ", </script>) does NOT end up in an HTML attribute and break the DOM parser.
 const rawSources = import.meta.glob('./sections/*.astro', { query: '?raw', import: 'default', eager: true }) as Record<string, string>;
 const sourceByFile: Record<string, string> = {};
 for (const [path, src] of Object.entries(rawSources)) sourceByFile[path.split('/').pop() as string] = Buffer.from(src, 'utf8').toString('base64');
@@ -64,7 +64,7 @@ const countFor = (cat: string) => (cat === 'All' ? cards.length : cards.filter((
   .tcard__actions .btn { width: 100%; }
   .tcard.is-hidden { display: none; }
 
-  /* wejście kafli — staggered */
+  /* tile entrance — staggered */
   @keyframes tcardRise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
   .tcard { opacity: 0; animation: tcardRise 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards; animation-delay: var(--d, 0ms); }
   @media (prefers-reduced-motion: reduce) { .tcard { opacity: 1 !important; transform: none !important; animation: none !important; } }
@@ -75,7 +75,7 @@ const countFor = (cat: string) => (cat === 'All' ? cards.length : cards.filter((
 </style>
 
 <script>
-  // Żywy mini-podgląd: skaluj iframe (1280) do szerokości karty
+  // Live mini-preview: scale the iframe (1280) to the card width
   const IFRAME_W = 1280, IFRAME_H = 820;
   document.querySelectorAll<HTMLElement>('.tcard__thumb').forEach((thumb) => {
     const iframe = thumb.querySelector('iframe');
@@ -89,7 +89,7 @@ const countFor = (cat: string) => (cat === 'All' ? cards.length : cards.filter((
     new ResizeObserver(fit).observe(thumb);
   });
 
-  // Filtry kategorii
+  // Category filters
   document.querySelectorAll<HTMLElement>('.filters').forEach((bar) => {
     const chips = bar.querySelectorAll<HTMLButtonElement>('.chip');
     const grid = bar.parentElement?.querySelector('.grid');
@@ -104,7 +104,7 @@ const countFor = (cat: string) => (cat === 'All' ? cards.length : cards.filter((
     });
   });
 
-  // Kopiowanie z fallbackiem
+  // Copy with a fallback
   async function copyText(text: string): Promise<boolean> {
     try { if (navigator.clipboard && window.isSecureContext) { await navigator.clipboard.writeText(text); return true; } } catch {}
     try {
@@ -114,8 +114,8 @@ const countFor = (cat: string) => (cat === 'All' ? cards.length : cards.filter((
       const ok = document.execCommand('copy'); document.body.removeChild(ta); return ok;
     } catch { return false; }
   }
-  // Thumb i „Preview →" to przyciski (nie <a>): <iframe> wewnątrz <a> gubił domknięcie
-  // kotwicy, parser rekonstruował ją do body i przycisk Copy trafiał w link. Zero <a> = czysty DOM.
+  // The thumb and "Preview →" are buttons (not <a>): an <iframe> inside an <a> lost the anchor's
+  // closing tag, the parser reconstructed it into the body and the Copy button landed inside the link. No <a> = clean DOM.
   document.querySelectorAll<HTMLElement>('[data-preview]').forEach((el) => {
     const open = () => window.open(el.dataset.preview || '', '_blank', 'noopener');
     el.addEventListener('click', open);
@@ -124,7 +124,7 @@ const countFor = (cat: string) => (cat === 'All' ? cards.length : cards.filter((
     });
   });
 
-  // dekodowanie base64 (UTF-8) → surowe źródło komponentu
+  // decode base64 (UTF-8) → raw component source
   function decodeSource(b64: string): string {
     try { return new TextDecoder().decode(Uint8Array.from(atob(b64), (c) => c.charCodeAt(0))); }
     catch { return ''; }
@@ -133,7 +133,7 @@ const countFor = (cat: string) => (cat === 'All' ? cards.length : cards.filter((
     const labelEl = btn.querySelector<HTMLElement>('.btn__label') || btn;
     const original = labelEl.textContent || '';
     btn.addEventListener('click', async (e) => {
-      // Kafel bywa opakowany w <a> (parser nesting) — nie pozwól klikowi nawigować.
+      // The tile can get wrapped in an <a> (parser nesting) — don't let the click navigate.
       e.preventDefault();
       e.stopPropagation();
       const ok = await copyText(decodeSource(btn.dataset.copy || ''));

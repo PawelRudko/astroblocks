@@ -38,7 +38,7 @@ const Comp = components[entry.id];
 </Layout>
 
 <script is:inline>
-  // W miniaturce (iframe w galerii) chowamy przycisk „Back to blocks"
+  // In the thumbnail (iframe in the gallery) we hide the "Back to blocks" button
   if (window.self !== window.top) {
     document.documentElement.classList.add('is-embed');
   }

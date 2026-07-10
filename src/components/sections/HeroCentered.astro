@@ -1,6 +1,6 @@
 ---
-// HeroCentered — wyśrodkowany hero z obrazem pod treścią. Styl premium (Relume/Awwwards),
-// lekka animacja wejścia (staggered), 3 rodzaje przycisków. Edytuj rozmową (patrz AGENTS.md).
+// HeroCentered — centered hero with the image below the content. Premium style (Relume/Awwwards),
+// light entrance animation (staggered), 3 button types. Edit by chat (see AGENTS.md).
 interface Cta { label: string; href: string }
 interface Props {
   eyebrow?: string;
@@ -65,7 +65,7 @@ const {
   .hc__media { max-width: 1080px; margin: clamp(2.5rem, 6vw, 4rem) auto 0; }
   .hc__media img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 16px; border: 1px solid var(--line); box-shadow: 0 40px 80px -40px rgba(20, 20, 30, 0.28); }
 
-  /* lekka animacja wejścia — staggered */
+  /* light entrance animation — staggered */
   @keyframes hcRise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
   @keyframes hcMedia { from { opacity: 0; transform: translateY(26px) scale(0.985); } to { opacity: 1; transform: none; } }
   .hc__anim { opacity: 0; animation: hcRise 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards; animation-delay: var(--d, 0ms); }

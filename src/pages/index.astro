@@ -1,7 +1,7 @@
 ---
-// STARTER — pusta kanwa. To jest strona, którą klient buduje rozmawiając z Claude.
-// Bloki dokłada się TUTAJ (w <main>). Galeria do przeglądania/kopiowania: /blocks.
-// Marketingowy landing NIE jest częścią kitu (to prywatna strona sprzedażowa) — folder ../astroblocks-landing.
+// STARTER — blank canvas. This is the page the client builds by chatting with Claude.
+// Blocks go HERE (inside <main>). Gallery for browsing/copying: /blocks.
+// The marketing landing is NOT part of the kit (it's a private sales page) — folder ../astroblocks-landing.
 import Layout from '../layouts/Layout.astro';
 import Nav from '../components/Nav.astro';
 import Brand from '../components/Brand.astro';
@@ -72,7 +72,7 @@ const starterPrompt =
 
   .empty__cta { display: flex; flex-wrap: wrap; gap: 0.7rem; justify-content: center; }
 
-  /* Webflow-style „drop zone" */
+  /* Webflow-style "drop zone" */
   .empty__zone {
     margin-top: 2.5rem; display: grid; place-items: center;
     min-height: 150px; border: 1.5px dashed var(--line-strong); border-radius: var(--radius-card);
@@ -98,7 +98,7 @@ const starterPrompt =
 </style>
 
 <script>
-  // Kopiowanie startowego promptu
+  // Copy the starter prompt
   const btn = document.getElementById('copyPrompt');
   const label = document.getElementById('copyPromptLabel');
   const prompt = document.getElementById('starterPrompt');
@@ -107,6 +107,6 @@ const starterPrompt =
     try {
       await navigator.clipboard.writeText(prompt.textContent);
       if (label) { const prev = label.textContent; label.textContent = 'Copied ✓'; btn.setAttribute('data-copied', ''); setTimeout(() => { label.textContent = prev; btn.removeAttribute('data-copied'); }, 1600); }
-    } catch { /* schowek niedostępny – trudno */ }
+    } catch { /* clipboard unavailable – oh well */ }
   });
 </script>

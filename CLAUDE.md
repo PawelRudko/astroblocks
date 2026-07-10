@@ -1,6 +1,6 @@
-# Astroblocks — mózg kitu (dla Claude Code)
+# Astroblocks — the kit's brain (for Claude Code)
 
-Wszystkie zasady (tokeny, typografia, przyciski, konwencje, dodawanie sekcji) trzymamy
-w jednym pliku — `AGENTS.md` — żeby działały tak samo z Claude Code, Codex, Cursor itd.
+All the rules (tokens, typography, buttons, conventions, adding sections) live
+in a single file — `AGENTS.md` — so they work the same with Claude Code, Codex, Cursor, etc.
 
 @AGENTS.md

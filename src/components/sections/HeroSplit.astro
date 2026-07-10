@@ -1,6 +1,6 @@
 ---
-// HeroSplit — dwukolumnowy hero (treść lewo, obraz prawo) w czystym stylu jak HeroCentered.
-// System nagłówków + 3 przyciski + lekka animacja wejścia. Edytuj rozmową (patrz AGENTS.md).
+// HeroSplit — two-column hero (content left, image right) in the same clean style as HeroCentered.
+// Heading system + 3 buttons + light entrance animation. Edit by chat (see AGENTS.md).
 interface Cta { label: string; href: string }
 interface Props {
   eyebrow?: string;
@@ -75,7 +75,7 @@ const {
     box-shadow: 0 40px 80px -40px rgba(20, 20, 30, 0.28);
   }
 
-  /* lekka animacja wejścia — staggered */
+  /* light entrance animation — staggered */
   @keyframes hsRise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
   @keyframes hsMedia { from { opacity: 0; transform: translateX(26px) scale(0.99); } to { opacity: 1; transform: none; } }
   .hs__anim { opacity: 0; animation: hsRise 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards; animation-delay: var(--d, 0ms); }

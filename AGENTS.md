@@ -1,107 +1,107 @@
-# Astroblocks — mózg kitu (instrukcja dla agenta AI)
+# Astroblocks — the kit's brain (instructions for the AI agent)
 
-To jest „mózg" kitu. Kiedy użytkownik prosi o zmianę albo dodanie sekcji, trzymaj się tych zasad,
-żeby wszystko było spójne z systemem — **nie zmyślaj wartości**, sięgaj po tokeny niżej.
+This is the kit's "brain". When the user asks to change or add a section, stick to these rules
+so everything stays consistent with the system — **don't make up values**, reach for the tokens below.
 
-Działa z każdym agentem (Claude Code czyta to przez `CLAUDE.md`, Codex czyta `AGENTS.md` wprost,
-Cursor/Copilot można wskazać na ten plik). Sekcje to zwykłe pliki `.astro` — zero lock-inu do narzędzia.
+Works with any agent (Claude Code reads it via `CLAUDE.md`, Codex reads `AGENTS.md` directly,
+Cursor/Copilot can be pointed at this file). Sections are plain `.astro` files — zero tool lock-in.
 
-## Design tokens (używaj ich, nie hardcode losowych kolorów)
+## Design tokens (use them, don't hardcode random colors)
 
-| Token | Wartość | Do czego |
+| Token | Value | Used for |
 |---|---|---|
-| Tło | `#FFFFFF` | główne tło (jasny motyw) |
-| Powierzchnia 2 | `#F5F5F3` | subtelne wypełnienia |
-| Tekst | `#21201C` | nagłówki, opisy, nav |
-| Faint | `#9B9890` | eyebrowy, bardzo subtelne labelki |
-| Linia | `rgba(24,24,27,0.10)` / `0.16` | ramki, dividery |
-| **Przycisk main (indygo)** | `#5B5BD6` (hover `#4E4EC8`), tekst `#FFF` | CTA / główna akcja |
-| Przycisk secondary | białe tło + ramka `line-strong` + tekst `#21201C` | druga akcja |
-| Akcent tekstowy (lawenda) | `#7C6CD0` | wyróżnione słowo w nagłówku przez `<em>` |
-| Pastele geo (hero/footer) | lav `#D3C6F9` · peach `#FAC6BD` · butter `#FED888` · mint `#BEE3BF` · sky `#B4E0EA` · rose `#F3C6E2` | tła geometryczne |
-| Wariant „dark" sekcji | tło `#0A0A0C`/`#0E0E11`, akcent lime `#CBF24A` | ciemne sekcje (np. HeroSplit dark) |
+| Background | `#FFFFFF` | main background (light theme) |
+| Surface 2 | `#F5F5F3` | subtle fills |
+| Text | `#21201C` | headings, copy, nav |
+| Faint | `#9B9890` | eyebrows, very subtle labels |
+| Line | `rgba(24,24,27,0.10)` / `0.16` | borders, dividers |
+| **Main button (indigo)** | `#5B5BD6` (hover `#4E4EC8`), text `#FFF` | CTA / primary action |
+| Secondary button | white bg + `line-strong` border + text `#21201C` | secondary action |
+| Text accent (lavender) | `#7C6CD0` | highlighted word in a heading via `<em>` |
+| Geo pastels (hero/footer) | lav `#D3C6F9` · peach `#FAC6BD` · butter `#FED888` · mint `#BEE3BF` · sky `#B4E0EA` · rose `#F3C6E2` | geometric backgrounds |
+| Section "dark" variant | bg `#0A0A0C`/`#0E0E11`, lime accent `#CBF24A` | dark sections (e.g. HeroSplit dark) |
 
-- **Radius:** przyciski/inputy `12px`, karty/sekcje `16px`.
-- **Font:** tylko **Inter** (`'Inter Variable'`) do nagłówków i body; **JetBrains Mono** do eyebrowów/labelek/kodu. Nie wprowadzaj innego fontu display bez prośby.
+- **Radius:** buttons/inputs `12px`, cards/sections `16px`.
+- **Font:** only **Inter** (`'Inter Variable'`) for headings and body; **JetBrains Mono** for eyebrows/labels/code. Don't introduce another display font unless asked.
 
-## Typografia — system nagłówków H1–H6 (globalny w Layout)
+## Typography — H1–H6 heading system (global in Layout)
 
-Wszystkie nagłówki: **Inter, `font-weight: 600` (semibold, NIE bold), kolor `#21201C` (czarny)**.
+All headings: **Inter, `font-weight: 600` (semibold, NOT bold), color `#21201C` (black)**.
 
-| Tag | Rozmiar | Uwagi |
+| Tag | Size | Notes |
 |---|---|---|
-| **H1** | `48px` (clamp do 3rem) | hero, line-height 1.05 |
-| **H2** | `24px` (1.5rem) | nagłówek sekcji |
-| **H3** | `20px` (1.25rem) | pod-nagłówek |
+| **H1** | `48px` (clamp to 3rem) | hero, line-height 1.05 |
+| **H2** | `24px` (1.5rem) | section heading |
+| **H3** | `20px` (1.25rem) | sub-heading |
 | **H4** | `18px` | |
 | **H5** | `16px` | |
 | **H6** | `14px` | |
 
-- Używaj **semantycznych tagów** `<h1>`–`<h6>` — styl przychodzi z globala, nie duplikuj.
-- **Body/opisy:** `17px`, `line-height: 1.4`, kolor `#21201C`.
-- **Eyebrow:** JetBrains Mono, `0.72rem`, UPPERCASE, `letter-spacing: 0.16em`, kolor `faint`.
-- Wyróżnienie w nagłówku = `<em>` (nie italic) w kolorze lawendy `#7C6CD0` (globalnie).
+- Use **semantic tags** `<h1>`–`<h6>` — the style comes from the global, don't duplicate it.
+- **Body/copy:** `17px`, `line-height: 1.4`, color `#21201C`.
+- **Eyebrow:** JetBrains Mono, `0.72rem`, UPPERCASE, `letter-spacing: 0.16em`, color `faint`.
+- Highlight in a heading = `<em>` (not italic) in lavender `#7C6CD0` (globally).
 
-## Przyciski — 3 rodzaje (globalne w Layout)
+## Buttons — 3 types (global in Layout)
 
-Rozmiar/kształt jak w hero: niewielkie, `radius 12px`, `padding 0.55rem 1rem`, `weight 600`, `size 0.9rem`. `.btn--sm` = mniejszy.
+Size/shape like in the hero: small, `radius 12px`, `padding 0.55rem 1rem`, `weight 600`, `size 0.9rem`. `.btn--sm` = smaller.
 
-1. **`.btn .btn--primary`** — MAIN: tło indygo `#5B5BD6`, hover `#4E4EC8`, tekst biały.
-2. **`.btn .btn--secondary`** — SECONDARY: białe tło + ramka, hover `border-color: text` + tło `#faf9f7`. (`.btn--ghost` to alias.)
-3. **`.btn .btn--link`** — LINK: bez tła/ramki, tekst + strzałka; hover → kolor indygo + strzałka odjeżdża (`gap` rośnie).
+1. **`.btn .btn--primary`** — MAIN: indigo bg `#5B5BD6`, hover `#4E4EC8`, white text.
+2. **`.btn .btn--secondary`** — SECONDARY: white bg + border, hover `border-color: text` + bg `#faf9f7`. (`.btn--ghost` is an alias.)
+3. **`.btn .btn--link`** — LINK: no bg/border, text + arrow; hover → indigo color + the arrow slides away (`gap` grows).
 
-Przyciski kopiujące mają **ikonkę copy** (`.btn__ico`) + `<span class="btn__label">…</span>` (JS podmienia sam label).
+Copy buttons have a **copy icon** (`.btn__ico`) + `<span class="btn__label">…</span>` (JS swaps just the label).
 
-## Animacje (styl premium, „nie przekombinuj")
+## Animations (premium style, "don't overdo it")
 
-- Wejście sekcji: subtelny **staggered fade-up** (`translateY 18px → 0`, opacity, ~0.7s, delay per element `--d`).
-- Zawsze guard `@media (prefers-reduced-motion: reduce)` → pokaż stan końcowy.
-- Wzór: patrz `HeroCentered.astro` (keyframes `hcRise` / `hcMedia`).
+- Section entrance: a subtle **staggered fade-up** (`translateY 18px → 0`, opacity, ~0.7s, delay per element `--d`).
+- Always guard `@media (prefers-reduced-motion: reduce)` → show the final state.
+- Pattern: see `HeroCentered.astro` (keyframes `hcRise` / `hcMedia`).
 
-## Konwencje kodu
+## Code conventions
 
-- Każda sekcja = **jeden plik `.astro`** w `src/components/sections/`.
-- Style zawsze **scoped** (`<style>` w komponencie), **mobile-first**, breakpoint `720px`.
-- Treść **przez propsy** — nie hardcode'uj tekstu w markupie.
-- Warianty: prop `variant="light" | "dark"`.
-- Animacje: **zawsze** guard `@media (prefers-reduced-motion: reduce)`.
-- Zdjęcia: przez props; placeholder demo = `/placeholder-landscape.svg`.
-- **Pauzy: używaj `–` (półpauza), NIE `—` (długa pauza).**
+- Each section = **one `.astro` file** in `src/components/sections/`.
+- Styles always **scoped** (`<style>` in the component), **mobile-first**, breakpoint `720px`.
+- Content **through props** — don't hardcode text in the markup.
+- Variants: prop `variant="light" | "dark"`.
+- Animations: **always** guard `@media (prefers-reduced-motion: reduce)`.
+- Images: through props; demo placeholder = `/placeholder-landscape.svg`.
+- **Dashes: use `–` (en-dash), NOT `—` (em-dash).**
 
-## Budowanie strony użytkownika — DOMYŚLNY tryb (składanie z gotowych bloków)
+## Building the user's page — DEFAULT mode (assembling from ready-made blocks)
 
-Gdy ktoś mówi „dodaj sekcję X", „wrzuć NavBar/Hero/FAQ na stronę", „dodaj kolejny blok", albo **wkleja kod bloku z przycisku „Copy"** — chodzi o **złożenie strony głównej `/` z GOTOWYCH bloków**, które już leżą w `src/components/sections/`. **NIE rejestruj nic w galerii, NIE twórz podstron `/preview`.** Rób tak:
+When someone says "add section X", "drop NavBar/Hero/FAQ onto the page", "add another block", or **pastes block code from the "Copy" button** — this is about **assembling the home page `/` from READY-MADE blocks** that already live in `src/components/sections/`. **Do NOT register anything in the gallery, do NOT create `/preview` subpages.** Do this:
 
-1. Otwórz **`src/pages/index.astro`** — to strona główna (kanwa użytkownika).
-2. Zaimportuj komponent na górze (frontmatter), np. `import NavBar from '../components/sections/NavBar.astro';`
-3. Wstaw go **w `<main>`**: `<NavBar {...propsy} />`. **Kolejne bloki dokładaj POD spodem** — sekcje układają się jedna pod drugą, w kolejności wstawienia (jak normalna strona www).
-4. Przy pierwszym bloku **usuń pustą kanwę** (`<section class="empty">…</section>`).
-5. Propsy weź z dema w `src/data/sections.ts` (pole `demo` danego bloku) i dostosuj teksty wg prośby.
+1. Open **`src/pages/index.astro`** — this is the home page (the user's canvas).
+2. Import the component at the top (frontmatter), e.g. `import NavBar from '../components/sections/NavBar.astro';`
+3. Insert it **inside `<main>`**: `<NavBar {...props} />`. **Add further blocks BELOW** — sections stack one under another, in insertion order (like a normal web page).
+4. With the first block **remove the empty canvas** (`<section class="empty">…</section>`).
+5. Take props from the demo in `src/data/sections.ts` (the block's `demo` field) and adjust the text per the request.
 
-Efekt: użytkownik widzi swoje sekcje na `http://localhost:4322/` — **nie** na `/preview/...`. Podstrony `/preview` to tylko podglądy do galerii, NIE miejsce na stronę użytkownika.
+Result: the user sees their sections at `http://localhost:4322/` — **not** at `/preview/...`. The `/preview` subpages are only gallery previews, NOT a place for the user's page.
 
-## Dodanie CAŁKIEM NOWEGO bloku do biblioteki (tylko gdy tworzysz nowy typ sekcji)
+## Adding a COMPLETELY NEW block to the library (only when creating a new section type)
 
-Robisz to wyłącznie, gdy user chce **zupełnie nowy** komponent, którego NIE ma w `sections/`:
+Do this only when the user wants a **completely new** component that is NOT in `sections/`:
 
-1. Stwórz `src/components/sections/NazwaSekcji.astro` (propsy + scoped style).
-2. Dopisz wpis w `src/data/sections.ts`: `{ id, name, category, file, demo: {…propsy…} }`.
-3. Zarejestruj komponent w mapie w `src/pages/preview/[id].astro`.
-4. Gotowe — karta w galerii, filtr kategorii, etykieta `KATEGORIA 01` i przycisk „Copy" robią się same.
+1. Create `src/components/sections/SectionName.astro` (props + scoped style).
+2. Add an entry in `src/data/sections.ts`: `{ id, name, category, file, demo: {…props…} }`.
+3. Register the component in the map in `src/pages/preview/[id].astro`.
+4. Done — the gallery card, category filter, the `CATEGORY 01` label and the "Copy" button all happen by themselves.
 
-## Typowe prośby i jak je realizować
+## Common requests and how to handle them
 
-- „zrób jaśniejszą / ciemniejszą wersję" → użyj propa `variant`, nie odwracaj kolorów ręcznie.
-- „zmień główny przycisk" → trzymaj `.btn--primary` (indygo), secondary = `.btn--ghost`.
-- „dodaj sekcję X na stronę" / „wkleiłem kod bloku X" → blok już jest w `sections/`; NIE twórz duplikatu i NIE ruszaj galerii — zaimportuj i wstaw `<X {...} />` w `src/pages/index.astro` (patrz „Budowanie strony użytkownika").
-- „dodaj CAŁKIEM NOWY typ bloku do biblioteki" → skopiuj wzorzec z `src/components/sections/`, dopisz do registry (patrz „Dodanie CAŁKIEM NOWEGO bloku").
-- „dodaj animację wejścia" → `IntersectionObserver` + klasa `.reveal` + guard reduced-motion.
-- „zmień kolor na …" → jeśli pasuje token, użyj tokenu; hardcode tylko gdy user poda konkretny hex.
+- "make a lighter / darker version" → use the `variant` prop, don't invert colors by hand.
+- "change the main button" → keep `.btn--primary` (indigo), secondary = `.btn--ghost`.
+- "add section X to the page" / "I pasted block X's code" → the block is already in `sections/`; do NOT create a duplicate and do NOT touch the gallery — import and insert `<X {...} />` in `src/pages/index.astro` (see "Building the user's page").
+- "add a COMPLETELY NEW block type to the library" → copy the pattern from `src/components/sections/`, add it to the registry (see "Adding a COMPLETELY NEW block").
+- "add an entrance animation" → `IntersectionObserver` + the `.reveal` class + a reduced-motion guard.
+- "change the color to …" → if a token fits, use the token; hardcode only when the user gives a specific hex.
 
-## Czego NIE robić
+## What NOT to do
 
-- Nie hardcode'uj losowych kolorów — sięgaj po tokeny.
-- Nie zmieniaj Inter na inny font display (chyba że user wprost prosi).
-- Nie usuwaj guardów `prefers-reduced-motion`.
-- Nie używaj długiej pauzy `—` (ma być `–`).
-- Nie rób „generycznego AI-looku" — trzymaj system: jasne tło, indygo akcent, czysty Inter, dużo powietrza.
+- Don't hardcode random colors — reach for the tokens.
+- Don't swap Inter for another display font (unless the user explicitly asks).
+- Don't remove the `prefers-reduced-motion` guards.
+- Don't use the em-dash `—` (it should be `–`).
+- Don't make a "generic AI look" — keep to the system: light background, indigo accent, clean Inter, lots of breathing room.

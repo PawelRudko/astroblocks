@@ -1,6 +1,6 @@
 ---
-// NavBar — responsywny navbar z paskiem ogłoszeń, mega-menu i dropdownem. Nasz system + globalne .btn.
-// Menu jest w markupie (edytujesz rozmową). Kluczowe teksty przez props. Patrz AGENTS.md.
+// NavBar — responsive navbar with an announcement bar, mega-menu and dropdown. Our system + global .btn.
+// The menu lives in the markup (you edit it by chat). Key text through props. See AGENTS.md.
 interface Props {
   brand?: string;
   ctaLabel?: string;
@@ -16,7 +16,7 @@ const {
   announcement = { badge: 'NEW', text: 'Northwind 3.0 just launched — 40% faster pipelines.', linkLabel: 'Read more', href: '#' },
 } = Astro.props;
 
-// proste line-ikony (stroke) do mega-menu
+// simple line icons (stroke) for the mega-menu
 const ic = {
   chart: 'M3 3v18h18 M7 15l3-4 3 2 4-6',
   bolt: 'M13 2 4 14h7l-1 8 9-12h-7l1-8z',
@@ -134,7 +134,7 @@ const ic = {
   .nb { font-family: var(--font-body); color: var(--text); position: relative; z-index: 10; }
   .nb a { color: inherit; text-decoration: none; }
 
-  /* pasek ogłoszeń — light gray */
+  /* announcement bar — light gray */
   .nb__ann { background: #f2f1ee; border-bottom: 1px solid var(--line); }
   .nb__ann-inner { max-width: 1200px; margin-inline: auto; padding: 0.55rem clamp(1rem, 3vw, 2rem); display: flex; align-items: center; justify-content: center; gap: 0.75rem; position: relative; }
   .nb__ann-text { font-size: 0.85rem; color: #4a4842; }
@@ -144,7 +144,7 @@ const ic = {
   .nb__ann-x { position: absolute; right: clamp(1rem, 3vw, 2rem); top: 50%; transform: translateY(-50%); background: none; border: 0; color: #7a786f; cursor: pointer; display: inline-flex; padding: 4px; border-radius: 6px; }
   .nb__ann-x:hover { color: var(--text); background: rgba(0,0,0,0.05); }
 
-  /* belka */
+  /* bar */
   .nb__bar { background: #fff; border-bottom: 1px solid var(--line); }
   .nb__inner { max-width: 1200px; margin-inline: auto; padding: 0 clamp(1rem, 3vw, 2rem); height: 62px; display: flex; align-items: center; gap: 1.5rem; }
   .nb__brand { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--font-display); font-weight: 600; font-size: 1.15rem; letter-spacing: -0.02em; }
@@ -161,7 +161,7 @@ const ic = {
   .nb__signin { font-size: 0.92rem; font-weight: 500; }
   .nb__signin:hover { color: #5b5bd6; }
 
-  /* panele */
+  /* panels */
   .nb__panel { position: absolute; top: calc(100% + 10px); opacity: 0; visibility: hidden; transform: translateY(6px); transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s; background: #fff; border: 1px solid var(--line-strong); border-radius: 16px; box-shadow: 0 30px 60px -30px rgba(20,20,30,0.35); z-index: 20; }
   .nb__item.is-open .nb__panel { opacity: 1; visibility: visible; transform: translateY(0); }
 
@@ -224,7 +224,7 @@ const ic = {
       });
     });
 
-    // zamknij po kliknięciu poza / Escape
+    // close on click outside / Escape
     document.addEventListener('click', (e) => { if (!nb.contains(e.target as Node)) closeAll(); });
     nb.addEventListener('click', (e) => { if ((e.target as HTMLElement).closest('.nb__panel a')) closeAll(); });
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeAll(); });
@@ -238,7 +238,7 @@ const ic = {
       if (mobile) mobile.hidden = !open;
     });
 
-    // pasek ogłoszeń
+    // announcement bar
     nb.querySelector('[data-nb-dismiss]')?.addEventListener('click', () => {
       nb.querySelector('#nbAnn')?.remove();
     });

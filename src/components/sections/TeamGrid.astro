@@ -1,6 +1,6 @@
 ---
-// TeamGrid — pozioma karuzela osób/kart. Nagłówek w systemie, kafle: zaślepka + nazwa + „See more".
-// Strzałki + kropki. Edytuj rozmową (patrz AGENTS.md).
+// TeamGrid — horizontal carousel of people/cards. Heading on-system, tiles: placeholder + name + "See more".
+// Arrows + dots. Edit by chat (see AGENTS.md).
 interface Member { name: string; role?: string; image?: string; href?: string }
 interface Props {
   eyebrow?: string;
@@ -61,7 +61,7 @@ const {
   .tc__title { margin-top: 0.7rem; }
   .tc__subtitle { margin-top: 0.8rem; color: rgba(33, 32, 28, 0.7); font-size: 1.05rem; line-height: 1.45; }
 
-  /* karuzela */
+  /* carousel */
   .tc__track {
     list-style: none; margin: 0; padding: 0;
     display: flex; gap: 1.25rem;
@@ -78,7 +78,7 @@ const {
   .tc__more { display: inline-flex; align-items: center; gap: 0.35rem; margin-top: 0.6rem; font-size: 0.9rem; font-weight: 500; color: rgba(33, 32, 28, 0.6); transition: color 0.18s ease, gap 0.18s ease; }
   .tc__more:hover { color: #5b5bd6; gap: 0.55rem; }
 
-  /* kontrolki */
+  /* controls */
   .tc__controls { display: flex; align-items: center; justify-content: space-between; margin-top: clamp(1.5rem, 3vw, 2.25rem); }
   .tc__arrows { display: flex; gap: 0.4rem; }
   .tc__arrow {
@@ -93,7 +93,7 @@ const {
   .tc__dot { width: 8px; height: 8px; padding: 0; border: 0; border-radius: 999px; background: rgba(33, 32, 28, 0.2); cursor: pointer; transition: background 0.18s ease, width 0.18s ease; }
   .tc__dot.is-active { background: var(--text); width: 22px; }
 
-  /* lekka animacja wejścia */
+  /* light entrance animation */
   @keyframes tcRise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
   .tc__card { opacity: 0; animation: tcRise 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards; animation-delay: var(--d, 0ms); }
   @media (prefers-reduced-motion: reduce) {
@@ -116,7 +116,7 @@ const {
       return cards[0].offsetWidth + gap;
     };
 
-    // kropki = liczba kart
+    // dots = number of cards
     const dots = cards.map((_, i) => {
       const d = document.createElement('button');
       d.type = 'button';

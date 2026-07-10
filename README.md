@@ -50,4 +50,4 @@ Plain Astro · scoped CSS · zero required runtime dependencies · light, Keysta
 
 ---
 
-Built by [Paweł Rudko](https://github.com/PawelRudko).
+Built by [Pawel Rudko](https://github.com/PawelRudko).

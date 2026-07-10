@@ -48,7 +48,7 @@ const {
     --navy: #17375e;
     --gold: #d4a017;
 
-    /* pastelowe pola geometryczne (podmienialne) */
+    /* pastel geometric fields (swappable) */
     --geo-lav: #d3c4f2;
     --geo-peach: #f7cdaa;
     --geo-butter: #f8e08a;
@@ -78,10 +78,10 @@ const {
     overflow-x: hidden;
   }
 
-  /* System nagłówków H1–H6 — semibold, kolor tekstu (czarny) */
+  /* Heading system H1–H6 — semibold, text color (black) */
   h1, h2, h3, h4, h5, h6 { font-family: var(--font-display); font-weight: 600; color: var(--text); letter-spacing: -0.02em; line-height: 1.15; }
   h1 { font-size: clamp(2rem, 5vw, 3rem); line-height: 1.05; letter-spacing: -0.03em; }   /* 48px */
-  h2 { font-size: 1.5rem; line-height: 1.25; }   /* 24px — jak nagłówki sekcji */
+  h2 { font-size: 1.5rem; line-height: 1.25; }   /* 24px — like section headings */
   h3 { font-size: 1.25rem; }   /* 20px */
   h4 { font-size: 1.125rem; }  /* 18px */
   h5 { font-size: 1rem; }       /* 16px */
@@ -99,7 +99,7 @@ const {
 
   .eyebrow { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--faint); }
 
-  /* System przycisków — 3 rodzaje: primary / secondary / link */
+  /* Button system — 3 types: primary / secondary / link */
   .btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem; padding: 0.55rem 1rem; border-radius: var(--radius-btn); font-family: var(--font-body); font-weight: 600; font-size: 0.9rem; line-height: 1.2; border: 1px solid transparent; cursor: pointer; text-decoration: none; transition: background 0.18s ease, border-color 0.18s ease, gap 0.18s ease, color 0.18s ease; }
   .btn--primary { background: #5b5bd6; color: #fff; }
   .btn--primary:hover { background: #4e4ec8; }
@@ -113,7 +113,7 @@ const {
   .btn--primary .btn__meta { color: rgba(255, 255, 255, 0.72); }
   .btn[data-copied] { background: #4a8f5b; color: #fff; }
 
-  /* Logo / wordmark (globalny — nav i footer) */
+  /* Logo / wordmark (global — nav and footer) */
   .brand { display: inline-flex; align-items: center; gap: 0.55rem; font-family: var(--font-display); font-size: 1.15rem; font-weight: 600; letter-spacing: -0.035em; color: var(--text); }
   .brand__icon { width: 22px; height: 22px; flex: none; }
 

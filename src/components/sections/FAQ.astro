@@ -1,7 +1,7 @@
 ---
-// FAQ — accordion pytań i odpowiedzi. Nagłówek w systemie (H2), pytania mniejsze niż
-// generyczne szablony, płynne rozwijanie (grid-rows), pojedyncze otwarcie naraz.
-// Ikona „+" obraca się w „×". Bez zależności, działa też w miniaturce. Edytuj rozmową (AGENTS.md).
+// FAQ — accordion of questions and answers. Heading on-system (H2), questions smaller than
+// generic templates, smooth expand (grid-rows), one open at a time.
+// The "+" icon rotates into "×". No dependencies, works in the thumbnail too. Edit by chat (AGENTS.md).
 interface Item { q: string; a: string }
 interface Props {
   eyebrow?: string;
@@ -49,7 +49,7 @@ const { eyebrow, title, subtitle, items, bg = 'white' } = Astro.props;
 </section>
 
 <script>
-  // Pojedyncze otwarcie: klik zamyka pozostałe. Bez zależności.
+  // Single open: a click closes the rest. No dependencies.
   document.querySelectorAll<HTMLElement>('.faq').forEach((faq) => {
     const items = Array.from(faq.querySelectorAll<HTMLElement>('.faq__item'));
     items.forEach((item) => {
@@ -82,7 +82,7 @@ const { eyebrow, title, subtitle, items, bg = 'white' } = Astro.props;
   .faq__item { border-bottom: 1px solid var(--line); }
   .faq__item:first-child { border-top: 1px solid var(--line); }
 
-  /* Pytanie — przycisk na całą szerokość */
+  /* Question — full-width button */
   .faq__q {
     width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 1.25rem;
     padding: 1.15rem 0; background: none; border: none; cursor: pointer; text-align: left;
@@ -91,7 +91,7 @@ const { eyebrow, title, subtitle, items, bg = 'white' } = Astro.props;
   .faq__q-text { font-size: 1.0625rem; font-weight: 600; line-height: 1.35; letter-spacing: -0.01em; transition: color 0.18s ease; }
   .faq__q:hover .faq__q-text { color: #5b5bd6; }
 
-  /* Ikona +/× w kwadraciku */
+  /* +/× icon in a small square */
   .faq__ico {
     flex: none; width: 32px; height: 32px; display: grid; place-items: center;
     border: 1px solid var(--line-strong); border-radius: 8px; color: var(--text);
@@ -101,7 +101,7 @@ const { eyebrow, title, subtitle, items, bg = 'white' } = Astro.props;
   .faq__q:hover .faq__ico { border-color: #5b5bd6; color: #5b5bd6; }
   .faq__item.is-open .faq__ico { transform: rotate(45deg); border-color: #5b5bd6; color: #5b5bd6; }
 
-  /* Odpowiedź — płynne rozwijanie przez grid-rows 0fr→1fr */
+  /* Answer — smooth expand via grid-rows 0fr→1fr */
   .faq__a { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.32s cubic-bezier(0.22, 1, 0.36, 1); }
   .faq__item.is-open .faq__a { grid-template-rows: 1fr; }
   .faq__a-inner { overflow: hidden; }

@@ -1,16 +1,16 @@
-// Jedno źródło prawdy dla galerii + podglądów + miniaturek.
-// Dodajesz sekcję = dopisujesz wpis tutaj. Reszta (karta, filtr, /preview, copy) robi się sama.
-// UWAGA: treści demo komponentów są PO ANGIELSKU (produkt targetuje rynek EN).
+// Single source of truth for the gallery + previews + thumbnails.
+// Adding a section = adding an entry here. The rest (card, filter, /preview, copy) happens by itself.
+// NOTE: component demo content is in ENGLISH (the product targets the EN market).
 
 export interface SectionEntry {
   id: string;
   name: string;
   category: string;
-  file: string; // nazwa pliku w src/components/sections/
+  file: string; // file name in src/components/sections/
   demo: Record<string, unknown>;
 }
 
-// wspólna zaślepka na zdjęcia (podmieniasz swoje w public/ lub przez props)
+// shared image placeholder (swap in your own in public/ or via props)
 const placeholder = '/placeholder-landscape.svg';
 
 export const registry: SectionEntry[] = [
@@ -146,13 +146,13 @@ export const registry: SectionEntry[] = [
   },
 ];
 
-// karty z etykietą per-kategoria (HERO 01, HERO 02, BLOG 01...) — wspólne dla / i /blocks
+// cards with a per-category label (HERO 01, HERO 02, BLOG 01...) — shared by / and /blocks
 const catCount: Record<string, number> = {};
 export const cards = registry.map((s) => {
   catCount[s.category] = (catCount[s.category] || 0) + 1;
   return { ...s, label: `${s.category.toUpperCase()} ${String(catCount[s.category]).padStart(2, '0')}` };
 });
 
-export const categories = ['Wszystkie', ...Array.from(new Set(registry.map((s) => s.category)))];
+export const categories = ['All', ...Array.from(new Set(registry.map((s) => s.category)))];
 export const countFor = (cat: string) =>
-  cat === 'Wszystkie' ? registry.length : registry.filter((s) => s.category === cat).length;
+  cat === 'All' ? registry.length : registry.filter((s) => s.category === cat).length;
