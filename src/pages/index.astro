@@ -7,7 +7,7 @@ import Nav from '../components/Nav.astro';
 import Brand from '../components/Brand.astro';
 
 const starterPrompt =
-  'Read AGENTS.md. Add the HeroSplit block to this page (src/pages/index.astro), then change the headline to "Our offer" and make the second button secondary.';
+  'Read AGENTS.md. Build my home page in src/pages/index.astro: remove this empty canvas, then add the HeroSplit block inside <main> and set its headline to "Our offer". Keep every block I ask for next as a new section stacked below on this page — never on /preview.';
 ---
 
 <Layout
@@ -18,11 +18,12 @@ const starterPrompt =
 
   <main id="main" class="canvas">
     <!--
-      👋 This is your canvas. Add sections here by talking to Claude Code.
+      👋 This is your home page canvas. Build it by talking to Claude Code.
+      Blocks go RIGHT HERE, inside <main>, stacked one below another (like a real page).
       Try: open this folder in Claude and say
-        "Read AGENTS.md and add the HeroSplit block to this page."
+        "Read AGENTS.md and add the HeroSplit block to this page, then add FAQ below it."
       Browse every block at /blocks and hit "Copy", or just ask for one by name.
-      Delete this empty state once you add your first section.
+      Delete this <section class="empty"> once you add your first section.
     -->
     <section class="empty">
       <span class="eyebrow">Your canvas</span>
@@ -41,10 +42,10 @@ const starterPrompt =
       </div>
 
       <div class="empty__zone" aria-hidden="true">
-        <span class="empty__zone-label">Your sections appear here</span>
+        <span class="empty__zone-label">Your sections stack here, one below another</span>
       </div>
 
-      <p class="empty__hint">Paste this in Claude Code to add your first block:</p>
+      <p class="empty__hint">Paste this in Claude Code to start building your home page:</p>
       <pre class="empty__prompt"><code id="starterPrompt">{starterPrompt}</code></pre>
     </section>
   </main>
