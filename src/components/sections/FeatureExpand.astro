@@ -39,8 +39,10 @@ const ph = '/placeholder-landscape.svg';
             {p.eyebrow && <span class="fexp__eyebrow">{p.eyebrow}</span>}
             <h3 class="fexp__panel-title">{p.title}</h3>
             <div class="fexp__more">
-              {p.subtitle && <p class="fexp__panel-text">{p.subtitle}</p>}
-              {p.link && <a class="fexp__link" href={p.link.href || '#'}>{p.link.label} <span aria-hidden="true">→</span></a>}
+              <div class="fexp__more-inner">
+                {p.subtitle && <p class="fexp__panel-text">{p.subtitle}</p>}
+                {p.link && <a class="fexp__link" href={p.link.href || '#'}>{p.link.label} <span aria-hidden="true">→</span></a>}
+              </div>
             </div>
           </div>
         </article>
@@ -76,12 +78,14 @@ const ph = '/placeholder-landscape.svg';
 
   .fexp__body { position: absolute; z-index: 2; left: 0; right: 0; bottom: 0; padding: clamp(1.1rem, 2vw, 1.6rem); color: #fff; }
   .fexp__eyebrow { font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255, 255, 255, 0.75); }
-  .fexp__panel-title { margin-top: 0.5rem; font-size: clamp(1.05rem, 1.6vw, 1.3rem); color: #fff; white-space: nowrap; }
+  .fexp__panel-title { margin-top: 0.5rem; font-size: clamp(1.05rem, 1.6vw, 1.3rem); color: #fff; }
 
-  /* extra copy — visible only on the expanded panel */
-  .fexp__more { max-width: 34ch; opacity: 0; transform: translateY(6px); transition: opacity 0.35s ease, transform 0.35s ease; transition-delay: 0.08s; }
+  /* extra copy — collapsed to 0 height at rest (so title sits at the bottom), expands on hover
+     pushing the title up and revealing itself */
+  .fexp__more { display: grid; grid-template-rows: 0fr; opacity: 0; transition: grid-template-rows 0.42s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease; }
+  .fexp__more-inner { overflow: hidden; max-width: 34ch; }
   .fexp__panel:hover .fexp__more,
-  .fexp__panel:focus-visible .fexp__more { opacity: 1; transform: none; }
+  .fexp__panel:focus-visible .fexp__more { grid-template-rows: 1fr; opacity: 1; }
   .fexp__panel-text { margin-top: 0.6rem; font-size: 0.9rem; line-height: 1.55; color: rgba(255, 255, 255, 0.82); }
   .fexp__link { display: inline-flex; align-items: center; gap: 0.4rem; margin-top: 0.9rem; font-weight: 600; font-size: 0.9rem; color: #fff; }
   .fexp__link:hover { gap: 0.6rem; }
@@ -90,8 +94,7 @@ const ph = '/placeholder-landscape.svg';
     .fexp__row { flex-direction: column; gap: 8px; }
     .fexp__panel { flex: none; height: 220px; }
     .fexp__panel:hover { flex-grow: 0; }
-    .fexp__panel-title { white-space: normal; }
-    .fexp__more { opacity: 1; transform: none; }
+    .fexp__more { grid-template-rows: 1fr; opacity: 1; }
   }
   @media (prefers-reduced-motion: reduce) {
     .fexp__panel, .fexp__more { transition: none; }
