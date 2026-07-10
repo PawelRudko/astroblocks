@@ -1,0 +1,143 @@
+---
+// EventHeader — event page header: back link, title, meta, live countdown, save-my-spot form, image.
+// Countdown ticks in the browser toward `countdownTo` (ISO date). Form is a demo. On-system, responsive.
+// Edit by chat (AGENTS.md).
+interface Props {
+  backLabel?: string;
+  backHref?: string;
+  title: string;
+  subtitle?: string;
+  dateLabel?: string;
+  spotsLabel?: string;
+  countdownTo?: string;   // ISO date, e.g. "2026-12-31T18:00:00"
+  image?: string;
+  ctaLabel?: string;
+  termsHref?: string;
+  bg?: 'white' | 'gray';
+}
+const {
+  backLabel = 'All events',
+  backHref = '#',
+  title,
+  subtitle,
+  dateLabel,
+  spotsLabel,
+  countdownTo = '2026-12-31T18:00:00',
+  image,
+  ctaLabel = 'Save my spot',
+  termsHref = '#',
+  bg = 'white',
+} = Astro.props;
+const ph = '/placeholder-landscape.svg';
+---
+
+<section class:list={['evt', `evt--${bg}`]}>
+  <div class="evt__content">
+    <a class="evt__back" href={backHref}>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6" /></svg>
+      {backLabel}
+    </a>
+
+    <h1 class="evt__title">{title}</h1>
+    {subtitle && <p class="evt__lead">{subtitle}</p>}
+
+    {(dateLabel || spotsLabel) && (
+      <div class="evt__meta">
+        {dateLabel && <span class="evt__date">{dateLabel}</span>}
+        {spotsLabel && <span class="evt__spots">{spotsLabel}</span>}
+      </div>
+    )}
+
+    <div class="evt__count" data-deadline={countdownTo} role="timer" aria-label="Time remaining">
+      <div class="evt__unit"><span class="evt__num" data-unit="d">00</span><span class="evt__label">Days</span></div>
+      <div class="evt__unit"><span class="evt__num" data-unit="h">00</span><span class="evt__label">Hours</span></div>
+      <div class="evt__unit"><span class="evt__num" data-unit="m">00</span><span class="evt__label">Mins</span></div>
+      <div class="evt__unit"><span class="evt__num" data-unit="s">00</span><span class="evt__label">Secs</span></div>
+    </div>
+
+    <form class="evt__form" novalidate>
+      <input class="evt__input" type="email" name="email" required placeholder="Enter your email" aria-label="Email" />
+      <button class="btn btn--primary" type="submit">{ctaLabel}</button>
+    </form>
+    <p class="evt__terms" data-default>
+      By clicking {ctaLabel} you agree with our <a href={termsHref}>Terms and Conditions</a>.
+    </p>
+  </div>
+
+  <div class="evt__media">
+    <img src={image || ph} alt="" loading="lazy" />
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>('.evt__count').forEach((el) => {
+    const deadline = new Date(el.dataset.deadline || '').getTime();
+    const set = (u: string, v: number) => {
+      const t = el.querySelector<HTMLElement>(`[data-unit="${u}"]`);
+      if (t) t.textContent = String(v).padStart(2, '0');
+    };
+    const tick = () => {
+      let diff = Math.max(0, Math.floor((deadline - Date.now()) / 1000));
+      const d = Math.floor(diff / 86400); diff -= d * 86400;
+      const h = Math.floor(diff / 3600); diff -= h * 3600;
+      const m = Math.floor(diff / 60); const s = diff - m * 60;
+      set('d', d); set('h', h); set('m', m); set('s', s);
+    };
+    tick();
+    setInterval(tick, 1000);
+  });
+
+  document.querySelectorAll<HTMLFormElement>('.evt__form').forEach((form) => {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const note = form.parentElement?.querySelector<HTMLElement>('.evt__terms');
+      if (note) { note.textContent = '✓ Spot saved – check your inbox for confirmation.'; note.removeAttribute('data-default'); }
+      form.reset();
+    });
+  });
+</script>
+
+<style>
+  .evt { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: clamp(2rem, 5vw, 4rem); padding: clamp(2.5rem, 6vw, 5rem) clamp(1.25rem, 4vw, 2.5rem); max-width: 1280px; margin-inline: auto; }
+  .evt--white { background: #ffffff; }
+  .evt--gray { background: #f5f4f2; }
+
+  .evt__back { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.9rem; font-weight: 500; color: var(--muted); transition: color 0.18s ease; }
+  .evt__back svg { width: 16px; height: 16px; }
+  .evt__back:hover { color: #5b5bd6; }
+  .evt__title { margin-top: 1rem; }
+  .evt__lead { margin-top: 0.9rem; max-width: 46ch; color: rgba(33, 32, 28, 0.66); font-size: 15px; line-height: 1.6; }
+
+  .evt__meta { display: flex; flex-wrap: wrap; align-items: center; gap: 0.8rem; margin-top: 1.4rem; }
+  .evt__date { font-weight: 600; color: var(--text); }
+  .evt__spots { font-size: 0.82rem; font-weight: 500; color: var(--text); background: var(--surface-2); padding: 0.28rem 0.7rem; border-radius: var(--radius-pill); }
+
+  /* Countdown */
+  .evt__count { display: grid; grid-template-columns: repeat(4, 1fr); max-width: 25rem; margin-top: 1.6rem; border: 1px solid var(--line-strong); border-radius: var(--radius-card); overflow: hidden; }
+  .evt__unit { display: flex; flex-direction: column; align-items: center; gap: 0.2rem; padding: 0.9rem 0.5rem; border-left: 1px solid var(--line); }
+  .evt__unit:first-child { border-left: none; }
+  .evt__num { font-family: var(--font-display); font-size: clamp(1.5rem, 4vw, 2rem); font-weight: 600; letter-spacing: -0.02em; line-height: 1; color: var(--text); }
+  .evt__label { font-size: 0.78rem; color: var(--muted); }
+
+  /* Save-my-spot form */
+  .evt__form { display: flex; gap: 0.5rem; margin-top: 1.6rem; max-width: 25rem; }
+  .evt__input { flex: 1; min-width: 0; padding: 0.6rem 0.85rem; border: 1px solid var(--line-strong); border-radius: var(--radius-btn); font-family: var(--font-body); font-size: 0.95rem; background: #fff; color: var(--text); }
+  .evt__input::placeholder { color: var(--faint); }
+  .evt__input:focus-visible { outline: 2px solid var(--ink); outline-offset: 1px; }
+  .evt__form .btn { flex: none; }
+  .evt__terms { margin-top: 0.7rem; font-size: 0.82rem; color: var(--muted); max-width: 25rem; }
+  .evt__terms[data-default] a { color: var(--text); text-decoration: underline; text-underline-offset: 2px; }
+  .evt__terms:not([data-default]) { color: #2d7d3f; font-weight: 500; }
+
+  .evt__media img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; border-radius: var(--radius-card); border: 1px solid var(--line); background: #ececea; }
+
+  @media (max-width: 900px) {
+    .evt { grid-template-columns: 1fr; }
+    .evt__media { order: -1; }
+    .evt__media img { aspect-ratio: 16 / 10; }
+  }
+  @media (max-width: 420px) {
+    .evt__form { flex-direction: column; }
+    .evt__form .btn { width: 100%; }
+  }
+</style>

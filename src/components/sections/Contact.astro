@@ -1,0 +1,98 @@
+---
+// Contact — centered header + contact form (name, email, message, terms checkbox, submit).
+// Gray input borders, compact padding. Demo submit shows a thank-you note. On-system, responsive.
+// Edit by chat (AGENTS.md).
+interface Props {
+  eyebrow?: string;
+  title: string;
+  subtitle?: string;
+  submitLabel?: string;
+  termsHref?: string;
+  bg?: 'white' | 'gray';
+}
+const {
+  eyebrow,
+  title,
+  subtitle,
+  submitLabel = 'Submit',
+  termsHref = '#',
+  bg = 'white',
+} = Astro.props;
+---
+
+<section class:list={['cnt', `cnt--${bg}`]}>
+  <div class="cnt__wrap">
+    <header class="cnt__head">
+      {eyebrow && <span class="eyebrow">{eyebrow}</span>}
+      <h2 class="cnt__title">{title}</h2>
+      {subtitle && <p class="cnt__subtitle">{subtitle}</p>}
+    </header>
+
+    <form class="cnt__form" novalidate>
+      <div class="cnt__field">
+        <label class="cnt__label" for="cnt-name">Name</label>
+        <input class="cnt__input" id="cnt-name" name="name" type="text" required />
+      </div>
+      <div class="cnt__field">
+        <label class="cnt__label" for="cnt-email">Email</label>
+        <input class="cnt__input" id="cnt-email" name="email" type="email" required />
+      </div>
+      <div class="cnt__field">
+        <label class="cnt__label" for="cnt-message">Message</label>
+        <textarea class="cnt__input cnt__textarea" id="cnt-message" name="message" rows="5" placeholder="Type your message..."></textarea>
+      </div>
+
+      <label class="cnt__check">
+        <input type="checkbox" required />
+        <span>I accept the <a href={termsHref}>Terms</a></span>
+      </label>
+
+      <button class="btn btn--primary cnt__submit" type="submit">{submitLabel}</button>
+      <p class="cnt__note" hidden></p>
+    </form>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLFormElement>('.cnt__form').forEach((form) => {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const note = form.querySelector<HTMLElement>('.cnt__note');
+      if (note) { note.textContent = '✓ Thanks! We’ll get back to you soon.'; note.hidden = false; }
+      form.reset();
+    });
+  });
+</script>
+
+<style>
+  .cnt { padding: clamp(3rem, 7vw, 6rem) 0; }
+  .cnt--white { background: #ffffff; }
+  .cnt--gray { background: #f5f4f2; }
+  .cnt__wrap { max-width: 640px; margin-inline: auto; padding-inline: clamp(1.25rem, 4vw, 2.5rem); }
+
+  .cnt__head { text-align: center; margin-bottom: clamp(2rem, 5vw, 3rem); }
+  .cnt__title { margin-top: 0.8rem; }
+  .cnt__subtitle { margin-top: 0.9rem; color: rgba(33, 32, 28, 0.66); font-size: 15px; line-height: 1.6; }
+
+  .cnt__form { display: flex; flex-direction: column; gap: 1.1rem; }
+  .cnt__field { display: flex; flex-direction: column; gap: 0.4rem; }
+  .cnt__label { font-size: 0.9rem; font-weight: 500; color: var(--text); }
+  .cnt__input {
+    width: 100%; padding: 0.55rem 0.75rem;
+    border: 1px solid var(--line-strong); border-radius: var(--radius-btn);
+    font-family: var(--font-body); font-size: 0.95rem; background: #fff; color: var(--text);
+    transition: border-color 0.18s ease;
+  }
+  .cnt__input::placeholder { color: var(--faint); }
+  .cnt__input:hover { border-color: rgba(24, 24, 27, 0.28); }
+  .cnt__input:focus-visible { outline: none; border-color: #5b5bd6; box-shadow: 0 0 0 3px rgba(91, 91, 214, 0.12); }
+  .cnt__textarea { resize: vertical; min-height: 128px; line-height: 1.5; }
+
+  .cnt__check { display: flex; align-items: center; gap: 0.55rem; font-size: 0.92rem; color: var(--text); }
+  .cnt__check input { width: 16px; height: 16px; accent-color: #5b5bd6; flex: none; }
+  .cnt__check a { color: var(--text); text-decoration: underline; text-underline-offset: 2px; }
+  .cnt__check a:hover { color: #5b5bd6; }
+
+  .cnt__submit { align-self: center; margin-top: 0.6rem; padding-inline: 2rem; }
+  .cnt__note { text-align: center; font-size: 0.9rem; color: #2d7d3f; font-weight: 500; }
+</style>

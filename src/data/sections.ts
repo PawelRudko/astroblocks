@@ -245,6 +245,59 @@ export const registry: SectionEntry[] = [
       bg: 'white',
     },
   },
+  {
+    id: 'testimonial',
+    name: 'Testimonial',
+    category: 'Testimonial',
+    file: 'Testimonial.astro',
+    demo: {
+      items: [
+        { quote: 'This kit saved us weeks. We described what we wanted and the sections just fell into place – on-brand from the first paste.', name: 'Emily Carter', role: 'Head of Design, Northwind', avatar: placeholder },
+        { quote: 'The fact that every block is real, editable Astro – not locked HTML – is exactly why we picked it. No lock-in, all ours.', name: 'James Walker', role: 'Founder, Evergreen', avatar: placeholder },
+      ],
+      bg: 'white',
+    },
+  },
+  {
+    id: 'logos',
+    name: 'Logos',
+    category: 'Logo',
+    file: 'Logos.astro',
+    demo: {
+      title: "Used by the world's leading companies",
+      bg: 'white',
+    },
+  },
+  {
+    id: 'event-header',
+    name: 'Event Header',
+    category: 'Event',
+    file: 'EventHeader.astro',
+    demo: {
+      backLabel: 'All events',
+      title: 'Event title heading',
+      subtitle: 'A short line about the event – what it is, who it is for and why it is worth saving a spot for.',
+      dateLabel: 'Sat 10 Feb',
+      spotsLabel: '10 spots left!',
+      countdownTo: '2026-12-31T18:00:00',
+      image: placeholder,
+      ctaLabel: 'Save my spot',
+      bg: 'white',
+    },
+  },
+  {
+    id: 'contact',
+    name: 'Contact',
+    category: 'Contact',
+    file: 'Contact.astro',
+    demo: {
+      eyebrow: 'Contact',
+      title: 'Contact us',
+      subtitle: 'Questions, ideas or just saying hi? Drop us a line and we’ll get back to you.',
+      submitLabel: 'Submit',
+      bg: 'white',
+    },
+  },
 ];
 
 // cards with a per-category label (HERO 01, HERO 02, BLOG 01...) — shared by / and /blocks

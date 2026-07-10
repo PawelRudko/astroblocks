@@ -1,0 +1,80 @@
+---
+// Logos — "used by" logo strip. Ships with default placeholder wordmarks; pass your own via props.
+// Horizontal marquee, soft edge fade, static under prefers-reduced-motion. On-system. Edit by chat (AGENTS.md).
+interface Logo { name: string }
+interface Props {
+  title?: string;
+  logos?: Logo[];
+  bg?: 'white' | 'gray';
+}
+const {
+  title = "Used by the world's leading companies",
+  logos,
+  bg = 'white',
+} = Astro.props;
+
+const defaults: Logo[] = [
+  { name: 'Northwind' }, { name: 'Evergreen' }, { name: 'Lumen' },
+  { name: 'Quanta' }, { name: 'Vertex' }, { name: 'Apex' },
+];
+const list = logos && logos.length ? logos : defaults;
+const loop = [...list, ...list];
+---
+
+<section class:list={['logos', `logos--${bg}`]}>
+  <div class="logos__wrap">
+    {title && <p class="logos__title">{title}</p>}
+    <div class="logos__marquee" aria-hidden="true">
+      <div class="logos__track">
+        {loop.map((l) => (
+          <span class="logos__logo">
+            <svg class="logos__mark" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0c.7 5.9 4.4 9.6 12 12-7.6 2.4-11.3 6.1-12 12-.7-5.9-4.4-9.6-12-12C7.6 9.6 11.3 5.9 12 0Z" /></svg>
+            <span class="logos__name">{l.name}</span>
+          </span>
+        ))}
+      </div>
+    </div>
+    <ul class="logos__static">
+      {list.map((l) => (
+        <li class="logos__logo">
+          <svg class="logos__mark" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0c.7 5.9 4.4 9.6 12 12-7.6 2.4-11.3 6.1-12 12-.7-5.9-4.4-9.6-12-12C7.6 9.6 11.3 5.9 12 0Z" /></svg>
+          <span class="logos__name">{l.name}</span>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .logos { padding: clamp(2.5rem, 5vw, 4rem) 0; }
+  .logos--white { background: #ffffff; }
+  .logos--gray { background: #f5f4f2; }
+  .logos__wrap { max-width: 1200px; margin-inline: auto; padding-inline: clamp(1.25rem, 4vw, 2.5rem); }
+  .logos__title { text-align: center; font-size: 0.9rem; font-weight: 600; color: var(--text); }
+
+  .logos__logo { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--text); opacity: 0.68; transition: opacity 0.18s ease; }
+  .logos__logo:hover { opacity: 1; }
+  .logos__mark { width: 22px; height: 22px; flex: none; }
+  .logos__name { font-family: var(--font-display); font-size: 1.15rem; font-weight: 700; letter-spacing: -0.02em; }
+
+  /* Marquee (default, wide screens) */
+  .logos__marquee {
+    margin-top: clamp(1.5rem, 3vw, 2.25rem); overflow: hidden;
+    -webkit-mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+    mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+  }
+  .logos__track { display: flex; width: max-content; gap: clamp(2.5rem, 6vw, 5rem); padding-right: clamp(2.5rem, 6vw, 5rem); will-change: transform; animation: logosScroll 34s linear infinite; }
+  @keyframes logosScroll { to { transform: translateX(-50%); } }
+
+  /* Static wrap fallback (mobile + reduced motion) */
+  .logos__static { display: none; list-style: none; flex-wrap: wrap; justify-content: center; gap: clamp(1.5rem, 5vw, 3rem) clamp(2rem, 6vw, 4rem); margin-top: clamp(1.5rem, 3vw, 2.25rem); }
+
+  @media (max-width: 600px) {
+    .logos__marquee { display: none; }
+    .logos__static { display: flex; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .logos__marquee { display: none; }
+    .logos__static { display: flex; }
+  }
+</style>
