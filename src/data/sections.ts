@@ -61,6 +61,21 @@ export const registry: SectionEntry[] = [
     },
   },
   {
+    id: 'hero-gallery',
+    name: 'Hero Gallery',
+    category: 'Hero',
+    file: 'HeroGallery.astro',
+    demo: {
+      title: 'Medium length hero heading goes here',
+      subtitle:
+        'Pair a clear message with a living wall of images. Two columns drift in opposite directions – motion that draws the eye without stealing it.',
+      primary: { label: 'Get started', href: '#' },
+      secondary: { label: 'Learn more', href: '#' },
+      images: [placeholder, placeholder, placeholder, placeholder, placeholder, placeholder],
+      bg: 'white',
+    },
+  },
+  {
     id: 'team-grid',
     name: 'Team Grid',
     category: 'Team',

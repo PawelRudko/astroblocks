@@ -1,0 +1,113 @@
+---
+// HeroGallery — hero with content on the left and an infinite animated image gallery on the right.
+// Two columns scroll vertically in opposite directions (seamless marquee), with a soft top/bottom fade.
+// Self-contained CSS animation, guarded by prefers-reduced-motion. Images through props. Edit by chat (AGENTS.md).
+interface Btn { label: string; href?: string }
+interface Props {
+  eyebrow?: string;
+  title: string;
+  subtitle?: string;
+  primary?: Btn;
+  secondary?: Btn;
+  images?: string[];
+  bg?: 'white' | 'gray';
+}
+const {
+  eyebrow,
+  title,
+  subtitle,
+  primary,
+  secondary,
+  images = [],
+  bg = 'white',
+} = Astro.props;
+
+const ph = '/placeholder-landscape.svg';
+const pics = images.length ? images : Array.from({ length: 6 }, () => ph);
+// split into two columns; duplicate each so the vertical loop is seamless
+const colA = pics.filter((_, i) => i % 2 === 0);
+const colB = pics.filter((_, i) => i % 2 === 1);
+const loop = (arr: string[]) => (arr.length ? [...arr, ...arr] : [ph, ph, ph, ph]);
+---
+
+<section class:list={['herog', `herog--${bg}`]}>
+  <div class="herog__content">
+    {eyebrow && <span class="eyebrow">{eyebrow}</span>}
+    <h1 class="herog__title">{title}</h1>
+    {subtitle && <p class="herog__lead">{subtitle}</p>}
+    {(primary || secondary) && (
+      <div class="herog__cta">
+        {primary && <a class="btn btn--primary" href={primary.href || '#'}>{primary.label}</a>}
+        {secondary && <a class="btn btn--secondary" href={secondary.href || '#'}>{secondary.label}</a>}
+      </div>
+    )}
+  </div>
+
+  <div class="herog__gallery" aria-hidden="true">
+    <div class="herog__col">
+      <div class="herog__track">
+        {loop(colA).map((src) => (
+          <img class="herog__img" src={src} alt="" loading="lazy" />
+        ))}
+      </div>
+    </div>
+    <div class="herog__col herog__col--down">
+      <div class="herog__track">
+        {loop(colB).map((src) => (
+          <img class="herog__img" src={src} alt="" loading="lazy" />
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .herog { display: grid; grid-template-columns: 1fr 1.1fr; align-items: center; gap: clamp(1.5rem, 4vw, 3.5rem); overflow: hidden; }
+  .herog--white { background: #ffffff; }
+  .herog--gray { background: #f5f4f2; }
+
+  .herog__content {
+    padding-block: clamp(3rem, 7vw, 6rem);
+    padding-inline: clamp(1.25rem, 6vw, 6rem) clamp(1.25rem, 3vw, 2.5rem);
+    max-width: 44rem;
+  }
+  .herog__title { margin-top: 0.9rem; }
+  .herog__lead { margin-top: 1.1rem; max-width: 46ch; color: rgba(33, 32, 28, 0.66); font-size: 15px; line-height: 1.6; }
+  .herog__cta { display: flex; flex-wrap: wrap; gap: 0.7rem; margin-top: 1.8rem; }
+
+  /* Gallery — bleeds to the right edge */
+  .herog__gallery {
+    display: flex; gap: 1rem; height: clamp(520px, 92vh, 860px); overflow: hidden;
+    -webkit-mask-image: linear-gradient(to bottom, transparent, #000 12%, #000 88%, transparent);
+    mask-image: linear-gradient(to bottom, transparent, #000 12%, #000 88%, transparent);
+  }
+  .herog__col { flex: 1; min-width: 0; }
+  .herog__col--down { margin-top: -3rem; }
+
+  .herog__track { will-change: transform; animation: herogScroll 34s linear infinite; }
+  .herog__col--down .herog__track { animation-direction: reverse; animation-duration: 40s; }
+  @keyframes herogScroll { to { transform: translateY(-50%); } }
+
+  .herog__img {
+    display: block; width: 100%; aspect-ratio: 4 / 5; margin-bottom: 1rem;
+    object-fit: cover; border-radius: 14px; border: 1px solid var(--line); background: #ececea;
+  }
+
+  /* content entrance — subtle staggered fade-up */
+  @keyframes herogRise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+  .herog__content > * { animation: herogRise 0.7s cubic-bezier(0.22, 1, 0.36, 1) backwards; }
+  .herog__content > :nth-child(2) { animation-delay: 0.06s; }
+  .herog__content > :nth-child(3) { animation-delay: 0.12s; }
+  .herog__content > :nth-child(4) { animation-delay: 0.18s; }
+
+  @media (max-width: 900px) {
+    .herog { grid-template-columns: 1fr; }
+    .herog__gallery { height: 360px; margin-inline: clamp(1.25rem, 4vw, 2.5rem); margin-bottom: clamp(2rem, 5vw, 3rem); border-radius: var(--radius-card); }
+    .herog__col--down { margin-top: -2rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .herog__track { animation: none; }
+    .herog__content > * { animation: none; }
+  }
+</style>
