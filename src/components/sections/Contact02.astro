@@ -1,0 +1,156 @@
+---
+// Contact02 — two columns: brand + contact details (email / phone / address) on the left,
+// a "Get in touch" form (name, email, topic select, message, submit) on the right. Same system.
+// Demo submit shows a thank-you note. Edit by chat (see AGENTS.md).
+interface Link { label: string; href: string }
+interface Group { heading: string; links?: Link[]; lines?: string[] }
+interface Props {
+  brand?: string;
+  groups?: Group[];
+  formTitle?: string;
+  topics?: string[];
+  messagePlaceholder?: string;
+  submitLabel?: string;
+  bg?: 'white' | 'gray';
+}
+const {
+  brand = 'Felt Layouts©',
+  groups = [
+    { heading: 'Email us', links: [
+      { label: 'studio@feltlayouts.com', href: 'mailto:studio@feltlayouts.com' },
+      { label: 'projects@feltlayouts.com', href: 'mailto:projects@feltlayouts.com' },
+    ] },
+    { heading: 'Talk to us', links: [
+      { label: '+358 40 555 0102', href: 'tel:+358405550102' },
+    ] },
+    { heading: 'Find us', lines: ['Studio 14, Katajanokka', 'Helsinki, Finland'] },
+  ],
+  formTitle = 'Say hello',
+  topics = ['New project', 'Partnership', 'Careers', 'Something else'],
+  messagePlaceholder = 'Tell us a little about your project…',
+  submitLabel = 'Send message',
+  bg = 'white',
+} = Astro.props;
+---
+
+<section class:list={['cnt2', `cnt2--${bg}`]}>
+  <div class="cnt2__wrap">
+    <aside class="cnt2__info">
+      <span class="cnt2__brand">{brand}</span>
+      {groups.map((g) => (
+        <div class="cnt2__group">
+          <span class="cnt2__h">{g.heading}</span>
+          {g.links && (
+            <ul class="cnt2__list">
+              {g.links.map((l) => (
+                <li><a class="cnt2__link" href={l.href}><span class="cnt2__arrow" aria-hidden="true">→</span>{l.label}</a></li>
+              ))}
+            </ul>
+          )}
+          {g.lines && (
+            <address class="cnt2__addr">
+              {g.lines.map((line) => <span>{line}</span>)}
+            </address>
+          )}
+        </div>
+      ))}
+    </aside>
+
+    <div class="cnt2__panel">
+      <h2 class="cnt2__title">{formTitle}</h2>
+      <form class="cnt2__form" novalidate>
+        <div class="cnt2__row">
+          <div class="cnt2__field">
+            <label class="cnt2__label" for="cnt2-name">Name</label>
+            <input class="cnt2__input" id="cnt2-name" name="name" type="text" required />
+          </div>
+          <div class="cnt2__field">
+            <label class="cnt2__label" for="cnt2-email">Email</label>
+            <input class="cnt2__input" id="cnt2-email" name="email" type="email" required />
+          </div>
+        </div>
+
+        <div class="cnt2__field">
+          <label class="cnt2__label" for="cnt2-topic">Topic</label>
+          <div class="cnt2__select">
+            <select class="cnt2__input" id="cnt2-topic" name="topic">
+              <option value="" selected disabled>Select one…</option>
+              {topics.map((t) => <option value={t}>{t}</option>)}
+            </select>
+            <svg class="cnt2__chev" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
+          </div>
+        </div>
+
+        <div class="cnt2__field">
+          <label class="cnt2__label" for="cnt2-message">Message</label>
+          <textarea class="cnt2__input cnt2__textarea" id="cnt2-message" name="message" rows="5" placeholder={messagePlaceholder}></textarea>
+        </div>
+
+        <button class="btn btn--secondary cnt2__submit" type="submit">{submitLabel}</button>
+        <p class="cnt2__note" hidden></p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLFormElement>('.cnt2__form').forEach((form) => {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const note = form.querySelector<HTMLElement>('.cnt2__note');
+      if (note) { note.textContent = '✓ Thanks! We’ll get back to you soon.'; note.hidden = false; }
+      form.reset();
+    });
+  });
+</script>
+
+<style>
+  .cnt2 { font-family: var(--font-body); color: var(--text); padding: clamp(3rem, 7vw, 6rem) 0; }
+  .cnt2--white { background: #ffffff; }
+  .cnt2--gray { background: #f5f4f2; }
+  .cnt2 a { color: inherit; text-decoration: none; }
+
+  .cnt2__wrap { max-width: 1200px; margin-inline: auto; padding-inline: clamp(1.25rem, 4vw, 2.5rem); display: grid; grid-template-columns: 1fr 1.15fr; gap: clamp(2.5rem, 6vw, 5rem); align-items: start; }
+
+  /* left: contact details */
+  .cnt2__brand { display: block; font-weight: 600; font-size: 1.1rem; letter-spacing: -0.01em; margin-bottom: clamp(1.75rem, 4vw, 2.75rem); }
+  .cnt2__group + .cnt2__group { margin-top: clamp(1.5rem, 3vw, 2.25rem); }
+  .cnt2__h { display: block; font-size: 1rem; font-weight: 500; color: var(--faint); margin-bottom: 1.1rem; }
+  .cnt2__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.5rem; }
+  .cnt2__link { display: inline-flex; align-items: center; gap: 0.7rem; font-size: 1.1rem; font-weight: 500; transition: color 0.18s ease; }
+  .cnt2__arrow { transition: transform 0.18s ease; }
+  .cnt2__link:hover { color: #5b5bd6; }
+  .cnt2__link:hover .cnt2__arrow { transform: translateX(3px); }
+  .cnt2__addr { font-style: normal; display: flex; flex-direction: column; gap: 0.25rem; font-size: 1.1rem; font-weight: 500; }
+
+  /* right: form */
+  .cnt2__title { margin: 0 0 clamp(1.5rem, 3vw, 2rem); font-size: clamp(1.5rem, 2.6vw, 2rem); }
+  .cnt2__form { display: flex; flex-direction: column; gap: 1.1rem; }
+  .cnt2__row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.1rem; }
+  .cnt2__field { display: flex; flex-direction: column; gap: 0.45rem; }
+  .cnt2__label { font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--faint); }
+  .cnt2__input {
+    width: 100%; padding: 0.7rem 0.85rem;
+    border: 1px solid var(--line-strong); border-radius: var(--radius-btn);
+    font-family: var(--font-body); font-size: 0.95rem; background: #fff; color: var(--text);
+    transition: border-color 0.18s ease, box-shadow 0.18s ease;
+  }
+  .cnt2__input::placeholder { color: var(--faint); }
+  .cnt2__input:hover { border-color: rgba(24, 24, 27, 0.28); }
+  .cnt2__input:focus-visible { outline: none; border-color: #5b5bd6; box-shadow: 0 0 0 3px rgba(91, 91, 214, 0.12); }
+  .cnt2__textarea { resize: vertical; min-height: 150px; line-height: 1.5; }
+
+  .cnt2__select { position: relative; }
+  .cnt2__select select { appearance: none; -webkit-appearance: none; padding-right: 2.25rem; cursor: pointer; }
+  .cnt2__chev { position: absolute; right: 0.85rem; top: 50%; transform: translateY(-50%); color: var(--faint); pointer-events: none; }
+
+  .cnt2__submit { width: 100%; margin-top: 0.5rem; padding-block: 0.8rem; }
+  .cnt2__note { font-size: 0.9rem; color: #2d7d3f; font-weight: 500; }
+
+  @media (max-width: 820px) {
+    .cnt2__wrap { grid-template-columns: 1fr; gap: 2.5rem; }
+  }
+  @media (max-width: 480px) {
+    .cnt2__row { grid-template-columns: 1fr; }
+  }
+</style>

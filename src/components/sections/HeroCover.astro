@@ -1,0 +1,157 @@
+---
+// HeroCover — full-bleed image hero with an overlaid responsive nav, a bottom-left heading block
+// and a meta bar (location / email). White text over a soft scrim. 70vh by default.
+// Same clean system. Edit by chat (see AGENTS.md).
+interface Link { label: string; href: string }
+interface Props {
+  brand?: string;
+  nav?: Link[];
+  cta?: Link;
+  overline?: string;
+  title: string;
+  subtitle?: string;
+  location?: string;
+  email?: Link;
+  image?: string;
+  imageAlt?: string;
+  height?: string; // e.g. '70vh', '100vh'
+}
+const {
+  brand = 'Felt Layouts©',
+  nav = [
+    { label: 'Index', href: '#' },
+    { label: 'Info', href: '#' },
+    { label: 'Work', href: '#' },
+    { label: 'About', href: '#' },
+  ],
+  cta = { label: 'Contact', href: '#' },
+  overline = 'Aurora Atelier ©',
+  title = 'Quiet architecture for a slower kind of living',
+  subtitle = 'Spaces shaped by daylight, natural materials and honest craft.',
+  location = 'Based in Oslo, Norway',
+  email = { label: 'studio@aurora.co', href: 'mailto:studio@aurora.co' },
+  image = '/placeholder-landscape.svg',
+  imageAlt = '',
+  height = '70vh',
+} = Astro.props;
+---
+
+<section class="ho" style={`--ho-h:${height}`}>
+  <img class="ho__bg" src={image} alt={imageAlt} loading="eager" />
+  <div class="ho__scrim"></div>
+
+  <div class="ho__frame">
+    <header class="ho__nav ho__anim" style="--d:0ms">
+      <a class="ho__brand" href="#">{brand}</a>
+
+      <nav class="ho__links" aria-label="Primary">
+        {nav.map((l) => <a class="ho__link" href={l.href}>{l.label}</a>)}
+      </nav>
+
+      {cta && <a class="ho__cta" href={cta.href}>{cta.label}</a>}
+
+      <button class="ho__burger" type="button" data-ho-burger aria-label="Open menu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" /></svg>
+      </button>
+    </header>
+
+    <!-- mobile menu -->
+    <div class="ho__mobile" data-ho-mobile hidden>
+      {nav.map((l) => <a href={l.href}>{l.label}</a>)}
+      {cta && <a href={cta.href}>{cta.label}</a>}
+    </div>
+
+    <div class="ho__body">
+      {overline && <span class="ho__overline ho__anim" style="--d:120ms">{overline}</span>}
+      <h1 class="ho__title ho__anim" style="--d:180ms">{title}</h1>
+      {subtitle && <p class="ho__subtitle ho__anim" style="--d:260ms">{subtitle}</p>}
+    </div>
+
+    <footer class="ho__meta ho__anim" style="--d:340ms">
+      {location && <span class="ho__loc">{location}</span>}
+      {email && (
+        <a class="ho__email" href={email.href}>
+          <span class="ho__arrow" aria-hidden="true">→</span>{email.label}
+        </a>
+      )}
+    </footer>
+  </div>
+</section>
+
+<style>
+  .ho {
+    position: relative; isolation: isolate; overflow: hidden;
+    min-height: var(--ho-h, 70vh);
+    font-family: var(--font-body); color: #fff;
+    display: flex;
+  }
+
+  .ho__bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -2; }
+  .ho__scrim {
+    position: absolute; inset: 0; z-index: -1;
+    background:
+      linear-gradient(180deg, rgba(10,10,12,0.32) 0%, rgba(10,10,12,0) 26%),
+      linear-gradient(0deg, rgba(10,10,12,0.55) 0%, rgba(10,10,12,0) 42%);
+  }
+
+  .ho a { color: inherit; text-decoration: none; }
+  .ho__frame {
+    position: relative; z-index: 1; flex: 1;
+    display: flex; flex-direction: column;
+    padding: clamp(1rem, 3vw, 1.75rem) clamp(1.25rem, 4vw, 2.75rem) clamp(1.5rem, 4vw, 2.5rem);
+  }
+
+  /* nav */
+  .ho__nav { display: flex; align-items: center; gap: 1.5rem; padding-bottom: clamp(0.75rem, 2vw, 1.1rem); border-bottom: 1px solid rgba(255,255,255,0.22); }
+  .ho__brand { font-weight: 600; font-size: 1rem; letter-spacing: -0.01em; }
+  .ho__links { display: flex; align-items: center; gap: 1.5rem; margin-inline: auto; }
+  .ho__link { font-size: 0.95rem; font-weight: 500; opacity: 0.92; transition: opacity 0.18s ease; }
+  .ho__link:hover { opacity: 1; text-decoration: underline; text-underline-offset: 4px; }
+  .ho__cta { font-size: 0.95rem; font-weight: 600; transition: opacity 0.18s ease; }
+  .ho__cta:hover { opacity: 0.8; }
+  .ho__burger { display: none; background: none; border: 0; color: #fff; cursor: pointer; padding: 4px; margin-left: auto; }
+
+  /* mobile menu */
+  .ho__mobile { display: none; padding: 0.5rem 0 0.75rem; }
+  .ho__mobile a { display: block; padding: 0.6rem 0; font-size: 1.05rem; font-weight: 500; border-bottom: 1px solid rgba(255,255,255,0.14); }
+
+  /* body — pushed to the bottom-left */
+  .ho__body { margin-top: auto; max-width: 40rem; }
+  .ho__overline { display: block; font-size: 1rem; font-weight: 500; opacity: 0.9; margin-bottom: 0.9rem; }
+  .ho__title { margin: 0; color: #fff; font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1.05; letter-spacing: -0.025em; }
+  .ho__subtitle { margin: 1.1rem 0 0; font-size: clamp(1rem, 1.4vw, 1.2rem); line-height: 1.4; color: rgba(255,255,255,0.72); }
+
+  /* meta bar */
+  .ho__meta { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; flex-wrap: wrap; margin-top: clamp(1.75rem, 5vw, 3rem); padding-top: clamp(0.9rem, 2vw, 1.25rem); border-top: 1px solid rgba(255,255,255,0.22); }
+  .ho__loc { font-size: 0.95rem; font-weight: 500; }
+  .ho__email { display: inline-flex; align-items: center; gap: 0.6rem; font-size: 0.95rem; font-weight: 500; }
+  .ho__arrow { transition: transform 0.18s ease; }
+  .ho__email:hover .ho__arrow { transform: translateX(3px); }
+
+  /* light entrance animation — staggered */
+  @keyframes hoRise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+  .ho__anim { opacity: 0; animation: hoRise 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards; animation-delay: var(--d, 0ms); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ho__anim { opacity: 1 !important; transform: none !important; animation: none !important; }
+  }
+
+  @media (max-width: 720px) {
+    .ho__links, .ho__cta { display: none; }
+    .ho__burger { display: inline-flex; }
+    .ho.is-open .ho__mobile { display: block; }
+    .ho__meta { justify-content: flex-start; gap: 0.4rem 2rem; }
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('.ho').forEach((ho) => {
+    const burger = ho.querySelector<HTMLButtonElement>('[data-ho-burger]');
+    const mobile = ho.querySelector<HTMLElement>('[data-ho-mobile]');
+    burger?.addEventListener('click', () => {
+      const open = ho.classList.toggle('is-open');
+      burger.setAttribute('aria-expanded', String(open));
+      if (mobile) mobile.hidden = !open;
+    });
+  });
+</script>

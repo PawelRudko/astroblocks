@@ -1,0 +1,146 @@
+---
+// Footer — editorial footer: brand + tagline on top, link columns (Product / Company / Contact /
+// Follow Us) below, and a bottom bar with copyright + credit. Compact padding. Same system.
+// Edit by chat (see AGENTS.md).
+interface Link { label: string; href: string }
+interface Column { heading: string; links: Link[] }
+interface Social { type: 'twitter' | 'linkedin' | 'instagram' | 'dribbble'; href: string }
+interface Props {
+  brand?: string;
+  tagline?: string;
+  columns?: Column[];
+  contact?: { heading?: string; email?: Link; phone?: string };
+  socials?: { heading?: string; items: Social[] };
+  copyright?: string;
+  credit?: { label: string; linkLabel: string; href: string } | null;
+  bg?: 'white' | 'gray' | 'dark';
+}
+const {
+  brand = 'Felt ©',
+  tagline = 'From first sketch to final interior, every detail is shaped to feel natural, calm and built to last.',
+  columns = [
+    { heading: 'Product', links: [
+      { label: 'Services', href: '#' },
+      { label: 'Get a Quote', href: '#' },
+      { label: 'Contact', href: '#' },
+    ] },
+    { heading: 'Company', links: [
+      { label: 'About Us', href: '#' },
+      { label: 'Careers', href: '#' },
+      { label: 'Latest Updates', href: '#' },
+    ] },
+  ],
+  contact = { heading: 'Contact', email: { label: 'hello@feltlayouts.com', href: 'mailto:hello@feltlayouts.com' }, phone: '+46 123 456 789' },
+  socials = { heading: 'Follow Us', items: [
+    { type: 'linkedin', href: '#' },
+    { type: 'twitter', href: '#' },
+    { type: 'instagram', href: '#' },
+  ] },
+  copyright = 'Felt Layouts © 2026',
+  credit = { label: 'Built with', linkLabel: 'Astroblocks', href: '#' },
+  bg = 'white',
+} = Astro.props;
+
+// social line icons (fill), keyed by type
+const social = {
+  twitter: 'M22 5.9a8.2 8.2 0 0 1-2.4.66A4.1 4.1 0 0 0 21.4 4.3a8.3 8.3 0 0 1-2.6 1A4.15 4.15 0 0 0 11.5 8.1a11.8 11.8 0 0 1-8.5-4.3 4.15 4.15 0 0 0 1.3 5.5A4.1 4.1 0 0 1 2.4 8.8v.05a4.15 4.15 0 0 0 3.3 4.07 4.2 4.2 0 0 1-1.87.07 4.15 4.15 0 0 0 3.87 2.88A8.3 8.3 0 0 1 2 17.6a11.75 11.75 0 0 0 6.35 1.86c7.62 0 11.79-6.31 11.79-11.79l-.01-.54A8.4 8.4 0 0 0 22 5.9z',
+  linkedin: 'M6.94 5a1.94 1.94 0 1 1-3.88 0 1.94 1.94 0 0 1 3.88 0zM3.3 8.4h3.28V21H3.3zM9.1 8.4h3.14v1.72h.05c.44-.83 1.5-1.7 3.1-1.7 3.32 0 3.93 2.18 3.93 5.02V21h-3.28v-4.86c0-1.16-.02-2.65-1.62-2.65-1.62 0-1.87 1.26-1.87 2.57V21H9.1z',
+  instagram: 'M12 7.4a4.6 4.6 0 1 0 0 9.2 4.6 4.6 0 0 0 0-9.2zm0 7.6a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm4.8-7.78a1.07 1.07 0 1 1-2.14 0 1.07 1.07 0 0 1 2.14 0zM20.9 8.85c-.05-1.45-.38-2.73-1.44-3.79S17.05 3.66 15.6 3.6c-1.5-.08-5.98-.08-7.48 0-1.44.05-2.72.38-3.79 1.44S3.11 6.95 3.05 8.4c-.08 1.5-.08 5.98 0 7.48.05 1.45.38 2.73 1.44 3.79s2.34 1.39 3.79 1.45c1.5.08 5.98.08 7.48 0 1.45-.05 2.73-.38 3.79-1.45s1.39-2.34 1.45-3.79c.08-1.5.08-5.97 0-7.47z',
+  dribbble: 'M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm6.6 4.6a8.5 8.5 0 0 1 1.9 5.3c-.28-.06-3.06-.62-5.86-.27-.06-.14-.12-.29-.19-.44-.17-.4-.36-.8-.56-1.2 3.1-1.27 4.5-3.09 4.71-3.39zM12 3.5c2.1 0 4.02.8 5.47 2.1-.18.25-1.45 1.96-4.44 3.09a43 43 0 0 0-3.11-4.85A8.6 8.6 0 0 1 12 3.5zM8.2 4.5a51 51 0 0 1 3.08 4.79A16 16 0 0 1 4 10.2 8.53 8.53 0 0 1 8.2 4.5zM3.5 12v-.27a17.4 17.4 0 0 0 8.35-1.5c.2.38.38.77.55 1.16l-.3.09c-4.5 1.45-6.83 5.48-6.83 5.48A8.47 8.47 0 0 1 3.5 12zm8.5 8.5a8.5 8.5 0 0 1-5.24-1.8c.14-.28 1.6-3.08 6.52-4.8l.06-.02a35 35 0 0 1 1.8 6.4A8.5 8.5 0 0 1 12 20.5zm4.86-1.5a37 37 0 0 0-1.64-6c2.64-.42 4.95.27 5.24.36a8.53 8.53 0 0 1-3.6 5.64z',
+};
+---
+
+<footer class:list={['ft', `ft--${bg}`]}>
+  <div class="ft__wrap">
+    <div class="ft__top">
+      <a class="ft__brand" href="#">{brand}</a>
+      {tagline && <p class="ft__tagline">{tagline}</p>}
+    </div>
+
+    <div class="ft__cols">
+      {columns.map((col) => (
+        <div class="ft__col">
+          <span class="ft__h">{col.heading}</span>
+          <ul class="ft__list">
+            {col.links.map((l) => <li><a class="ft__link" href={l.href}>{l.label}</a></li>)}
+          </ul>
+        </div>
+      ))}
+
+      {contact && (
+        <div class="ft__col">
+          <span class="ft__h">{contact.heading}</span>
+          <ul class="ft__list">
+            {contact.email && <li><a class="ft__link" href={contact.email.href}>{contact.email.label}</a></li>}
+            {contact.phone && <li><span class="ft__muted">{contact.phone}</span></li>}
+          </ul>
+        </div>
+      )}
+
+      {socials && socials.items.length > 0 && (
+        <div class="ft__col">
+          <span class="ft__h">{socials.heading}</span>
+          <div class="ft__socials">
+            {socials.items.map((s) => (
+              <a class="ft__social" href={s.href} aria-label={s.type} target="_blank" rel="noopener">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d={social[s.type]} /></svg>
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+
+    <div class="ft__bar">
+      <span class="ft__copy">{copyright}</span>
+      {credit && (
+        <span class="ft__credit">{credit.label} <a class="ft__credit-link" href={credit.href}>{credit.linkLabel}</a></span>
+      )}
+    </div>
+  </div>
+</footer>
+
+<style>
+  .ft { font-family: var(--font-body); color: var(--text); padding: clamp(2.25rem, 4vw, 3.25rem) 0 clamp(1.5rem, 2.5vw, 2rem); }
+  .ft--white { background: #ffffff; }
+  .ft--gray { background: #f5f4f2; }
+  .ft--dark { background: #0a0a0c; color: #f4f3f0; }
+  .ft a { color: inherit; text-decoration: none; }
+  .ft__wrap { max-width: 1200px; margin-inline: auto; padding-inline: clamp(1.25rem, 4vw, 2.5rem); }
+
+  /* top: brand + tagline */
+  .ft__top { display: grid; grid-template-columns: 1fr 1.05fr; gap: clamp(1.5rem, 5vw, 4rem); align-items: start; }
+  .ft__brand { font-weight: 600; font-size: 1.35rem; letter-spacing: -0.02em; }
+  .ft__tagline { margin: 0; max-width: 34ch; font-size: 1.1rem; line-height: 1.35; font-weight: 500; }
+
+  /* link columns */
+  .ft__cols { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-top: clamp(2.5rem, 6vw, 4rem); }
+  .ft__h { display: block; font-size: 0.95rem; font-weight: 500; color: var(--faint); margin-bottom: 1.1rem; }
+  .ft--dark .ft__h { color: #8a8880; }
+  .ft__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.65rem; }
+  .ft__link { font-size: 1rem; font-weight: 500; transition: color 0.18s ease; }
+  .ft__link:hover { color: #5b5bd6; }
+  .ft--dark .ft__link:hover { color: #cbf24a; }
+  .ft__muted { font-size: 1rem; font-weight: 500; }
+
+  .ft__socials { display: flex; align-items: center; gap: 1rem; }
+  .ft__social { display: inline-flex; transition: color 0.18s ease, transform 0.18s ease; }
+  .ft__social:hover { color: #5b5bd6; transform: translateY(-2px); }
+  .ft--dark .ft__social:hover { color: #cbf24a; }
+
+  /* bottom bar */
+  .ft__bar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-top: clamp(2.5rem, 6vw, 4.5rem); }
+  .ft__copy, .ft__credit { font-size: 0.95rem; font-weight: 600; }
+  .ft__credit-link { text-decoration: underline; text-underline-offset: 3px; transition: color 0.18s ease; }
+  .ft__credit-link:hover { color: #5b5bd6; }
+  .ft--dark .ft__credit-link:hover { color: #cbf24a; }
+
+  @media (max-width: 720px) {
+    .ft__top { grid-template-columns: 1fr; gap: 1.25rem; }
+    .ft__tagline { max-width: none; }
+    .ft__cols { grid-template-columns: repeat(2, 1fr); gap: 2rem 1.5rem; }
+  }
+  @media (max-width: 460px) {
+    .ft__cols { grid-template-columns: 1fr; }
+  }
+</style>
