@@ -53,14 +53,14 @@ const pics = (images.length ? images : Array.from({ length: 8 }, () => ph)).slic
   /* Scattered decorative images */
   .cta2__scatter { position: absolute; inset: 0; pointer-events: none; }
   .cta2__img { position: absolute; width: clamp(84px, 9vw, 140px); aspect-ratio: 1 / 1; object-fit: cover; border-radius: 14px; background: #ececea; box-shadow: 0 20px 45px -25px rgba(20, 20, 30, 0.35); }
-  .cta2__img:nth-child(1) { top: 4%; left: 12%; }
-  .cta2__img:nth-child(2) { top: 0; left: 44%; }
-  .cta2__img:nth-child(3) { top: 6%; left: 76%; }
-  .cta2__img:nth-child(4) { top: 30%; right: 1%; }
-  .cta2__img:nth-child(5) { bottom: 8%; left: 74%; }
-  .cta2__img:nth-child(6) { bottom: 0; left: 42%; }
-  .cta2__img:nth-child(7) { bottom: 8%; left: 12%; }
-  .cta2__img:nth-child(8) { top: 28%; left: 1%; }
+  .cta2__img:nth-child(1) { top: 4%; left: 12%; }      /* top-left */
+  .cta2__img:nth-child(2) { top: 0; left: 44%; }       /* top-center */
+  .cta2__img:nth-child(3) { top: 4%; right: 12%; }     /* top-right (mirrors 1) */
+  .cta2__img:nth-child(4) { top: 28%; right: 1%; }     /* mid-right (mirrors 8) */
+  .cta2__img:nth-child(5) { bottom: 8%; right: 12%; }  /* bottom-right (mirrors 7) */
+  .cta2__img:nth-child(6) { bottom: 0; left: 42%; }    /* bottom-center */
+  .cta2__img:nth-child(7) { bottom: 8%; left: 12%; }   /* bottom-left */
+  .cta2__img:nth-child(8) { top: 28%; left: 1%; }      /* mid-left */
 
   /* entrance */
   @keyframes cta2Pop { from { opacity: 0; transform: scale(0.9) translateY(10px); } to { opacity: 1; transform: none; } }
