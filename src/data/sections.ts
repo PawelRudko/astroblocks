@@ -401,6 +401,19 @@ export const registry: SectionEntry[] = [
       bg: 'white',
     },
   },
+  {
+    id: 'cta-scatter',
+    name: 'CTA Scatter',
+    category: 'CTA',
+    file: 'CTAScatter.astro',
+    demo: {
+      title: 'Build sites 5× faster',
+      subtitle: "Design once, use anywhere. With flexible blocks like navbars, heroes and content sections, you'll never build from scratch again.",
+      primary: { label: 'Start now', href: '#' },
+      images: [placeholder, placeholder, placeholder, placeholder, placeholder, placeholder, placeholder, placeholder],
+      bg: 'white',
+    },
+  },
 ];
 
 // cards with a per-category label (HERO 01, HERO 02, BLOG 01...) — shared by / and /blocks

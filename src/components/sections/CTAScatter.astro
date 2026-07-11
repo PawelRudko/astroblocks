@@ -1,0 +1,83 @@
+---
+// CTAScatter — centered call-to-action framed by decorative images scattered around the edges.
+// Images fade/scale in; content on top. Images hidden on small screens (clean CTA). On-system.
+// Edit by chat (AGENTS.md).
+interface Btn { label: string; href?: string }
+interface Props {
+  eyebrow?: string;
+  title: string;
+  subtitle?: string;
+  primary?: Btn;
+  secondary?: Btn;
+  images?: string[];
+  bg?: 'white' | 'gray';
+}
+const { eyebrow, title, subtitle, primary, secondary, images = [], bg = 'white' } = Astro.props;
+const ph = '/placeholder-landscape.svg';
+const pics = (images.length ? images : Array.from({ length: 8 }, () => ph)).slice(0, 8);
+---
+
+<section class:list={['cta2', `cta2--${bg}`]}>
+  <div class="cta2__inner">
+    <div class="cta2__scatter" aria-hidden="true">
+      {pics.map((src, i) => (
+        <img class="cta2__img" src={src} alt="" loading="lazy" style={`--d:${i * 70}ms`} />
+      ))}
+    </div>
+
+    <div class="cta2__content">
+      {eyebrow && <span class="eyebrow">{eyebrow}</span>}
+      <h2 class="cta2__title">{title}</h2>
+      {subtitle && <p class="cta2__subtitle">{subtitle}</p>}
+      {(primary || secondary) && (
+        <div class="cta2__actions">
+          {primary && <a class="btn btn--primary" href={primary.href || '#'}>{primary.label}</a>}
+          {secondary && <a class="btn btn--secondary" href={secondary.href || '#'}>{secondary.label}</a>}
+        </div>
+      )}
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta2 { padding: clamp(2.5rem, 6vw, 5rem) 0; }
+  .cta2--white { background: #ffffff; }
+  .cta2--gray { background: #f5f4f2; }
+  .cta2__inner { position: relative; max-width: 1280px; margin-inline: auto; padding-inline: clamp(1.25rem, 4vw, 2.5rem); min-height: clamp(520px, 58vw, 680px); display: grid; place-items: center; }
+
+  .cta2__content { position: relative; z-index: 2; text-align: center; max-width: 40rem; }
+  .cta2__title { margin-top: 0.7rem; font-size: clamp(1.7rem, 4vw, 3rem); line-height: 1.08; letter-spacing: -0.025em; }
+  .cta2__subtitle { max-width: 46ch; margin: 1.1rem auto 0; color: rgba(33, 32, 28, 0.66); font-size: 15px; line-height: 1.6; }
+  .cta2__actions { display: flex; flex-wrap: wrap; gap: 0.7rem; justify-content: center; margin-top: 2rem; }
+
+  /* Scattered decorative images */
+  .cta2__scatter { position: absolute; inset: 0; pointer-events: none; }
+  .cta2__img { position: absolute; width: clamp(84px, 9vw, 140px); aspect-ratio: 1 / 1; object-fit: cover; border-radius: 14px; background: #ececea; box-shadow: 0 20px 45px -25px rgba(20, 20, 30, 0.35); }
+  .cta2__img:nth-child(1) { top: 4%; left: 12%; }
+  .cta2__img:nth-child(2) { top: 0; left: 44%; }
+  .cta2__img:nth-child(3) { top: 6%; left: 76%; }
+  .cta2__img:nth-child(4) { top: 30%; right: 1%; }
+  .cta2__img:nth-child(5) { bottom: 8%; left: 74%; }
+  .cta2__img:nth-child(6) { bottom: 0; left: 42%; }
+  .cta2__img:nth-child(7) { bottom: 8%; left: 12%; }
+  .cta2__img:nth-child(8) { top: 28%; left: 1%; }
+
+  /* entrance */
+  @keyframes cta2Pop { from { opacity: 0; transform: scale(0.9) translateY(10px); } to { opacity: 1; transform: none; } }
+  .cta2__img { opacity: 0; animation: cta2Pop 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards; animation-delay: var(--d, 0ms); }
+  @keyframes cta2Rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+  .cta2__content > * { animation: cta2Rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) backwards; }
+  .cta2__content > :nth-child(2) { animation-delay: 0.06s; }
+  .cta2__content > :nth-child(3) { animation-delay: 0.12s; }
+  .cta2__content > :nth-child(4) { animation-delay: 0.18s; }
+
+  @media (max-width: 860px) {
+    .cta2__scatter { display: none; }
+    .cta2__inner { min-height: 0; padding-block: clamp(1rem, 5vw, 2.5rem); }
+  }
+  @media (max-width: 480px) { .cta2__actions .btn { width: 100%; } }
+  @media (prefers-reduced-motion: reduce) {
+    .cta2__img { opacity: 1 !important; animation: none; }
+    .cta2__content > * { animation: none; }
+  }
+</style>
