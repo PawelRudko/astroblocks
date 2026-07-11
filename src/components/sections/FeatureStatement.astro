@@ -1,0 +1,68 @@
+---
+// FeatureStatement — large statement section: an offset eyebrow on the left, a big heading, then a
+// two-column block (supporting copy + link on the left, image on the right). On-system, responsive.
+// Edit by chat (AGENTS.md).
+interface Btn { label: string; href?: string }
+interface Props {
+  eyebrow?: string;
+  title: string;
+  paragraphs?: string[];
+  link?: Btn;
+  image?: string;
+  bg?: 'white' | 'gray';
+}
+const { eyebrow, title, paragraphs = [], link, image, bg = 'white' } = Astro.props;
+const ph = '/placeholder-landscape.svg';
+---
+
+<section class:list={['fstmt', `fstmt--${bg}`]}>
+  <div class="fstmt__wrap">
+    {eyebrow && <span class="fstmt__eyebrow">{eyebrow}</span>}
+    <h2 class="fstmt__title">{title}</h2>
+
+    <div class="fstmt__body">
+      <div class="fstmt__text">
+        {paragraphs.map((p) => <p class="fstmt__p">{p}</p>)}
+        {link && <a class="fstmt__link" href={link.href || '#'}>{link.label}</a>}
+      </div>
+      <div class="fstmt__media">
+        <img src={image || ph} alt="" loading="lazy" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .fstmt { padding: clamp(3rem, 8vw, 7rem) 0; }
+  .fstmt--white { background: #ffffff; }
+  .fstmt--gray { background: #f5f4f2; }
+
+  .fstmt__wrap {
+    max-width: 1280px; margin-inline: auto; padding-inline: clamp(1.25rem, 4vw, 2.5rem);
+    display: grid; grid-template-columns: minmax(6rem, 11rem) minmax(0, 1fr);
+    column-gap: clamp(1.5rem, 5vw, 4rem);
+  }
+
+  .fstmt__eyebrow { grid-column: 1; padding-top: 0.35rem; font-size: 1rem; font-weight: 600; color: var(--text); }
+  .fstmt__title { grid-column: 2; margin: 0; font-size: clamp(1.6rem, 3.4vw, 2.6rem); line-height: 1.12; letter-spacing: -0.02em; max-width: 20ch; }
+
+  .fstmt__body {
+    grid-column: 2; margin-top: clamp(2.5rem, 6vw, 5rem);
+    display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(2rem, 5vw, 4rem); align-items: center;
+  }
+  .fstmt__text { max-width: 42ch; }
+  .fstmt__p { color: rgba(33, 32, 28, 0.6); font-size: 15px; line-height: 1.65; }
+  .fstmt__p + .fstmt__p { margin-top: 1.1rem; }
+  .fstmt__link { display: inline-block; margin-top: 1.8rem; font-weight: 500; color: var(--text); text-decoration: underline; text-underline-offset: 3px; transition: color 0.18s ease; }
+  .fstmt__link:hover { color: #5b5bd6; }
+
+  .fstmt__media img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: var(--radius-card); border: 1px solid var(--line); background: #ececea; }
+
+  @media (max-width: 900px) {
+    .fstmt__wrap { grid-template-columns: 1fr; row-gap: 1.25rem; }
+    .fstmt__eyebrow, .fstmt__title, .fstmt__body { grid-column: 1; }
+    .fstmt__title { max-width: none; }
+    .fstmt__body { grid-template-columns: 1fr; gap: clamp(1.5rem, 4vw, 2rem); margin-top: clamp(1.75rem, 5vw, 2.5rem); }
+    .fstmt__media { order: -1; }
+  }
+</style>

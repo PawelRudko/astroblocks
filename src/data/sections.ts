@@ -351,6 +351,23 @@ export const registry: SectionEntry[] = [
       bg: 'white',
     },
   },
+  {
+    id: 'feature-statement',
+    name: 'Feature Statement',
+    category: 'Features',
+    file: 'FeatureStatement.astro',
+    demo: {
+      eyebrow: 'About',
+      title: 'Designing clear, functional interfaces that blend aesthetics, usability and systems thinking into digital products.',
+      paragraphs: [
+        'I focus on crafting thoughtful user experiences through careful layout, interaction and visual hierarchy. My work spans product interfaces, marketing sites and design systems – always guided by clarity, consistency and attention to detail.',
+        'Every project is shaped by research, iteration and collaboration, turning complex requirements into intuitive solutions. I value simple structures, sensible motion and scalable design that serves both users and teams over the long run.',
+      ],
+      link: { label: 'More on my LinkedIn', href: '#' },
+      image: placeholder,
+      bg: 'white',
+    },
+  },
 ];
 
 // cards with a per-category label (HERO 01, HERO 02, BLOG 01...) — shared by / and /blocks
