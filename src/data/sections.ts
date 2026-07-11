@@ -368,6 +368,25 @@ export const registry: SectionEntry[] = [
       bg: 'white',
     },
   },
+  {
+    id: 'feature-stats',
+    name: 'Feature Stats',
+    category: 'Features',
+    file: 'FeatureStats.astro',
+    demo: {
+      title: 'Our impact in numbers',
+      subtitle: 'Real results backed by data, experience, and long-term partnerships.',
+      stats: [
+        { value: 99, suffix: '+', label: 'Projects delivered annually', sublabel: 'Trusted by industry leaders' },
+        { value: 144000, suffix: '+', label: 'Messages handled per year', sublabel: 'Omnichannel: email, chat, SMS' },
+        { value: 300, suffix: '+', label: 'Team members', sublabel: 'Seasoned specialists' },
+        { value: 99, suffix: '%+', label: 'Service availability', sublabel: 'Reliability is our standard' },
+        { value: 30, suffix: '+', label: 'B2B clients', sublabel: 'From growing teams to enterprises' },
+        { value: 96, suffix: '%', label: 'Average NPS score', sublabel: 'Measured after implementation' },
+      ],
+      bg: 'white',
+    },
+  },
 ];
 
 // cards with a per-category label (HERO 01, HERO 02, BLOG 01...) — shared by / and /blocks

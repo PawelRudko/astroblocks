@@ -1,0 +1,88 @@
+---
+// FeatureStats — headline + a grid of big stats that count up from 0 when they scroll into view.
+// Values animate via requestAnimationFrame (easeOut); reduced-motion shows the final number.
+// No dependencies. On-system, responsive. Edit by chat (AGENTS.md).
+interface Stat { value: number; suffix?: string; label: string; sublabel?: string }
+interface Props {
+  eyebrow?: string;
+  title: string;
+  subtitle?: string;
+  stats: Stat[];
+  bg?: 'white' | 'gray';
+}
+const { eyebrow, title, subtitle, stats, bg = 'white' } = Astro.props;
+const group = (v: number) => String(v).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+---
+
+<section class:list={['stats', `stats--${bg}`]}>
+  <div class="stats__wrap">
+    <header class="stats__head">
+      {eyebrow && <span class="eyebrow">{eyebrow}</span>}
+      <h2 class="stats__title">{title}</h2>
+      {subtitle && <p class="stats__subtitle">{subtitle}</p>}
+    </header>
+
+    <div class="stats__grid">
+      {stats.map((s) => (
+        <div class="stats__item">
+          <span class="stats__num" data-to={s.value} data-suffix={s.suffix || ''}>{group(s.value)}{s.suffix || ''}</span>
+          <p class="stats__label">{s.label}</p>
+          {s.sublabel && <p class="stats__sub">{s.sublabel}</p>}
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const group = (v: number) => String(v).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+
+  function countUp(el: HTMLElement) {
+    const to = Number(el.dataset.to || '0');
+    const suffix = el.dataset.suffix || '';
+    const dur = 1500;
+    const start = performance.now();
+    const step = (now: number) => {
+      const t = Math.min(1, (now - start) / dur);
+      const eased = 1 - Math.pow(1 - t, 3);
+      el.textContent = group(Math.round(to * eased)) + suffix;
+      if (t < 1) requestAnimationFrame(step);
+      else el.textContent = group(to) + suffix;
+    };
+    requestAnimationFrame(step);
+  }
+
+  document.querySelectorAll<HTMLElement>('.stats__grid').forEach((grid) => {
+    const nums = Array.from(grid.querySelectorAll<HTMLElement>('.stats__num'));
+    if (reduce) return; // final values are already rendered
+    nums.forEach((n) => { n.textContent = '0' + (n.dataset.suffix || ''); });
+    const io = new IntersectionObserver((entries, obs) => {
+      for (const e of entries) {
+        if (!e.isIntersecting) continue;
+        nums.forEach(countUp);
+        obs.disconnect();
+      }
+    }, { threshold: 0.3 });
+    io.observe(grid);
+  });
+</script>
+
+<style>
+  .stats { padding: clamp(3rem, 7vw, 6rem) 0; }
+  .stats--white { background: #ffffff; }
+  .stats--gray { background: #f5f4f2; }
+  .stats__wrap { max-width: 1200px; margin-inline: auto; padding-inline: clamp(1.25rem, 4vw, 2.5rem); }
+
+  .stats__head { max-width: 46ch; margin-bottom: clamp(2.5rem, 6vw, 4.5rem); }
+  .stats__title { margin-top: 0.7rem; }
+  .stats__subtitle { margin-top: 0.9rem; color: rgba(33, 32, 28, 0.66); font-size: 15px; line-height: 1.55; }
+
+  .stats__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(2rem, 5vw, 4rem) clamp(1.5rem, 4vw, 3rem); }
+  .stats__num { display: block; font-family: var(--font-display); font-size: clamp(2.5rem, 6vw, 4rem); font-weight: 600; line-height: 1; letter-spacing: -0.03em; color: var(--text); font-variant-numeric: tabular-nums; }
+  .stats__label { margin-top: 0.9rem; font-weight: 600; color: var(--text); }
+  .stats__sub { margin-top: 0.2rem; color: var(--faint); font-size: 0.95rem; }
+
+  @media (max-width: 860px) { .stats__grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 520px) { .stats__grid { grid-template-columns: 1fr; } }
+</style>
