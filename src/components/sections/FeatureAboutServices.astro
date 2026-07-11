@@ -1,0 +1,110 @@
+---
+// FeatureAboutServices — editorial two-part section: an "About" row (label + stats | copy) and a
+// "Services" row (label + CTA | linked services list). On-system, responsive. Edit by chat (AGENTS.md).
+interface Btn { label: string; href?: string }
+interface Stat { value: string | number; suffix?: string; label: string }
+interface Service { label: string; href?: string }
+interface Props {
+  aboutLabel?: string;
+  stats?: Stat[];
+  paragraphs?: string[];
+  servicesLabel?: string;
+  cta?: Btn;
+  services?: Service[];
+  bg?: 'white' | 'gray';
+}
+const {
+  aboutLabel = 'About',
+  stats = [],
+  paragraphs = [],
+  servicesLabel = 'Services',
+  cta,
+  services = [],
+  bg = 'white',
+} = Astro.props;
+---
+
+<section class:list={['fabs', `fabs--${bg}`]}>
+  <div class="fabs__wrap">
+    <!-- About -->
+    <div class="fabs__row">
+      <div class="fabs__left">
+        <h2 class="fabs__label">{aboutLabel}</h2>
+        {stats.length > 0 && (
+          <div class="fabs__stats">
+            {stats.map((s) => (
+              <div class="fabs__stat">
+                <span class="fabs__num">{s.value}{s.suffix && <span class="fabs__plus">{s.suffix}</span>}</span>
+                <span class="fabs__stat-label">{s.label}</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+      <div class="fabs__right">
+        {paragraphs.map((p) => <p class="fabs__p">{p}</p>)}
+      </div>
+    </div>
+
+    <!-- Services -->
+    <div class="fabs__row fabs__row--services">
+      <div class="fabs__left fabs__left--col">
+        <h2 class="fabs__label">{servicesLabel}</h2>
+        {cta && <a class="btn btn--primary fabs__cta" href={cta.href || '#'}>{cta.label}</a>}
+      </div>
+      <div class="fabs__right">
+        <ul class="fabs__services">
+          {services.map((s) => (
+            <li>
+              <a class="fabs__service" href={s.href || '#'}>
+                <span>{s.label}</span>
+                <svg class="fabs__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .fabs { padding: clamp(3rem, 7vw, 6rem) 0; }
+  .fabs--white { background: #ffffff; }
+  .fabs--gray { background: #f5f4f2; }
+  .fabs__wrap { max-width: 1280px; margin-inline: auto; padding-inline: clamp(1.25rem, 4vw, 2.5rem); }
+
+  .fabs__row { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2rem, 6vw, 5rem); }
+  .fabs__row + .fabs__row { margin-top: clamp(3rem, 8vw, 6rem); }
+
+  .fabs__label { font-size: clamp(1.5rem, 3vw, 2.25rem); font-weight: 600; letter-spacing: -0.02em; }
+
+  .fabs__stats { display: grid; grid-template-columns: repeat(3, auto); gap: clamp(1.25rem, 3vw, 2.5rem); margin-top: clamp(2rem, 5vw, 3.5rem); }
+  .fabs__num { display: block; font-family: var(--font-display); font-size: clamp(2rem, 4.5vw, 3rem); font-weight: 600; line-height: 1; letter-spacing: -0.03em; color: var(--text); }
+  .fabs__plus { color: var(--faint); }
+  .fabs__stat-label { display: block; margin-top: 0.6rem; max-width: 18ch; font-size: 0.95rem; color: var(--muted); line-height: 1.35; }
+
+  .fabs__right { align-self: start; }
+  .fabs__p { color: rgba(33, 32, 28, 0.86); font-size: 1.0625rem; line-height: 1.5; }
+  .fabs__p + .fabs__p { margin-top: 1.25rem; }
+
+  /* Services left column: label top, CTA pinned lower */
+  .fabs__left--col { display: flex; flex-direction: column; }
+  .fabs__cta { align-self: start; margin-top: auto; padding-top: clamp(2.5rem, 8vw, 5rem); }
+  .fabs__row--services .fabs__cta { margin-top: auto; }
+
+  .fabs__services { list-style: none; }
+  .fabs__service { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: clamp(0.9rem, 2vw, 1.15rem) 0; border-top: 1px solid var(--line); color: var(--text); font-weight: 600; font-size: 1.0625rem; transition: color 0.18s ease; }
+  .fabs__services li:last-child .fabs__service { border-bottom: 1px solid var(--line); }
+  .fabs__service:hover { color: #5b5bd6; }
+  .fabs__arrow { width: 20px; height: 20px; flex: none; transition: transform 0.18s ease; }
+  .fabs__service:hover .fabs__arrow { transform: translateX(4px); }
+
+  @media (max-width: 860px) {
+    .fabs__row { grid-template-columns: 1fr; gap: clamp(1.5rem, 5vw, 2.5rem); }
+    .fabs__cta { margin-top: 1.5rem; padding-top: 0; }
+  }
+  @media (max-width: 460px) {
+    .fabs__stats { grid-template-columns: 1fr 1fr; }
+  }
+</style>

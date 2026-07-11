@@ -414,6 +414,33 @@ export const registry: SectionEntry[] = [
       bg: 'white',
     },
   },
+  {
+    id: 'feature-about-services',
+    name: 'Feature About Services',
+    category: 'Features',
+    file: 'FeatureAboutServices.astro',
+    demo: {
+      aboutLabel: 'About',
+      stats: [
+        { value: 420, suffix: '+', label: 'Projects delivered' },
+        { value: 10, suffix: '+', label: 'Years of hands-on experience' },
+        { value: 300, suffix: '+', label: 'Satisfied clients worldwide' },
+      ],
+      paragraphs: [
+        'We help teams turn ideas into clear, scalable digital products. By combining strategy, design, and technology, we create experiences that are easy to use, easy to maintain, and built to grow with your business.',
+        'Our approach is collaborative and transparent. We work closely with clients to understand their goals and challenges, making sure every solution is tailored, purposeful, and future-proof.',
+      ],
+      servicesLabel: 'Services',
+      cta: { label: 'Start Now', href: '#' },
+      services: [
+        { label: 'Brand Identity & Visual System', href: '#' },
+        { label: 'Motion & Interaction Design', href: '#' },
+        { label: 'Product & UI Design', href: '#' },
+        { label: 'Web & App Design', href: '#' },
+      ],
+      bg: 'white',
+    },
+  },
 ];
 
 // cards with a per-category label (HERO 01, HERO 02, BLOG 01...) — shared by / and /blocks
