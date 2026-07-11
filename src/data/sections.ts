@@ -430,8 +430,6 @@ export const registry: SectionEntry[] = [
         'We help teams turn ideas into clear, scalable digital products. By combining strategy, design, and technology, we create experiences that are easy to use, easy to maintain, and built to grow with your business.',
         'Our approach is collaborative and transparent. We work closely with clients to understand their goals and challenges, making sure every solution is tailored, purposeful, and future-proof.',
       ],
-      servicesLabel: 'Services',
-      cta: { label: 'Start Now', href: '#' },
       services: [
         { label: 'Brand Identity & Visual System', href: '#' },
         { label: 'Motion & Interaction Design', href: '#' },

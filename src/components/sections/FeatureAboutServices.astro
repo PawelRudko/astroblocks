@@ -17,7 +17,7 @@ const {
   aboutLabel = 'About',
   stats = [],
   paragraphs = [],
-  servicesLabel = 'Services',
+  servicesLabel,
   cta,
   services = [],
   bg = 'white',
@@ -47,11 +47,14 @@ const {
     </div>
 
     <!-- Services -->
-    <div class="fabs__row fabs__row--services">
-      <div class="fabs__left fabs__left--col">
-        <h2 class="fabs__label">{servicesLabel}</h2>
-        {cta && <a class="btn btn--primary fabs__cta" href={cta.href || '#'}>{cta.label}</a>}
-      </div>
+    {services.length > 0 && (
+    <div class:list={['fabs__row', 'fabs__row--services', { 'fabs__row--listonly': !servicesLabel && !cta }]}>
+      {(servicesLabel || cta) && (
+        <div class="fabs__left fabs__left--col">
+          {servicesLabel && <h2 class="fabs__label">{servicesLabel}</h2>}
+          {cta && <a class="btn btn--primary fabs__cta" href={cta.href || '#'}>{cta.label}</a>}
+        </div>
+      )}
       <div class="fabs__right">
         <ul class="fabs__services">
           {services.map((s) => (
@@ -65,6 +68,7 @@ const {
         </ul>
       </div>
     </div>
+    )}
   </div>
 </section>
 
@@ -93,12 +97,14 @@ const {
   .fabs__cta { align-self: start; margin-top: auto; padding-top: clamp(2.5rem, 8vw, 5rem); }
   .fabs__row--services .fabs__cta { margin-top: auto; }
 
-  .fabs__services { list-style: none; }
-  .fabs__service { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: clamp(0.9rem, 2vw, 1.15rem) 0; border-top: 1px solid var(--line); color: var(--text); font-weight: 600; font-size: 1.0625rem; transition: color 0.18s ease; }
-  .fabs__services li:last-child .fabs__service { border-bottom: 1px solid var(--line); }
-  .fabs__service:hover { color: #5b5bd6; }
-  .fabs__arrow { width: 20px; height: 20px; flex: none; transition: transform 0.18s ease; }
-  .fabs__service:hover .fabs__arrow { transform: translateX(4px); }
+  .fabs__services { list-style: none; border-top: 1px solid var(--line); }
+  .fabs__service { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: clamp(0.9rem, 2vw, 1.15rem) 0; border-bottom: 1px solid var(--line); color: var(--text); font-weight: 600; font-size: 1.0625rem; }
+  /* black line sweeping left→right on hover, over the gray divider */
+  .fabs__service::after { content: ''; position: absolute; left: 0; bottom: -1px; height: 1.5px; width: 0; background: var(--text); transition: width 0.32s cubic-bezier(0.22, 1, 0.36, 1); }
+  .fabs__service:hover::after { width: 100%; }
+  .fabs__arrow { width: 20px; height: 20px; flex: none; color: var(--text); transition: transform 0.22s ease; }
+  .fabs__service:hover .fabs__arrow { transform: translateX(5px); }
+  .fabs__row--listonly { grid-template-columns: 1fr; }
 
   @media (max-width: 860px) {
     .fabs__row { grid-template-columns: 1fr; gap: clamp(1.5rem, 5vw, 2.5rem); }
@@ -106,5 +112,8 @@ const {
   }
   @media (max-width: 460px) {
     .fabs__stats { grid-template-columns: 1fr 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .fabs__service::after, .fabs__arrow { transition: none; }
   }
 </style>
