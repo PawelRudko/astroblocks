@@ -1,0 +1,65 @@
+---
+// CTA — centered call-to-action on a soft panel: eyebrow, big heading, subtitle, primary + secondary.
+// Subtle indigo-tinted background, gentle entrance. On-system, responsive. Edit by chat (AGENTS.md).
+interface Btn { label: string; href?: string }
+interface Props {
+  eyebrow?: string;
+  title: string;
+  subtitle?: string;
+  primary?: Btn;
+  secondary?: Btn;
+  bg?: 'white' | 'gray';
+}
+const { eyebrow, title, subtitle, primary, secondary, bg = 'white' } = Astro.props;
+---
+
+<section class:list={['cta', `cta--${bg}`]}>
+  <div class="cta__wrap">
+    <div class="cta__panel">
+      {eyebrow && <span class="eyebrow">{eyebrow}</span>}
+      <h2 class="cta__title">{title}</h2>
+      {subtitle && <p class="cta__subtitle">{subtitle}</p>}
+      {(primary || secondary) && (
+        <div class="cta__actions">
+          {primary && <a class="btn btn--primary" href={primary.href || '#'}>{primary.label}</a>}
+          {secondary && <a class="btn btn--secondary" href={secondary.href || '#'}>{secondary.label}</a>}
+        </div>
+      )}
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta { padding: clamp(3rem, 7vw, 6rem) 0; }
+  .cta--white { background: #ffffff; }
+  .cta--gray { background: #f5f4f2; }
+  .cta__wrap { max-width: 1200px; margin-inline: auto; padding-inline: clamp(1.25rem, 4vw, 2.5rem); }
+
+  .cta__panel {
+    position: relative; overflow: hidden;
+    max-width: 62rem; margin-inline: auto; text-align: center;
+    padding: clamp(2.5rem, 7vw, 5rem) clamp(1.5rem, 5vw, 4rem);
+    border: 1px solid var(--line); border-radius: var(--radius-card);
+    background:
+      radial-gradient(120% 150% at 50% -10%, rgba(91, 91, 214, 0.09), transparent 60%),
+      var(--surface-2);
+  }
+
+  .cta__title { max-width: 22ch; margin-inline: auto; margin-top: 0.7rem; font-size: clamp(1.6rem, 3.4vw, 2.5rem); line-height: 1.12; letter-spacing: -0.02em; }
+  .cta__subtitle { max-width: 52ch; margin: 1rem auto 0; color: rgba(33, 32, 28, 0.66); font-size: 15px; line-height: 1.6; }
+  .cta__actions { display: flex; flex-wrap: wrap; gap: 0.7rem; justify-content: center; margin-top: 2rem; }
+
+  /* entrance */
+  @keyframes ctaRise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+  .cta__panel > * { animation: ctaRise 0.7s cubic-bezier(0.22, 1, 0.36, 1) backwards; }
+  .cta__panel > :nth-child(2) { animation-delay: 0.06s; }
+  .cta__panel > :nth-child(3) { animation-delay: 0.12s; }
+  .cta__panel > :nth-child(4) { animation-delay: 0.18s; }
+
+  @media (max-width: 480px) {
+    .cta__actions .btn { width: 100%; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cta__panel > * { animation: none; }
+  }
+</style>

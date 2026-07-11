@@ -387,6 +387,20 @@ export const registry: SectionEntry[] = [
       bg: 'white',
     },
   },
+  {
+    id: 'cta',
+    name: 'CTA',
+    category: 'CTA',
+    file: 'CTA.astro',
+    demo: {
+      eyebrow: 'Get started',
+      title: 'Ready to build your next site by talking?',
+      subtitle: 'Copy a polished block, tell Claude what to change, and ship. Your code stays yours – no lock-in.',
+      primary: { label: 'Get the starter', href: '#' },
+      secondary: { label: 'Browse blocks', href: '#' },
+      bg: 'white',
+    },
+  },
 ];
 
 // cards with a per-category label (HERO 01, HERO 02, BLOG 01...) — shared by / and /blocks
