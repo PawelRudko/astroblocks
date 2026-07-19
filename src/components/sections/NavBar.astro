@@ -34,9 +34,11 @@ const ic = {
   {announcement && (
     <div class="nb__ann" id="nbAnn">
       <div class="nb__ann-inner">
+        {/* Explicit spaces: Astro 7 strips whitespace between inline elements, and the margins
+            below only fix the look — without these the text layer reads "NEWNorthwind…pipelines.Read". */}
         <p class="nb__ann-text">
-          {announcement.badge && <span class="nb__ann-badge">{announcement.badge}</span>}
-          {announcement.text}
+          {announcement.badge && <span class="nb__ann-badge">{announcement.badge}</span>}{' '}
+          {announcement.text}{' '}
           {announcement.linkLabel && <a class="nb__ann-link" href={announcement.href}>{announcement.linkLabel} →</a>}
         </p>
         <button class="nb__ann-x" type="button" aria-label="Dismiss" data-nb-dismiss>
