@@ -21,6 +21,10 @@ A live gallery (`/` teaser + `/blocks` full library) with per-block previews and
 
 ## Quick start
 
+**Requires Node 22.12 or newer** (Astro 7's requirement – Node 20 is end-of-life).
+Check yours with `node -v`; if it is older, `nvm install 22 && nvm use 22` or grab the
+LTS from [nodejs.org](https://nodejs.org).
+
 ```bash
 npm install
 npm run dev        # http://localhost:4322
