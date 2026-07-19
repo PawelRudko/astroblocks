@@ -75,7 +75,7 @@ const ph = '/placeholder-landscape.svg';
   .ftabs { padding: clamp(3rem, 7vw, 6rem) 0; }
   .ftabs--white { background: #ffffff; }
   .ftabs--gray { background: #f5f4f2; }
-  .ftabs__wrap { max-width: 1200px; margin-inline: auto; padding-inline: clamp(1.25rem, 4vw, 2.5rem); }
+  .ftabs__wrap { max-width: var(--maxw, 1440px); margin-inline: auto; padding-inline: clamp(1.25rem, 4vw, 2.5rem); }
 
   /* Left-aligned tab strip */
   .ftabs__nav { display: flex; gap: clamp(1.25rem, 3vw, 2.2rem); border-bottom: 1px solid var(--line); margin-bottom: clamp(2rem, 4vw, 3.25rem); }

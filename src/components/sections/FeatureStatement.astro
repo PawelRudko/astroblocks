@@ -38,7 +38,7 @@ const ph = '/placeholder-landscape.svg';
   .fstmt--gray { background: #f5f4f2; }
 
   .fstmt__wrap {
-    max-width: 1280px; margin-inline: auto; padding-inline: clamp(1.25rem, 4vw, 2.5rem);
+    max-width: var(--maxw, 1440px); margin-inline: auto; padding-inline: clamp(1.25rem, 4vw, 2.5rem);
     display: grid; grid-template-columns: minmax(6rem, 11rem) minmax(0, 1fr);
     column-gap: clamp(1.5rem, 5vw, 4rem);
   }

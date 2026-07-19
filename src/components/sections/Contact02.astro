@@ -14,11 +14,11 @@ interface Props {
   bg?: 'white' | 'gray';
 }
 const {
-  brand = 'Felt Layouts©',
+  brand = 'Astroblock©',
   groups = [
     { heading: 'Email us', links: [
-      { label: 'studio@feltlayouts.com', href: 'mailto:studio@feltlayouts.com' },
-      { label: 'projects@feltlayouts.com', href: 'mailto:projects@feltlayouts.com' },
+      { label: 'hello@studio.com', href: 'mailto:hello@studio.com' },
+      { label: 'projects@studio.com', href: 'mailto:projects@studio.com' },
     ] },
     { heading: 'Talk to us', links: [
       { label: '+358 40 555 0102', href: 'tel:+358405550102' },
@@ -110,7 +110,7 @@ const {
   .cnt2--gray { background: #f5f4f2; }
   .cnt2 a { color: inherit; text-decoration: none; }
 
-  .cnt2__wrap { max-width: 1200px; margin-inline: auto; padding-inline: clamp(1.25rem, 4vw, 2.5rem); display: grid; grid-template-columns: 1fr 1.15fr; gap: clamp(2.5rem, 6vw, 5rem); align-items: start; }
+  .cnt2__wrap { max-width: var(--maxw, 1440px); margin-inline: auto; padding-inline: clamp(1.25rem, 4vw, 2.5rem); display: grid; grid-template-columns: 1fr 1.15fr; gap: clamp(2.5rem, 6vw, 5rem); align-items: start; }
 
   /* left: contact details */
   .cnt2__brand { display: block; font-weight: 600; font-size: 1.1rem; letter-spacing: -0.01em; margin-bottom: clamp(1.75rem, 4vw, 2.75rem); }

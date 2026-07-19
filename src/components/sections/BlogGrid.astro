@@ -39,7 +39,7 @@ const { eyebrow, title, subtitle, posts, bg = 'white' } = Astro.props;
   .blog { padding: clamp(3rem, 7vw, 6rem) 0; }
   .blog--white { background: #ffffff; }
   .blog--gray { background: #f5f4f2; }
-  .blog__wrap { max-width: 1200px; margin-inline: auto; padding-inline: clamp(1.25rem, 4vw, 2.5rem); }
+  .blog__wrap { max-width: var(--maxw, 1440px); margin-inline: auto; padding-inline: clamp(1.25rem, 4vw, 2.5rem); }
 
   .blog__head { max-width: 46ch; margin-bottom: clamp(1.75rem, 4vw, 2.75rem); }
   .blog__title { margin-top: 0.7rem; }

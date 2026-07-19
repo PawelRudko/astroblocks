@@ -76,7 +76,7 @@ const {
   .fabs { padding: clamp(3rem, 7vw, 6rem) 0; }
   .fabs--white { background: #ffffff; }
   .fabs--gray { background: #f5f4f2; }
-  .fabs__wrap { max-width: 1280px; margin-inline: auto; padding-inline: clamp(1.25rem, 4vw, 2.5rem); }
+  .fabs__wrap { max-width: var(--maxw, 1440px); margin-inline: auto; padding-inline: clamp(1.25rem, 4vw, 2.5rem); }
 
   .fabs__row { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2rem, 6vw, 5rem); }
   .fabs__row + .fabs__row { margin-top: clamp(3rem, 8vw, 6rem); }

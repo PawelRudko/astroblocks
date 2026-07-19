@@ -40,7 +40,7 @@ const { eyebrow, title, subtitle, items, bg = 'white' } = Astro.props;
   .clist { padding: clamp(3rem, 7vw, 6rem) 0; }
   .clist--white { background: #ffffff; }
   .clist--gray { background: #f5f4f2; }
-  .clist__wrap { max-width: 1200px; margin-inline: auto; padding-inline: clamp(1.25rem, 4vw, 2.5rem); }
+  .clist__wrap { max-width: var(--maxw, 1440px); margin-inline: auto; padding-inline: clamp(1.25rem, 4vw, 2.5rem); }
 
   .clist__head { max-width: 44ch; margin-bottom: clamp(1.75rem, 4vw, 2.75rem); }
   .clist__title { margin-top: 0.7rem; }
@@ -66,8 +66,9 @@ const { eyebrow, title, subtitle, items, bg = 'white' } = Astro.props;
   .clist__card-title { font-size: 1.0625rem; font-weight: 600; line-height: 1.3; letter-spacing: -0.01em; transition: color 0.18s ease; }
   .clist__card:hover .clist__card-title { color: #5b5bd6; }
 
-  .clist__media { flex: none; width: clamp(120px, 14vw, 150px); background: #ececea; overflow: hidden; }
-  .clist__media img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1); }
+  .clist__media { position: relative; flex: none; width: clamp(120px, 14vw, 150px); background: #ececea; overflow: hidden; }
+  /* absolutely filled so the image can't drive the card height — every card stays equal (min-height) */
+  .clist__media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1); }
   .clist__card:hover .clist__media img { transform: scale(1.06); }
 
   /* Entrance */

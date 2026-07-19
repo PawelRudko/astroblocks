@@ -96,7 +96,7 @@ export const registry: SectionEntry[] = [
     category: 'Hero',
     file: 'HeroEditorial.astro',
     demo: {
-      brand: 'Felt Layouts©',
+      brand: 'Astroblock©',
       nav: [
         { label: 'Projects', href: '#' },
         { label: 'Services', href: '#' },
@@ -106,10 +106,10 @@ export const registry: SectionEntry[] = [
         { type: 'twitter', href: '#' },
         { type: 'linkedin', href: '#' },
       ],
-      eyebrow: 'Felt',
+      eyebrow: 'Astroblock',
       title: 'Custom-built homes shaped by light, nature, and simplicity, inspired by',
       titleMuted: 'Scandinavian simplicity',
-      email: { label: 'hello@thecompany.com', href: 'mailto:hello@thecompany.com' },
+      email: { label: 'hello@studio.com', href: 'mailto:hello@studio.com' },
       location: 'Helsinki, Finland',
       founded: 'Est 2002',
       image: placeholder,
@@ -122,7 +122,7 @@ export const registry: SectionEntry[] = [
     category: 'Hero',
     file: 'HeroCover.astro',
     demo: {
-      brand: 'Felt Layouts©',
+      brand: 'Astroblock©',
       nav: [
         { label: 'Index', href: '#' },
         { label: 'Info', href: '#' },
@@ -353,11 +353,11 @@ export const registry: SectionEntry[] = [
     category: 'Contact',
     file: 'Contact02.astro',
     demo: {
-      brand: 'Felt Layouts©',
+      brand: 'Astroblock©',
       groups: [
         { heading: 'Email us', links: [
-          { label: 'studio@feltlayouts.com', href: 'mailto:studio@feltlayouts.com' },
-          { label: 'projects@feltlayouts.com', href: 'mailto:projects@feltlayouts.com' },
+          { label: 'hello@studio.com', href: 'mailto:hello@studio.com' },
+          { label: 'projects@studio.com', href: 'mailto:projects@studio.com' },
         ] },
         { heading: 'Talk to us', links: [
           { label: '+358 40 555 0102', href: 'tel:+358405550102' },
@@ -518,7 +518,7 @@ export const registry: SectionEntry[] = [
     category: 'Footer',
     file: 'Footer.astro',
     demo: {
-      brand: 'Felt ©',
+      brand: 'Astroblock ©',
       tagline: 'From first sketch to final interior, every detail is shaped to feel natural, calm and built to last.',
       columns: [
         { heading: 'Product', links: [
@@ -532,13 +532,13 @@ export const registry: SectionEntry[] = [
           { label: 'Latest Updates', href: '#' },
         ] },
       ],
-      contact: { heading: 'Contact', email: { label: 'hello@feltlayouts.com', href: 'mailto:hello@feltlayouts.com' }, phone: '+46 123 456 789' },
+      contact: { heading: 'Contact', email: { label: 'hello@studio.com', href: 'mailto:hello@studio.com' }, phone: '+39 02 1234 567' },
       socials: { heading: 'Follow Us', items: [
         { type: 'linkedin', href: '#' },
         { type: 'twitter', href: '#' },
         { type: 'instagram', href: '#' },
       ] },
-      copyright: 'Felt Layouts © 2026',
+      copyright: 'Astroblock © 2026',
       credit: { label: 'Built with', linkLabel: 'Astroblocks', href: '#' },
       bg: 'white',
     },
@@ -573,7 +573,7 @@ export const registry: SectionEntry[] = [
       ],
       credit: { label: 'Built with', linkLabel: 'Astroblocks', href: '#' },
       founded: 'Est. 2002',
-      copyright: 'Felt © 2026',
+      copyright: 'Astroblock © 2026',
       bg: 'white',
     },
   },

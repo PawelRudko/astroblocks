@@ -49,7 +49,7 @@ const loop = [...list, ...list];
   .logos { padding: clamp(2.5rem, 5vw, 4rem) 0; }
   .logos--white { background: #ffffff; }
   .logos--gray { background: #f5f4f2; }
-  .logos__wrap { max-width: 1200px; margin-inline: auto; padding-inline: clamp(1.25rem, 4vw, 2.5rem); }
+  .logos__wrap { max-width: var(--maxw, 1440px); margin-inline: auto; padding-inline: clamp(1.25rem, 4vw, 2.5rem); }
   .logos__title { text-align: center; font-size: 0.9rem; font-weight: 600; color: var(--text); }
 
   .logos__logo { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--text); opacity: 0.68; transition: opacity 0.18s ease; }

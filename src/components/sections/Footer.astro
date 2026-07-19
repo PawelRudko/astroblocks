@@ -16,7 +16,7 @@ interface Props {
   bg?: 'white' | 'gray' | 'dark';
 }
 const {
-  brand = 'Felt ©',
+  brand = 'Astroblock ©',
   tagline = 'From first sketch to final interior, every detail is shaped to feel natural, calm and built to last.',
   columns = [
     { heading: 'Product', links: [
@@ -30,13 +30,13 @@ const {
       { label: 'Latest Updates', href: '#' },
     ] },
   ],
-  contact = { heading: 'Contact', email: { label: 'hello@feltlayouts.com', href: 'mailto:hello@feltlayouts.com' }, phone: '+46 123 456 789' },
+  contact = { heading: 'Contact', email: { label: 'hello@studio.com', href: 'mailto:hello@studio.com' }, phone: '+39 02 1234 567' },
   socials = { heading: 'Follow Us', items: [
     { type: 'linkedin', href: '#' },
     { type: 'twitter', href: '#' },
     { type: 'instagram', href: '#' },
   ] },
-  copyright = 'Felt Layouts © 2026',
+  copyright = 'Astroblock © 2026',
   credit = { label: 'Built with', linkLabel: 'Astroblocks', href: '#' },
   bg = 'white',
 } = Astro.props;
@@ -106,7 +106,7 @@ const social = {
   .ft--gray { background: #f5f4f2; }
   .ft--dark { background: #0a0a0c; color: #f4f3f0; }
   .ft a { color: inherit; text-decoration: none; }
-  .ft__wrap { max-width: 1200px; margin-inline: auto; padding-inline: clamp(1.25rem, 4vw, 2.5rem); }
+  .ft__wrap { max-width: var(--maxw, 1440px); margin-inline: auto; padding-inline: clamp(1.25rem, 4vw, 2.5rem); }
 
   /* top: brand + tagline */
   .ft__top { display: grid; grid-template-columns: 1fr 1.05fr; gap: clamp(1.5rem, 5vw, 4rem); align-items: start; }
